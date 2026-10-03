@@ -1,7 +1,7 @@
 ﻿import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ConfirmRequest } from '../confirm/confirmActions';
 import { getImageSlotKey } from '../hooks/useWorkflow';
-import type { AnalyzerResult } from '../types/analyzer';
+import type { AnalyzerResult } from '@contracts/analyzer';
 
 interface ImageImporterProps {
   analyzerResult: AnalyzerResult | null;

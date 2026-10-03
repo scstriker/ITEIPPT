@@ -1,17 +1,15 @@
-import type { ApiProxyOptions, GenerateContentProgressUpdate, GenerateContentRequestBody } from './apiProxyServer';
-import { generateContentWithGemini } from './apiProxyServer';
-import {
-  getGenerationJob,
-  markGenerationJobFailed,
-  markGenerationJobRunning,
-  markGenerationJobSucceeded,
-  readGenerationJobRequest,
-  updateGenerationJobProgress,
-  writeGenerationJobResult,
-} from './generationJobStore';
-import type { GenerationJobError, GenerationJobProgress } from '../types/analyzer';
+import type { GenerationJobError, GenerationJobProgress } from '../contracts/analyzer';
+import { generateContentWithGemini } from '../content/generateContent';
+import type { GenerateContentProgressUpdate, GenerateContentRequestBody } from '../content/types';
+import type { GeminiOptions } from '../gemini/client';
+import type { JobStore } from './types';
 
 const STALE_RUNNING_WINDOW_MS = 10 * 60 * 1000;
+
+export interface WorkerDeps {
+  store: JobStore;
+  gemini?: GeminiOptions;
+}
 
 function mapProgressStage(update: GenerateContentProgressUpdate): string {
   if (update.stage === 'preparing') {
@@ -32,7 +30,7 @@ function toJobProgress(update: GenerateContentProgressUpdate): GenerationJobProg
   };
 }
 
-function classifyJobError(error: unknown): GenerationJobError {
+export function classifyJobError(error: unknown): GenerationJobError {
   if (!(error instanceof Error)) {
     return {
       code: 'unknown_error',
@@ -85,13 +83,13 @@ function isJobId(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-export async function processGenerationJob(jobId: string, options: ApiProxyOptions = {}): Promise<void> {
+export async function processGenerationJob(jobId: string, { store, gemini = {} }: WorkerDeps): Promise<void> {
   const normalizedJobId = jobId.trim();
   if (!normalizedJobId) {
     return;
   }
 
-  const job = await getGenerationJob(normalizedJobId);
+  const job = await store.get(normalizedJobId);
   if (!job) {
     return;
   }
@@ -104,27 +102,27 @@ export async function processGenerationJob(jobId: string, options: ApiProxyOptio
     return;
   }
 
-  await markGenerationJobRunning(normalizedJobId, job.progress.totalBatches);
+  await store.markRunning(normalizedJobId, job.progress.totalBatches);
 
   let requestPayload: GenerateContentRequestBody;
   try {
-    requestPayload = (await readGenerationJobRequest(job.requestStoragePath)) as GenerateContentRequestBody;
+    requestPayload = (await store.readRequest(job.requestStoragePath)) as GenerateContentRequestBody;
   } catch (error) {
-    await markGenerationJobFailed(normalizedJobId, classifyJobError(error));
+    await store.markFailed(normalizedJobId, classifyJobError(error));
     return;
   }
 
   try {
-    const result = await generateContentWithGemini(options, requestPayload, {
+    const result = await generateContentWithGemini(gemini, requestPayload, {
       jobId: normalizedJobId,
       onProgress: async (update) => {
-        await updateGenerationJobProgress(normalizedJobId, toJobProgress(update));
+        await store.updateProgress(normalizedJobId, toJobProgress(update));
       },
     });
-    const resultStoragePath = await writeGenerationJobResult(normalizedJobId, result);
-    await markGenerationJobSucceeded(normalizedJobId, resultStoragePath, result.generationMeta);
+    const resultStoragePath = await store.writeResult(normalizedJobId, result);
+    await store.markSucceeded(normalizedJobId, resultStoragePath, result.generationMeta);
   } catch (error) {
-    await markGenerationJobFailed(normalizedJobId, classifyJobError(error));
+    await store.markFailed(normalizedJobId, classifyJobError(error));
   }
 }
 

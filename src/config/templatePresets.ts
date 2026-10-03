@@ -1,6 +1,6 @@
 import { getTemplate } from './templateLoader';
-import type { ChapterPlan, FrameworkPlan, PresetChapter, TemplatePreset } from '../types/framework';
-import type { SlideInstance, TemplateElementItem, TemplateShape, VisualMode } from '../types/template';
+import type { ChapterPlan, FrameworkPlan, PresetChapter, TemplatePreset } from '@contracts/framework';
+import type { SlideInstance, TemplateElementItem, TemplateShape, VisualMode } from '@contracts/template';
 
 const CHAPTER_TITLE_PATTERN = /^(?:第[一二三四五六七八九十0-9]+章|[一二三四五六七八九十]+、)/;
 const BODY_TEXT_PATTERN = /^(?:本标准|本报告|本页)/;

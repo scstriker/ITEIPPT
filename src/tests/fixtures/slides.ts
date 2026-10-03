@@ -1,4 +1,4 @@
-import type { SlideContent } from '../../types/analyzer';
+import type { SlideContent } from '@contracts/analyzer';
 
 // 1x1 transparent PNG.
 export const PNG_1X1_BASE64 =

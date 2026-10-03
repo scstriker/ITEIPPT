@@ -15,12 +15,12 @@ import type {
   TemplateParagraph,
   TemplateShape,
   VisualMode,
-} from '../types/template';
+} from '@contracts/template';
 import type {
   SlideContent,
   SlideImageData,
-} from '../types/analyzer';
-export type { SlideContent } from '../types/analyzer';
+} from '@contracts/analyzer';
+export type { SlideContent } from '@contracts/analyzer';
 
 type PptxGenJSConstructor = typeof PptxGenJSImport;
 const PptxGenJS: PptxGenJSConstructor =

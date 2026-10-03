@@ -1,9 +1,6 @@
 // AC-026 / AC-028: async generation job routes, end to end with an in-memory job store.
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../src/services/generationJobStore', () => import('./helpers/fakeGenerationJobStore'));
-
-import { __drainFakeJobRuns, __resetFakeJobStore } from './helpers/fakeGenerationJobStore';
 import { startGeminiStub, type GeminiStub } from './helpers/geminiStub';
 import { SAMPLE_TEXT, twoChapterPlan } from './helpers/fixtures';
 import { getJson, postJson, startTestApp, type RunningApp } from './helpers/testApp';
@@ -14,23 +11,18 @@ let noKeyApp: RunningApp;
 
 beforeAll(async () => {
   stub = await startGeminiStub();
-  // The worker reads Gemini settings from the environment (production passes the same values).
-  process.env.GEMINI_API_KEY = 'test-key';
-  process.env.GEMINI_BASE_URL = stub.baseUrl;
   app = await startTestApp({ geminiApiKey: 'test-key', geminiBaseUrl: stub.baseUrl });
   noKeyApp = await startTestApp({ geminiApiKey: '', geminiBaseUrl: stub.baseUrl });
 });
 
 afterAll(async () => {
-  delete process.env.GEMINI_API_KEY;
-  delete process.env.GEMINI_BASE_URL;
   await app.close();
   await noKeyApp.close();
   await stub.close();
 });
 
 beforeEach(() => {
-  __resetFakeJobStore();
+  app.setAutoRun(true);
   stub.setHandler(undefined);
   vi.spyOn(console, 'info').mockImplementation(() => undefined);
 });
@@ -54,7 +46,7 @@ describe('POST /api/generate-content/jobs', () => {
     });
     expect(res.json.pollUrl).toBe(`/api/generate-content/jobs/${res.json.jobId}`);
     expect(res.json.resultUrl).toBe(`/api/generate-content/jobs/${res.json.jobId}/result`);
-    await __drainFakeJobRuns();
+    await app.runner.drain();
   });
 
   it('400 invalid_framework_plan / missing_text_content, 503 missing_api_key', async () => {
@@ -78,7 +70,7 @@ describe('POST /api/generate-content/jobs', () => {
 describe('job status and result', () => {
   it('runs to succeeded and serves the result', async () => {
     const created = await createJob();
-    await __drainFakeJobRuns();
+    await app.runner.drain();
 
     const status = await getJson(`${app.baseUrl}/api/generate-content/jobs/${created.json.jobId}`);
     expect(status.status).toBe(200);
@@ -96,7 +88,7 @@ describe('job status and result', () => {
   });
 
   it('reports queued progress before the worker runs and 409 for the result', async () => {
-    __resetFakeJobStore({ autoRun: false });
+    app.setAutoRun(false);
     const created = await createJob();
     const status = await getJson(`${app.baseUrl}/api/generate-content/jobs/${created.json.jobId}`);
     expect(status.json).toMatchObject({
@@ -121,7 +113,7 @@ describe('job status and result', () => {
   it('succeeds in degraded mode when Gemini keeps failing', async () => {
     stub.setHandler(() => ({ status: 503, rawText: '{"error":{"message":"overloaded"}}' }));
     const created = await createJob();
-    await __drainFakeJobRuns();
+    await app.runner.drain();
     const status = await getJson(`${app.baseUrl}/api/generate-content/jobs/${created.json.jobId}`);
     expect(status.json.status).toBe('succeeded');
     const result = await getJson(`${app.baseUrl}/api/generate-content/jobs/${created.json.jobId}/result`);

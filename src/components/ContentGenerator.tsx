@@ -5,8 +5,8 @@ import {
   mapGenerateContentError,
   requestGenerateContent,
 } from '../services/contentGeneratorApi';
-import type { AnalyzerResult, SlideContent } from '../types/analyzer';
-import type { FrameworkPlan } from '../types/framework';
+import type { AnalyzerResult, SlideContent } from '@contracts/analyzer';
+import type { FrameworkPlan } from '@contracts/framework';
 
 type ProgressStatus = 'pending' | 'generating' | 'completed';
 

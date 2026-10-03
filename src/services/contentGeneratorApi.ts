@@ -3,8 +3,8 @@ import type {
   GenerationJobError,
   GenerationJobProgress,
   GenerationJobStatus,
-} from '../types/analyzer';
-import type { FrameworkPlan } from '../types/framework';
+} from '@contracts/analyzer';
+import type { FrameworkPlan } from '@contracts/framework';
 
 interface ContentApiErrorBody {
   error?: {

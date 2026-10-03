@@ -1,6 +1,6 @@
 ﻿import { useEffect, useMemo, useRef, useState } from 'react';
 import { getImageSlotKey } from '../hooks/useWorkflow';
-import type { AISupplementType, AnalyzerResult, SlideContent, SourceConfidence } from '../types/analyzer';
+import type { AISupplementType, AnalyzerResult, SlideContent, SourceConfidence } from '@contracts/analyzer';
 
 type AuditCoverage = 'high' | 'medium' | 'low';
 type AuditFilter = 'content' | 'all' | 'issues';

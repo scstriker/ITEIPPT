@@ -9,9 +9,9 @@ import {
   requestGenerateContentJobResult,
   requestGenerateContentJobStatus,
 } from '../services/contentGeneratorApi';
-import type { AnalyzerResult } from '../types/analyzer';
-import type { ChapterPlan, CoverageLevel, FrameworkPlan, SubSlidePlan, TemplatePreset } from '../types/framework';
-import type { VisualMode } from '../types/template';
+import type { AnalyzerResult } from '@contracts/analyzer';
+import type { ChapterPlan, CoverageLevel, FrameworkPlan, SubSlidePlan, TemplatePreset } from '@contracts/framework';
+import type { VisualMode } from '@contracts/template';
 import type { ConfirmRequest } from '../confirm/confirmActions';
 
 interface FrameworkPlannerProps {

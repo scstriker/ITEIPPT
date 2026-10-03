@@ -4,13 +4,15 @@ import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import { onMessagePublished } from 'firebase-functions/v2/pubsub';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
-import { createApiProxyApp, type ApiProxyOptions } from './services/apiProxyServer';
-import { cleanupExpiredGenerationJobs, GENERATION_JOB_TOPIC } from './services/generationJobStore';
-import { parseJobIdFromPubSubMessage, processGenerationJob } from './services/generationJobWorker';
+import type { GeminiOptions } from './gemini/client';
+import { createApiApp } from './http/app';
+import { firestoreJobStore } from './jobs/firestoreJobStore';
+import { GENERATION_JOB_TOPIC, createPubSubJobRunner } from './jobs/runners';
+import { parseJobIdFromPubSubMessage, processGenerationJob } from './jobs/worker';
 
 const GEMINI_API_KEY = defineSecret('GEMINI_API_KEY');
 
-const sharedApiProxyOptions: ApiProxyOptions = {
+const sharedGeminiOptions: GeminiOptions = {
   geminiBaseUrl: process.env.GEMINI_BASE_URL,
   geminiPlanModel: process.env.GEMINI_PLAN_MODEL,
   geminiContentModel: process.env.GEMINI_CONTENT_MODEL,
@@ -27,7 +29,11 @@ function hydrateGeminiSecret(): void {
   }
 }
 
-const upstreamApp = createApiProxyApp(sharedApiProxyOptions);
+const upstreamApp = createApiApp({
+  gemini: sharedGeminiOptions,
+  jobStore: firestoreJobStore,
+  jobRunner: createPubSubJobRunner(),
+});
 const app = express();
 
 app.use((_req, _res, next) => {
@@ -62,7 +68,7 @@ export const generationJobWorker = onMessagePublished(
       logger.warn('Skip generation job message without valid jobId.');
       return;
     }
-    await processGenerationJob(jobId, sharedApiProxyOptions);
+    await processGenerationJob(jobId, { store: firestoreJobStore, gemini: sharedGeminiOptions });
   },
 );
 
@@ -74,7 +80,7 @@ export const generationJobCleanup = onSchedule(
     memory: '256MiB',
   },
   async () => {
-    const result = await cleanupExpiredGenerationJobs();
+    const result = await firestoreJobStore.cleanupExpired();
     logger.info('Generation job cleanup finished.', result);
   },
 );

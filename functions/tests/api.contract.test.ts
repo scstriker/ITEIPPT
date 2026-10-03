@@ -1,8 +1,6 @@
 // AC-026: HTTP contract for /api/health, /api/plan and /api/generate-content error semantics.
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../src/services/generationJobStore', () => import('./helpers/fakeGenerationJobStore'));
-
 import { startGeminiStub, type GeminiStub } from './helpers/geminiStub';
 import { SAMPLE_TEXT, twoChapterPlan } from './helpers/fixtures';
 import { getJson, postJson, startTestApp, type RunningApp } from './helpers/testApp';
@@ -102,5 +100,23 @@ describe('POST /api/generate-content (sync)', () => {
     for (const slide of contentSlides) {
       expect(slide.bodyText.length).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('unknown /api routes (AC-027)', () => {
+  it.each([
+    ['POST', '/api/models'],
+    ['GET', '/api/models/gemini-2.5-flash'],
+    ['POST', '/api'],
+    ['GET', '/api/'],
+  ])('%s %s returns 404 not_found without calling Gemini', async (method, path) => {
+    const res = await fetch(`${app.baseUrl}${path}`, {
+      method,
+      headers: { 'content-type': 'application/json' },
+      body: method === 'GET' ? undefined : '{}',
+    });
+    expect(res.status).toBe(404);
+    expect((await res.json()).error.code).toBe('not_found');
+    expect(stub.requests).toHaveLength(0);
   });
 });

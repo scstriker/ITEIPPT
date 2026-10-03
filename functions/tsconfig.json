@@ -1,4 +1,4 @@
-﻿{
+{
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
@@ -9,8 +9,15 @@
     "rootDir": "src",
     "outDir": "lib",
     "sourceMap": true,
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/dev/**"
+  ]
 }

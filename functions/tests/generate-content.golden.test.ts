@@ -1,9 +1,7 @@
 // AC-017: characterization snapshot of the generated AnalyzerResult.
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../src/services/generationJobStore', () => import('./helpers/fakeGenerationJobStore'));
-
-import { generateContentWithGemini } from '../src/services/apiProxyServer';
+import { generateContentWithGemini } from '../src/content/generateContent';
 import { startGeminiStub, type GeminiStub } from './helpers/geminiStub';
 import { FIXED_NOW, SAMPLE_TEXT, twoChapterPlan } from './helpers/fixtures';
 

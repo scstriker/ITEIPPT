@@ -1,5 +1,5 @@
 import { getSlideType, getTemplate } from './templateLoader';
-import type { SlideType, VisualMode } from '../types/template';
+import type { SlideType, VisualMode } from '@contracts/template';
 
 export interface SlidePlanItem {
   slideNumber: number;

@@ -11,6 +11,7 @@ export default defineConfig(({mode}) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
+        '@contracts': path.resolve(__dirname, '../functions/src/contracts'),
       },
     },
     build: {

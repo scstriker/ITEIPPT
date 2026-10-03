@@ -1,8 +1,10 @@
-﻿rules_version = '2';
+rules_version = '2';
+// Clients never access Cloud Storage directly. The backend uses the Admin SDK,
+// which bypasses these rules, for generation job files.
 service firebase.storage {
   match /b/{bucket}/o {
-    match /pptx-versions/{allPaths=**} {
-      allow read, write: if true;
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

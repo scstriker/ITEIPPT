@@ -1,8 +1,6 @@
 // AC-012: /api/plan behaviour against a scripted Gemini stub.
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../src/services/generationJobStore', () => import('./helpers/fakeGenerationJobStore'));
-
 import { startGeminiStub, type GeminiStub } from './helpers/geminiStub';
 import { FIXED_NOW, SAMPLE_TEXT, twoChapterPlan } from './helpers/fixtures';
 import { postJson, startTestApp, type RunningApp } from './helpers/testApp';

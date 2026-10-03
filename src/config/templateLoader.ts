@@ -6,7 +6,7 @@ import type {
   SlideTypeDefinition,
   TemplateShape,
   TemplateStructure,
-} from '../types/template';
+} from '@contracts/template';
 
 const EMU_PER_INCH = 914400;
 

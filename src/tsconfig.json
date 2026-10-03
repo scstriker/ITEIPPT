@@ -22,6 +22,9 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@contracts/*": [
+        "../functions/src/contracts/*"
       ]
     },
     "allowImportingTsExtensions": true,

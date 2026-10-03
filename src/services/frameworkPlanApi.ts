@@ -1,5 +1,5 @@
-import type { FrameworkPlan, TemplatePreset } from '../types/framework';
-import type { VisualMode } from '../types/template';
+import type { FrameworkPlan, TemplatePreset } from '@contracts/framework';
+import type { VisualMode } from '@contracts/template';
 
 export interface PlanApiSlideInput {
   subtitle: string;

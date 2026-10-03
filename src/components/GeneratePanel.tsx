@@ -3,7 +3,7 @@ import { loadBackgroundAssets } from '../config/assets';
 import type { ConfirmRequest } from '../confirm/confirmActions';
 import { getImageSlotKey } from '../hooks/useWorkflow';
 import { renderPPTX, type ImageFileMap } from '../services/pptxRenderer';
-import type { AnalyzerResult, SlideContent } from '../types/analyzer';
+import type { AnalyzerResult, SlideContent } from '@contracts/analyzer';
 
 interface GeneratePanelProps {
   analyzerResult: AnalyzerResult | null;

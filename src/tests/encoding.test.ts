@@ -35,7 +35,6 @@ describe('source encoding', () => {
         }
       });
     }
-    // The local proxy copy (services/apiProxyServer.ts) is deleted when the backends are merged.
-    expect(offenders.filter((item) => !item.startsWith('services')).sort()).toEqual([]);
+    expect(offenders).toEqual([]);
   });
 });

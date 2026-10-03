@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { createFrameworkPlanFromPreset } from '../config/templatePresets';
 import type { ParsedDocument } from '../services/documentParser';
-import type { AnalyzerResult, SlideContent } from '../types/analyzer';
-import type { FrameworkPlan } from '../types/framework';
+import type { AnalyzerResult, SlideContent } from '@contracts/analyzer';
+import type { FrameworkPlan } from '@contracts/framework';
 
 export type WorkflowStep = 'upload' | 'framework' | 'images' | 'audit';
 

@@ -1,4 +1,4 @@
-﻿import type { ChapterPlan, FrameworkPlan, TemplatePreset } from '../types/framework';
+﻿import type { ChapterPlan, FrameworkPlan, TemplatePreset } from '../contracts/framework';
 
 function createStandardReviewChapters(): ChapterPlan[] {
   return [
