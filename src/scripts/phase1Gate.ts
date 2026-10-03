@@ -35,7 +35,7 @@ async function resolveReferencePptx(docsDir: string): Promise<string> {
   const files = await readdir(docsDir);
   const target = files.find((fileName) => /^1-.*\.pptx$/i.test(fileName));
   if (!target) {
-    throw new Error('Cannot find reference pptx under docs/ (expected 1-*.pptx).');
+    throw new Error('Cannot find reference pptx under docs/reference/ (expected 1-*.pptx).');
   }
   return resolve(docsDir, target);
 }
@@ -195,7 +195,7 @@ async function resolvePaths(): Promise<GatePaths> {
     generatedPptx: resolve(outputDir, 'phase1_gate_sample.pptx'),
     reportJson: resolve(outputDir, 'phase1_gate_report.json'),
     issueListMd: resolve(outputDir, 'phase1_issue_list.md'),
-    referencePptx: await resolveReferencePptx(docsDir),
+    referencePptx: await resolveReferencePptx(resolve(docsDir, 'reference')),
   };
 }
 
