@@ -1,0 +1,9 @@
+# Binary assets: never normalize line endings
+*.pdf binary
+*.pptx binary
+*.docx binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.zip binary

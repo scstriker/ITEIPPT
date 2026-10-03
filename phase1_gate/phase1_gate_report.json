@@ -1,0 +1,10 @@
+{
+  "status": "blocked",
+  "generated": "C:\\Users\\61973\\Documents\\cc-projects\\ITEIPPT\\phase1_gate\\phase1_gate_sample.pptx",
+  "reference": "C:\\Users\\61973\\Documents\\cc-projects\\ITEIPPT\\docs\\1-医用呼吸机关键零部件 第1部分：压力传感器-送审稿审查汇报.pptx",
+  "blockers": [
+    "`soffice` is not installed or not in PATH; cannot convert PPTX to PDF for visual diff.",
+    "`pdftoppm` is not installed or not in PATH; cannot convert PDF pages to PNG."
+  ],
+  "page_results": []
+}

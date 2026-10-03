@@ -1,0 +1,30 @@
+# Dependencies and build output
+node_modules/
+src/dist/
+functions/lib/
+
+# Local env and secrets (keep *.example)
+.env
+.env.*
+!.env.example
+!.env.*.example
+!*.env.example
+
+# Logs
+*.log
+logs/
+src/.runlogs/
+
+# Firebase local state
+.firebase/
+.firebaserc
+
+# Generated reports
+phase1_gate/
+test-results/
+playwright-report/
+coverage/
+
+# Contains a plaintext API key; never commit
+docs/notes_utf8.md
+archive/dev-history/notes_utf8.md
