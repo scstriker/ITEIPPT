@@ -1,4 +1,8 @@
 ﻿import { type ChangeEvent, useMemo, useState } from 'react';
+import { IconFileUpload } from '@tabler/icons-react';
+import { Card, Field, Notice, SubTitle } from '@/components/itei/Blocks';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import {
   ALLOWED_EXTENSIONS,
   DEFAULT_ORGANIZATION,
@@ -152,108 +156,97 @@ export function UploadPanel({
   })();
 
   return (
-    <section className="panel">
-      <div className="panel-grid upload-panel-grid">
-        <div className="upload-left-column">
-          <article className="card">
-            <header className="card-header">基础设置</header>
-            <div className="card-body">
-              <div className="form-group">
-                <label htmlFor="targetSlides">目标页数</label>
-                <input
-                  id="targetSlides"
-                  type="number"
-                  min={4}
-                  value={targetSlides}
-                  onChange={(event) => setTargetSlides(clampTargetSlides(Number(event.target.value)))}
-                />
-              </div>
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
+      <div className="flex flex-col gap-6">
+        <Card title="基础设置">
+          <div className="flex flex-col gap-4">
+            <Field label="目标页数" htmlFor="targetSlides">
+              <Input
+                id="targetSlides"
+                type="number"
+                min={4}
+                value={targetSlides}
+                onChange={(event) => setTargetSlides(clampTargetSlides(Number(event.target.value)))}
+              />
+            </Field>
+            <Field label="汇报人" htmlFor="presenter">
+              <Input
+                id="presenter"
+                type="text"
+                placeholder="可选"
+                value={presenter}
+                onChange={(event) => setPresenter(event.target.value)}
+              />
+            </Field>
+            <Field label="所属机构" htmlFor="organization">
+              <Input id="organization" type="text" value={organization} onChange={(event) => setOrganization(event.target.value)} />
+            </Field>
+          </div>
+        </Card>
 
-              <div className="form-group">
-                <label htmlFor="presenter">汇报人</label>
-                <input
-                  id="presenter"
-                  type="text"
-                  placeholder="可选"
-                  value={presenter}
-                  onChange={(event) => setPresenter(event.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="organization">所属机构</label>
-                <input
-                  id="organization"
-                  type="text"
-                  value={organization}
-                  onChange={(event) => setOrganization(event.target.value)}
-                />
-              </div>
+        <section aria-label="处理日志" className="max-h-72 overflow-y-auto border border-border bg-surface-sunken p-3 font-mono text-[13px] leading-5">
+          {logs.map((log) => (
+            <div
+              key={log.id}
+              className={log.level === 'error' ? 'text-brand-red' : log.level === 'success' ? 'text-success' : 'text-ink-muted'}
+            >
+              [{log.time}] {log.level === 'error' ? <span className="font-semibold">错误 </span> : null}
+              {log.message}
             </div>
-          </article>
+          ))}
+        </section>
+      </div>
 
-          <article className="log-panel">
-            {logs.map((log) => (
-              <div key={log.id} className={`log-${log.level}`}>
-                [{log.time}] {log.message}
+      <Card title="上传文档" bodyClassName="flex flex-col gap-4">
+        <label
+          className={cn(
+            'flex cursor-pointer flex-col items-center justify-center gap-2 border-2 border-dashed px-6 py-10 text-center transition-colors duration-150 ease-out hover:border-brand-navy hover:bg-info-bg',
+            selectedFilename ? 'border-brand-sky bg-info-bg' : 'border-border-strong bg-surface',
+            isParsing && 'cursor-wait',
+          )}
+        >
+          <input
+            type="file"
+            multiple={false}
+            accept={ALLOWED_EXTENSIONS.join(',')}
+            onChange={handleFileChange}
+            disabled={isParsing}
+            className="sr-only"
+          />
+          <IconFileUpload aria-hidden="true" className="size-10 text-brand-navy" stroke={1.5} />
+          <strong className="text-base leading-6 font-bold text-brand-navy">{isParsing ? '解析中，请稍候…' : '点击选择文档'}</strong>
+          <span className="text-[13px] leading-5 text-ink-muted">
+            支持格式：{ALLOWED_EXTENSIONS.join(' / ')}，最大 {maxFileSizeMb}MB
+          </span>
+        </label>
+
+        {selectedFilename ? (
+          <div className="flex items-center justify-between border border-border bg-surface-sunken px-3 py-2 text-[13px] leading-5">
+            <span className="font-semibold text-ink">{selectedFilename}</span>
+            <span className="text-ink-muted tabular-nums">{formatSizeKb(selectedFileSizeBytes)}</span>
+          </div>
+        ) : null}
+
+        {statusText ? <div className="text-[13px] leading-5 text-ink-muted">{statusText}</div> : null}
+        {errorMessage ? <Notice tone="error">{errorMessage}</Notice> : null}
+
+        <div className="flex flex-col gap-3">
+          <SubTitle>文档摘要</SubTitle>
+          <dl className="grid gap-3 sm:grid-cols-2">
+            {[
+              ['标题', summary.title],
+              ['领域', summary.domain],
+              ['关键词', summary.keywords],
+              ['摘要', summary.abstract],
+            ].map(([label, value]) => (
+              <div key={label} className="border border-border bg-surface-sunken p-3">
+                <dt className="text-xs leading-4 text-ink-muted">{label}</dt>
+                <dd className="mt-1 text-[13px] leading-5 break-words whitespace-pre-wrap text-ink">{value}</dd>
               </div>
             ))}
-          </article>
+          </dl>
         </div>
-
-        <article className="card">
-          <header className="card-header">上传文档</header>
-          <div className="card-body">
-            <label className={`upload-zone ${selectedFilename ? 'has-file' : ''}`}>
-              <input
-                type="file"
-                multiple={false}
-                accept={ALLOWED_EXTENSIONS.join(',')}
-                onChange={handleFileChange}
-                disabled={isParsing}
-                className="hidden-file-input"
-              />
-              <div className="upload-icon">📂</div>
-              <div className="upload-text">
-                <strong>{isParsing ? '解析中，请稍候…' : '点击选择文档'}</strong>
-                <div>支持格式：{ALLOWED_EXTENSIONS.join(' / ')}，最大 {maxFileSizeMb}MB</div>
-              </div>
-            </label>
-
-            {selectedFilename ? (
-              <div className="file-info">
-                <span className="name">{selectedFilename}</span>
-                <span className="size">{formatSizeKb(selectedFileSizeBytes)}</span>
-              </div>
-            ) : null}
-
-            {statusText ? <div className="status-line">{statusText}</div> : null}
-            {errorMessage ? <p className="message-error">{errorMessage}</p> : null}
-
-            <div className="summary-section">
-              <h3>文档摘要</h3>
-              <div className="summary-card">
-                <article className="summary-item">
-                  <div className="label">标题</div>
-                  <div className="value">{summary.title}</div>
-                </article>
-                <article className="summary-item">
-                  <div className="label">领域</div>
-                  <div className="value">{summary.domain}</div>
-                </article>
-                <article className="summary-item">
-                  <div className="label">关键词</div>
-                  <div className="value">{summary.keywords}</div>
-                </article>
-                <article className="summary-item">
-                  <div className="label">摘要</div>
-                  <div className="value">{summary.abstract}</div>
-                </article>
-              </div>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
+      </Card>
+    </div>
   );
 }

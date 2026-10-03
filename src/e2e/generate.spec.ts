@@ -34,9 +34,10 @@ test('AC-013 validates, confirms, shows progress and finishes', async ({ page })
   await expect(page.getByText('将按当前框架生成约 14 页内容，过程可能持续数十秒。')).toBeVisible();
   await confirmDialog(page, '确认开始生成内容？', '开始生成', { waitClosed: false });
 
-  // The confirm dialog stays open with disabled buttons while the job runs.
+  // The confirm dialog stays open with disabled buttons while the job runs. The page behind a modal
+  // dialog is hidden from the accessibility tree, so the page button is located by its text.
   await expect(page.getByRole('button', { name: '开始生成', exact: true })).toBeDisabled();
-  await expect(page.getByRole('button', { name: '任务执行中...' })).toBeDisabled();
+  await expect(page.getByText('任务执行中...')).toBeVisible();
   await expect(page.getByText('正在生成内容（批次 1/2）')).toBeVisible({ timeout: 10_000 });
   await expect(page.getByText('40%')).toBeVisible();
   await expect(page.getByText('已生成页数：')).toBeVisible({ timeout: 20_000 });

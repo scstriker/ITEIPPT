@@ -156,3 +156,21 @@ export function buildAuditMetrics(result: AnalyzerResult): Array<{ label: string
     { label: '缺失项', value: result.auditSummary.missingCount },
   ];
 }
+
+export function withTableHeader(slide: SlideContent, headerIndex: number, value: string): SlideContent {
+  if (!slide.tableData) {
+    return slide;
+  }
+  const headers = [...slide.tableData.headers];
+  headers[headerIndex] = value;
+  return { ...slide, tableData: { ...slide.tableData, headers } };
+}
+
+export function withTableCell(slide: SlideContent, rowIndex: number, cellIndex: number, value: string): SlideContent {
+  if (!slide.tableData) {
+    return slide;
+  }
+  const rows = slide.tableData.rows.map((row) => [...row]);
+  rows[rowIndex][cellIndex] = value;
+  return { ...slide, tableData: { ...slide.tableData, rows } };
+}

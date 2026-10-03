@@ -1,4 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+import { IconAlertTriangle, IconInfoCircle } from '@tabler/icons-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export interface ConfirmModalProps {
   open: boolean;
@@ -13,6 +16,7 @@ export interface ConfirmModalProps {
   onCancel: () => void;
 }
 
+// Stays open (both buttons disabled) while the confirmed action runs; Esc / overlay click cancel only when idle.
 export function ConfirmModal({
   open,
   title,
@@ -25,60 +29,41 @@ export function ConfirmModal({
   onConfirm,
   onCancel,
 }: ConfirmModalProps) {
-  const dialogRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) {
-      return undefined;
-    }
-    const handler = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !cancelDisabled) {
-        onCancel();
-      }
-    };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [cancelDisabled, onCancel, open]);
-
-  if (!open) {
-    return null;
+  // Keep the last copy on screen while the dialog fades out after `open` turns false.
+  const shownRef = useRef({ title, message, confirmText, cancelText, variant });
+  if (open) {
+    shownRef.current = { title, message, confirmText, cancelText, variant };
   }
-
-  const isDanger = variant === 'danger';
+  const shown = shownRef.current;
+  const isDanger = shown.variant === 'danger';
+  const Icon = isDanger ? IconAlertTriangle : IconInfoCircle;
 
   return (
-    <div
-      className="modal-overlay"
-      onClick={() => {
-        if (!cancelDisabled) {
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next && !cancelDisabled) {
           onCancel();
         }
       }}
     >
-      <div
-        className="modal-dialog"
-        ref={dialogRef}
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className={`modal-icon ${isDanger ? 'modal-icon-danger' : 'modal-icon-warning'}`}>
-          {isDanger ? '⚠' : 'ℹ'}
-        </div>
-        <h3 className="modal-title">{title}</h3>
-        <p className="modal-message">{message}</p>
-        <div className="modal-actions">
-          <button type="button" className="btn btn-secondary" onClick={onCancel} disabled={cancelDisabled}>
-            {cancelText}
-          </button>
-          <button
-            type="button"
-            className={`btn ${isDanger ? 'btn-danger' : 'btn-primary'}`}
-            onClick={onConfirm}
-            disabled={confirmDisabled}
-          >
-            {confirmText}
-          </button>
-        </div>
-      </div>
-    </div>
+      <DialogContent showCloseButton={false}>
+        <DialogHeader className="flex-row items-start gap-3">
+          <Icon aria-hidden="true" className={isDanger ? 'size-6 shrink-0 text-brand-red' : 'size-6 shrink-0 text-link'} stroke={2} />
+          <div className="flex flex-col gap-2">
+            <DialogTitle>{shown.title}</DialogTitle>
+            <DialogDescription>{shown.message}</DialogDescription>
+          </div>
+        </DialogHeader>
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={onCancel} disabled={cancelDisabled}>
+            {shown.cancelText}
+          </Button>
+          <Button type="button" variant={isDanger ? 'destructive' : 'default'} onClick={onConfirm} disabled={confirmDisabled}>
+            {shown.confirmText}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

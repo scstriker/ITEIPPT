@@ -10,3 +10,4 @@ e2e-dist/
 test-results/
 playwright-report/
 e2e-dist-local/
+screenshots-out/

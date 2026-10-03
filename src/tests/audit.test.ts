@@ -9,6 +9,8 @@ import {
   getSlideMainTitle,
   groupSlides,
   toAuditCoverage,
+  withTableCell,
+  withTableHeader,
 } from '../features/audit/auditModel';
 
 const slides: SlideContent[] = [
@@ -68,5 +70,13 @@ describe('audit model', () => {
       { label: 'AI 补充项', value: 1 },
       { label: '缺失项', value: 1 },
     ]);
+  });
+
+  it('edits table headers and cells without mutating the slide', () => {
+    const slide: SlideContent = { page: 3, type: 'content', tableData: { headers: ['a', 'b'], rows: [['1', '2']] } };
+    expect(withTableHeader(slide, 1, 'B').tableData?.headers).toEqual(['a', 'B']);
+    expect(withTableCell(slide, 0, 0, 'x').tableData?.rows).toEqual([['x', '2']]);
+    expect(slide.tableData).toEqual({ headers: ['a', 'b'], rows: [['1', '2']] });
+    expect(withTableCell({ page: 1, type: 'content' }, 0, 0, 'x')).toEqual({ page: 1, type: 'content' });
   });
 });

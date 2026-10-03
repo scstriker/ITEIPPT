@@ -1,6 +1,15 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
+import { IconChevronRight, IconSparkles, IconX } from '@tabler/icons-react';
+import { Card, Field, Notice } from '@/components/itei/Blocks';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import { Progress } from '@/components/ui/progress';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 import type { AnalyzerResult } from '@contracts/analyzer';
-import type { FrameworkPlan, TemplatePreset } from '@contracts/framework';
+import type { CoverageLevel, FrameworkPlan, TemplatePreset } from '@contracts/framework';
 import type { ConfirmRequest } from '../../confirm/confirmActions';
 import type { ParsedDocument } from '../../services/document/documentParser';
 import { mapPlanErrorToMessage, requestFrameworkPlan } from '../../services/api/planApi';
@@ -28,6 +37,12 @@ import {
   validatePlanBeforeGenerate,
 } from './frameworkEditing';
 import { useGenerationJob } from './useGenerationJob';
+
+const COVERAGE_TONE: Record<CoverageLevel, 'success' | 'warning' | 'danger'> = {
+  sufficient: 'success',
+  moderate: 'warning',
+  sparse: 'danger',
+};
 
 interface FrameworkPlannerProps {
   parsedDocument: ParsedDocument | null;
@@ -185,384 +200,359 @@ export function FrameworkPlanner({
   };
 
   return (
-    <section className="panel">
-      <article className="card">
-        <header className="card-header planner-main-header">
-          <span>演讲框架规划</span>
-        </header>
-
-        <div className="card-body planner-body">
-          <div className="planner-toolbar">
-            <div className="form-group">
-              <label htmlFor="presetSelect">预设模板</label>
-              <select
-                id="presetSelect"
-                value={plan.presetId}
-                onChange={(event) => handlePresetChange(event.target.value as TemplatePreset['id'])}
-                disabled={isAnalyzing}
-              >
-                {presets.map((preset) => (
-                  <option key={preset.id} value={preset.id}>
-                    {preset.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="planner-inline-meta">
-              <span>文档：{parsedDocument ? parsedDocument.filename : '未上传'}</span>
-              <span>预计演示页数：{totalPages}（按当前框架）</span>
-              <span>{coverageSummaryText}</span>
-            </div>
-          </div>
-
-          <div className="ai-suggestion-box">
-            <span className="ai-badge">AI 调整建议</span>
-            {aiSuggestionItems.length === 0 ? (
-              <p>点击 AI 建议调整，生成章节与子章节内容。</p>
-            ) : (
-              <ol className="ai-suggestion-list">
-                {aiSuggestionItems.map((item) => (
-                  <li key={`ai-suggestion-${item.chapterIndex}`}>
-                    第{item.chapterIndex}章《{item.chapterTitle}》：{item.reason}
-                  </li>
-                ))}
-              </ol>
-            )}
-          </div>
-
-          {hasStaleAnalyzerResult ? (
-            <p className="message-warning">框架已改动，之前生成的内容已失效。请重新点击“开始生成内容”。</p>
-          ) : null}
-
-          {(isAnalyzing || isGenerating) ? (
-            <p className="message-warning">AI 处理中，请勿刷新或关闭页面，避免任务中断。</p>
-          ) : null}
-
-          {analyzeError ? <p className="message-error">{analyzeError}</p> : null}
-
-          <div className="fw-table-wrap">
-            <table className="fw-table framework-main-table">
-              <colgroup>
-                <col style={{ width: '5%' }} />
-                <col style={{ width: '40%' }} />
-                <col style={{ width: '12%' }} />
-                <col style={{ width: '38%' }} />
-                <col style={{ width: '5%' }} />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th className="col-index">#</th>
-                  <th>章节名称</th>
-                  <th className="col-count">子章节数</th>
-                  <th>内容</th>
-                  <th className="col-action">×</th>
-                </tr>
-              </thead>
-              <tbody>
-                {plan.chapters.map((chapter, chapterIndex) => {
-                  const coverageClass = chapter.coverageLevel ?? 'moderate';
-                  const isExpanded = expandedChapterIndex === chapterIndex;
-
-                  return (
-                    <Fragment key={`chapter-${chapter.chapterIndex}`}>
-                      <tr className={isExpanded ? 'selected' : ''}>
-                        <td className="cell-index">{chapter.chapterIndex}</td>
-                        <td className="cell-chapter">
-                          <div className="chapter-title-row">
-                            <button
-                              type="button"
-                              className={`chapter-drawer-toggle ${isExpanded ? 'expanded' : ''}`}
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                setExpandedChapterIndex((prev) => (prev === chapterIndex ? null : chapterIndex));
-                              }}
-                              aria-label={isExpanded ? '收起子章节' : '展开子章节'}
-                            >
-                              ▶
-                            </button>
-                            <input
-                              type="text"
-                              className="chapter-title-input"
-                              value={chapter.chapterTitle}
-                              title={chapter.chapterTitle}
-                              onClick={(event) => event.stopPropagation()}
-                              onChange={(event) => onChange(setChapterTitle(plan, chapterIndex, event.target.value))}
-                              disabled={isAnalyzing}
-                            />
-                          </div>
-                        </td>
-                        <td className="cell-count">
-                          <input
-                            className="chapter-count-input"
-                            type="number"
-                            min={1}
-                            value={chapter.slides.length}
-                            onClick={(event) => event.stopPropagation()}
-                            onChange={(event) => {
-                              const nextCount = Number(event.target.value);
-                              onChange(
-                                updateChapterSlides(plan, chapterIndex, (slides) =>
-                                  resizeSlides(slides, Number.isFinite(nextCount) ? nextCount : slides.length),
-                                ),
-                              );
-                            }}
-                            disabled={isAnalyzing}
-                          />
-                        </td>
-                        <td className="cell-insight chapter-content-cell">
-                          <span className={`coverage-chip ${coverageClass}`}>
-                            {chapter.coverageLevel ? COVERAGE_LABELS[chapter.coverageLevel] : '待分析'}
-                          </span>
-                          <span className="panel-hint">{chapter.aiReason?.trim() || '点击 AI 建议调整生成内容'}</span>
-                        </td>
-                        <td className="cell-action">
-                          <button
-                            type="button"
-                            className="btn-del-icon"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              requestConfirm(
-                                'framework_delete_chapter',
-                                {
-                                  chapterTitle: chapter.chapterTitle,
-                                },
-                                () => removeChapter(chapterIndex),
-                              );
-                            }}
-                            disabled={isAnalyzing || confirmBusy || plan.chapters.length <= 1}
-                            title="删除章节"
-                            aria-label={`删除第${chapter.chapterIndex}章`}
-                          >
-                            ×
-                          </button>
-                        </td>
-                      </tr>
-
-                      <tr className={`chapter-drawer-row ${isExpanded ? 'expanded' : ''}`} aria-hidden={!isExpanded}>
-                        <td colSpan={5}>
-                          <div className={`chapter-drawer ${isExpanded ? 'expanded' : ''}`}>
-                            <div className="fw-table-wrap">
-                              <table className="fw-table subslide-table">
-                                <colgroup>
-                                  <col style={{ width: '6%' }} />
-                                  <col style={{ width: '38%' }} />
-                                  <col style={{ width: '16%' }} />
-                                  <col style={{ width: '34%' }} />
-                                  <col style={{ width: '6%' }} />
-                                </colgroup>
-                                <thead>
-                                  <tr>
-                                    <th className="col-index">#</th>
-                                    <th>子章节</th>
-                                    <th className="col-layout">布局提示</th>
-                                    <th>内容</th>
-                                    <th className="col-action">×</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {chapter.slides.map((slide, slideIndex) => (
-                                    <tr key={`slide-${chapter.chapterIndex}-${slideIndex}`}>
-                                      <td className="cell-index">
-                                        {chapter.chapterIndex}-{slideIndex + 1}
-                                      </td>
-                                      <td className="cell-subtitle">
-                                        <input
-                                          type="text"
-                                          className="subslide-title-input"
-                                          value={slide.subtitle}
-                                          onChange={(event) =>
-                                            onChange(setSubSlideTitle(plan, chapterIndex, slideIndex, event.target.value))
-                                          }
-                                          disabled={isAnalyzing}
-                                        />
-                                      </td>
-                                      <td className="cell-layout">
-                                        <span className={`visual-mode-chip ${slide.visualMode}`}>
-                                          {getVisualModeLabel(slide.visualMode)}
-                                        </span>
-                                      </td>
-                                      <td className="cell-insight subslide-content-cell">
-                                        <span className="panel-hint">
-                                          {slideInsightReasonMap.get(slideInsightKey(chapter.chapterIndex, slideIndex + 1)) ??
-                                            '点击 AI 建议调整生成内容'}
-                                        </span>
-                                      </td>
-                                      <td className="cell-action">
-                                        <button
-                                          type="button"
-                                          className="btn-del-icon"
-                                          onClick={(event) => {
-                                            event.stopPropagation();
-                                            requestConfirm(
-                                              'framework_delete_subslide',
-                                              {
-                                                chapterTitle: chapter.chapterTitle,
-                                                subtitle: slide.subtitle,
-                                              },
-                                              () => removeSubSlide(chapterIndex, slideIndex),
-                                            );
-                                          }}
-                                          disabled={isAnalyzing || confirmBusy || chapter.slides.length <= 1}
-                                          title="删除子章节"
-                                          aria-label={`删除第${chapter.chapterIndex}-${slideIndex + 1}子章节`}
-                                        >
-                                          ×
-                                        </button>
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-
-                            <button
-                              type="button"
-                              className="btn-add-row"
-                              onClick={() => {
-                                requestConfirm(
-                                  'framework_add_subslide',
-                                  {
-                                    chapterTitle: chapter.chapterTitle,
-                                    nextSubslideIndex: chapter.slides.length + 1,
-                                  },
-                                  () => onChange(appendSubSlide(plan, chapterIndex)),
-                                );
-                              }}
-                              disabled={isAnalyzing || confirmBusy}
-                            >
-                              + 添加子章节
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </Fragment>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="fw-total">
-            <span>当前 {plan.chapters.length} 个章节，预计生成 {totalPages} 页（含封面/目录/结束页）</span>
-            <span className="count">{totalPages}</span>
-          </div>
-
-          <div className="planner-table-actions">
-            <button
-              type="button"
-              className="btn-add-row"
-              onClick={() => {
-                requestConfirm(
-                  'framework_add_chapter',
-                  { nextChapterIndex: plan.chapters.length + 1 },
-                  () => addChapter(),
-                );
-              }}
-              disabled={isAnalyzing || isGenerating || confirmBusy}
+    <>
+      <Card title="演讲框架规划" bodyClassName="flex flex-col gap-4">
+        <div className="flex flex-wrap items-end gap-6">
+          <Field label="预设模板" htmlFor="presetSelect">
+            <NativeSelect
+              id="presetSelect"
+              className="w-48"
+              value={plan.presetId}
+              onChange={(event) => handlePresetChange(event.target.value as TemplatePreset['id'])}
+              disabled={isAnalyzing}
             >
-              + 添加章节
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => {
-                const presetName = presets.find((item) => item.id === plan.presetId)?.name ?? plan.presetId;
-                requestConfirm(
-                  'framework_reset_preset',
-                  { presetName },
-                  () => handlePresetChange(plan.presetId),
-                );
-              }}
-              disabled={isAnalyzing || isGenerating || confirmBusy}
-            >
-              重置默认
-            </button>
+              {presets.map((preset) => (
+                <NativeSelectOption key={preset.id} value={preset.id}>
+                  {preset.name}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+          </Field>
+
+          <div className="flex flex-col gap-1 text-[13px] leading-5 text-ink-muted">
+            <span>文档：{parsedDocument ? parsedDocument.filename : '未上传'}</span>
+            <span>预计演示页数：{totalPages}（按当前框架）</span>
+            <span>{coverageSummaryText}</span>
           </div>
-
-          <article className="card content-generator-card">
-            <header className="card-header">AI 内容生成</header>
-            <div className="card-body">
-              <p className="panel-hint">确认框架后，点击下方按钮生成正文、表格与图片。</p>
-              <div className="planner-ai-actions">
-                <button
-                  type="button"
-                  className="btn btn-ai"
-                  onClick={handleGenerateClick}
-                  disabled={
-                    isGenerating ||
-                    isAnalyzing ||
-                    confirmBusy ||
-                    !parsedDocument ||
-                    !onGenerated ||
-                    plan.chapters.length === 0
-                  }
-                >
-                  {isGenerating ? '任务执行中...' : showRetryGenerate ? '重新生成内容' : '开始生成内容'}
-                </button>
-                {showRetryGenerate && !isGenerating ? (
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={handleGenerateClick}
-                    disabled={isAnalyzing || confirmBusy || !parsedDocument || !onGenerated || plan.chapters.length === 0}
-                  >
-                    重新生成
-                  </button>
-                ) : null}
-                {isGenerating ? <span className="loading-note">任务已提交，正在后台生成，请稍候...</span> : null}
-                {isGenerating && genJobId ? <span className="loading-note">任务 ID：{genJobId}</span> : null}
-              </div>
-
-              {isGenerating ? (
-                <div className={`progress-board compact ${genPercent >= 100 ? 'is-complete' : ''}`}>
-                  <header className="progress-header">
-                    <div className="progress-title-group">
-                      <strong>生成进度</strong>
-                      <span className="progress-status-text">{progressStageText}</span>
-                      <span className={`progress-status-dots ${genPercent >= 100 ? 'is-finished' : ''}`} aria-hidden="true">
-                        <span>.</span>
-                        <span>.</span>
-                        <span>.</span>
-                      </span>
-                    </div>
-                    <span>{genPercent}%</span>
-                  </header>
-                  <div className="progress-track">
-                    <div className="progress-fill" style={{ width: `${genPercent}%` }} />
-                  </div>
-                </div>
-              ) : null}
-
-              {genError ? <p className="message-error">{genError}</p> : null}
-              {generationWarningMessage ? <p className="message-warning">{generationWarningMessage}</p> : null}
-
-              {analyzerResult ? (
-                <div className="planner-meta" style={{ marginTop: 10 }}>
-                  <p>
-                    <strong>已生成页数：</strong>
-                    {analyzerResult.slidePlan.length}
-                  </p>
-                  <p>
-                    <strong>原文覆盖率：</strong>
-                    {analyzerResult.auditSummary.exactSourcePercent}%
-                  </p>
-                </div>
-              ) : null}
-            </div>
-          </article>
         </div>
-      </article>
-      <button
+
+        <div className="flex flex-col gap-2 border border-border bg-surface-sunken p-3">
+          <Badge variant="info">AI 调整建议</Badge>
+          {aiSuggestionItems.length === 0 ? (
+            <p className="text-[13px] leading-5 text-ink-muted">点击 AI 建议调整，生成章节与子章节内容。</p>
+          ) : (
+            <ol className="list-decimal space-y-1 pl-5 text-[13px] leading-5 text-ink">
+              {aiSuggestionItems.map((item) => (
+                <li key={`ai-suggestion-${item.chapterIndex}`}>
+                  第{item.chapterIndex}章《{item.chapterTitle}》：{item.reason}
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+
+        {hasStaleAnalyzerResult ? (
+          <Notice tone="warning">框架已改动，之前生成的内容已失效。请重新点击“开始生成内容”。</Notice>
+        ) : null}
+
+        {isAnalyzing || isGenerating ? <Notice tone="warning">AI 处理中，请勿刷新或关闭页面，避免任务中断。</Notice> : null}
+
+        {analyzeError ? <Notice tone="error">{analyzeError}</Notice> : null}
+
+        <Table className="table-fixed">
+          <colgroup>
+            <col style={{ width: '6%' }} />
+            <col style={{ width: '40%' }} />
+            <col style={{ width: '12%' }} />
+            <col style={{ width: '36%' }} />
+            <col style={{ width: '6%' }} />
+          </colgroup>
+          <TableHeader>
+            <TableRow>
+              <TableHead>#</TableHead>
+              <TableHead>章节名称</TableHead>
+              <TableHead>子章节数</TableHead>
+              <TableHead>内容</TableHead>
+              <TableHead>
+                <span className="sr-only">删除</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {plan.chapters.map((chapter, chapterIndex) => {
+              const isExpanded = expandedChapterIndex === chapterIndex;
+
+              return (
+                <Fragment key={`chapter-${chapter.chapterIndex}`}>
+                  <TableRow data-state={isExpanded ? 'selected' : undefined} className="even:bg-surface-sunken">
+                    <TableCell className="font-semibold text-brand-navy tabular-nums">{chapter.chapterIndex}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-brand-navy"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setExpandedChapterIndex((prev) => (prev === chapterIndex ? null : chapterIndex));
+                          }}
+                          aria-label={isExpanded ? '收起子章节' : '展开子章节'}
+                          aria-expanded={isExpanded}
+                        >
+                          <IconChevronRight
+                            aria-hidden="true"
+                            className={cn('transition-transform duration-150 ease-out', isExpanded && 'rotate-90')}
+                            stroke={2}
+                          />
+                        </Button>
+                        <Input
+                          type="text"
+                          value={chapter.chapterTitle}
+                          title={chapter.chapterTitle}
+                          onClick={(event) => event.stopPropagation()}
+                          onChange={(event) => onChange(setChapterTitle(plan, chapterIndex, event.target.value))}
+                          disabled={isAnalyzing}
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        type="number"
+                        min={1}
+                        className="w-20 tabular-nums"
+                        value={chapter.slides.length}
+                        onClick={(event) => event.stopPropagation()}
+                        onChange={(event) => {
+                          const nextCount = Number(event.target.value);
+                          onChange(
+                            updateChapterSlides(plan, chapterIndex, (slides) =>
+                              resizeSlides(slides, Number.isFinite(nextCount) ? nextCount : slides.length),
+                            ),
+                          );
+                        }}
+                        disabled={isAnalyzing}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col items-start gap-1">
+                        <Badge variant={chapter.coverageLevel ? COVERAGE_TONE[chapter.coverageLevel] : 'neutral'}>
+                          {chapter.coverageLevel ? COVERAGE_LABELS[chapter.coverageLevel] : '待分析'}
+                        </Badge>
+                        <span className="text-[13px] leading-5 text-ink-muted">
+                          {chapter.aiReason?.trim() || '点击 AI 建议调整生成内容'}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        className="text-ink-muted hover:text-brand-red"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          requestConfirm('framework_delete_chapter', { chapterTitle: chapter.chapterTitle }, () =>
+                            removeChapter(chapterIndex),
+                          );
+                        }}
+                        disabled={isAnalyzing || confirmBusy || plan.chapters.length <= 1}
+                        title="删除章节"
+                        aria-label={`删除第${chapter.chapterIndex}章`}
+                      >
+                        <IconX aria-hidden="true" stroke={2} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+
+                  {isExpanded ? (
+                    <TableRow className="bg-surface">
+                      <TableCell colSpan={5} className="p-0">
+                        <div className="flex flex-col gap-3 border-l-4 border-brand-sky bg-surface px-6 py-4">
+                          <Table className="table-fixed">
+                            <colgroup>
+                              <col style={{ width: '8%' }} />
+                              <col style={{ width: '38%' }} />
+                              <col style={{ width: '16%' }} />
+                              <col style={{ width: '32%' }} />
+                              <col style={{ width: '6%' }} />
+                            </colgroup>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>#</TableHead>
+                                <TableHead>子章节</TableHead>
+                                <TableHead>布局提示</TableHead>
+                                <TableHead>内容</TableHead>
+                                <TableHead>
+                                  <span className="sr-only">删除</span>
+                                </TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {chapter.slides.map((slide, slideIndex) => (
+                                <TableRow key={`slide-${chapter.chapterIndex}-${slideIndex}`} className="even:bg-surface-sunken">
+                                  <TableCell className="text-brand-navy tabular-nums">
+                                    {chapter.chapterIndex}-{slideIndex + 1}
+                                  </TableCell>
+                                  <TableCell>
+                                    <Input
+                                      type="text"
+                                      value={slide.subtitle}
+                                      onChange={(event) =>
+                                        onChange(setSubSlideTitle(plan, chapterIndex, slideIndex, event.target.value))
+                                      }
+                                      disabled={isAnalyzing}
+                                    />
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge variant={slide.visualMode === 'none' ? 'neutral' : 'info'}>
+                                      {getVisualModeLabel(slide.visualMode)}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="text-[13px] leading-5 text-ink-muted">
+                                    {slideInsightReasonMap.get(slideInsightKey(chapter.chapterIndex, slideIndex + 1)) ??
+                                      '点击 AI 建议调整生成内容'}
+                                  </TableCell>
+                                  <TableCell>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="icon-sm"
+                                      className="text-ink-muted hover:text-brand-red"
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        requestConfirm(
+                                          'framework_delete_subslide',
+                                          { chapterTitle: chapter.chapterTitle, subtitle: slide.subtitle },
+                                          () => removeSubSlide(chapterIndex, slideIndex),
+                                        );
+                                      }}
+                                      disabled={isAnalyzing || confirmBusy || chapter.slides.length <= 1}
+                                      title="删除子章节"
+                                      aria-label={`删除第${chapter.chapterIndex}-${slideIndex + 1}子章节`}
+                                    >
+                                      <IconX aria-hidden="true" stroke={2} />
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="self-start"
+                            onClick={() => {
+                              requestConfirm(
+                                'framework_add_subslide',
+                                { chapterTitle: chapter.chapterTitle, nextSubslideIndex: chapter.slides.length + 1 },
+                                () => onChange(appendSubSlide(plan, chapterIndex)),
+                              );
+                            }}
+                            disabled={isAnalyzing || confirmBusy}
+                          >
+                            + 添加子章节
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : null}
+                </Fragment>
+              );
+            })}
+          </TableBody>
+        </Table>
+
+        <div className="flex items-center justify-between border border-border bg-surface-sunken px-4 py-3">
+          <span className="text-[13px] leading-5 text-ink">
+            当前 {plan.chapters.length} 个章节，预计生成 {totalPages} 页（含封面/目录/结束页）
+          </span>
+          <span className="text-[28px] leading-8 font-bold text-brand-navy tabular-nums">{totalPages}</span>
+        </div>
+
+        <div className="flex gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              requestConfirm('framework_add_chapter', { nextChapterIndex: plan.chapters.length + 1 }, () => addChapter());
+            }}
+            disabled={isAnalyzing || isGenerating || confirmBusy}
+          >
+            + 添加章节
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              const presetName = presets.find((item) => item.id === plan.presetId)?.name ?? plan.presetId;
+              requestConfirm('framework_reset_preset', { presetName }, () => handlePresetChange(plan.presetId));
+            }}
+            disabled={isAnalyzing || isGenerating || confirmBusy}
+          >
+            重置默认
+          </Button>
+        </div>
+      </Card>
+
+      <Card title="AI 内容生成" bodyClassName="flex flex-col gap-4">
+        <p className="text-[13px] leading-5 text-ink-muted">确认框架后，点击下方按钮生成正文、表格与图片。</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            type="button"
+            onClick={handleGenerateClick}
+            disabled={isGenerating || isAnalyzing || confirmBusy || !parsedDocument || !onGenerated || plan.chapters.length === 0}
+          >
+            <IconSparkles aria-hidden="true" stroke={2} />
+            {isGenerating ? '任务执行中...' : showRetryGenerate ? '重新生成内容' : '开始生成内容'}
+          </Button>
+          {showRetryGenerate && !isGenerating ? (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleGenerateClick}
+              disabled={isAnalyzing || confirmBusy || !parsedDocument || !onGenerated || plan.chapters.length === 0}
+            >
+              重新生成
+            </Button>
+          ) : null}
+          {isGenerating ? <span className="text-[13px] leading-5 text-ink-muted">任务已提交，正在后台生成，请稍候...</span> : null}
+          {isGenerating && genJobId ? (
+            <span className="font-mono text-[13px] leading-5 text-ink-muted">任务 ID：{genJobId}</span>
+          ) : null}
+        </div>
+
+        {isGenerating ? (
+          <div className="flex flex-col gap-2 border border-border bg-surface-sunken p-3">
+            <div className="flex items-center justify-between text-[13px] leading-5">
+              <div className="flex items-center gap-2">
+                <strong className="text-brand-navy">生成进度</strong>
+                <span className="text-ink">{progressStageText}</span>
+              </div>
+              <span className="font-semibold text-brand-navy tabular-nums">{genPercent}%</span>
+            </div>
+            <Progress value={genPercent} aria-label="生成进度" />
+          </div>
+        ) : null}
+
+        {genError ? <Notice tone="error">{genError}</Notice> : null}
+        {generationWarningMessage ? <Notice tone="warning">{generationWarningMessage}</Notice> : null}
+
+        {analyzerResult ? (
+          <div className="flex gap-8 text-[13px] leading-5 text-ink">
+            <p>
+              <strong className="text-brand-navy">已生成页数：</strong>
+              {analyzerResult.slidePlan.length}
+            </p>
+            <p>
+              <strong className="text-brand-navy">原文覆盖率：</strong>
+              {analyzerResult.auditSummary.exactSourcePercent}%
+            </p>
+          </div>
+        ) : null}
+      </Card>
+
+      <Button
         type="button"
-        className="btn btn-ai planner-float-ai-btn"
+        className="fixed top-[calc(50%-20px)] right-6 z-40 shadow-raised"
         onClick={handleAiSuggestClick}
         disabled={isAnalyzing || confirmBusy || !parsedDocument}
       >
+        <IconSparkles aria-hidden="true" stroke={2} />
         {isAnalyzing ? 'AI 分析中...' : 'AI 建议调整'}
-      </button>
-    </section>
+      </Button>
+    </>
   );
 }
-
-

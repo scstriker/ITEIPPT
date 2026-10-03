@@ -1,0 +1,103 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+/* ITEI design tokens (colors, spacing, fonts; light/dark switch automatically). Source: design/itei/. */
+@import "../../design/itei/tokens.css";
+
+/* ITEI dark theme follows the system preference unless data-theme is set. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * shadcn/ui and Tailwind tokens mapped onto ITEI tokens. `inline` makes utilities use the ITEI
+ * variables directly, so the theme switches with tokens.css.
+ */
+@theme inline {
+  --color-background: var(--surface);
+  --color-foreground: var(--ink);
+  --color-card: var(--surface-raised);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--surface-raised);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--brand-navy);
+  --color-primary-foreground: var(--on-brand);
+  --color-secondary: var(--info-bg);
+  --color-secondary-foreground: var(--brand-navy);
+  --color-muted: var(--surface-sunken);
+  --color-muted-foreground: var(--ink-muted);
+  --color-accent: var(--info-bg);
+  --color-accent-foreground: var(--brand-navy);
+  --color-destructive: var(--danger);
+  --color-border: var(--border);
+  --color-input: var(--border-strong);
+  --color-ring: var(--focus);
+
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-navy-deep: var(--brand-navy-deep);
+  --color-brand-red: var(--brand-red);
+  --color-brand-sky: var(--brand-sky);
+  --color-link: var(--link);
+  --color-on-brand: var(--on-brand);
+  --color-on-gradient: var(--on-gradient);
+  /* Theme-invariant navy pair from the header gradient (footer, logo backdrop). */
+  --color-header-start: var(--gradient-start);
+  --color-header-end: var(--gradient-end);
+  --color-surface: var(--surface);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-surface-raised: var(--surface-raised);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-disabled: var(--ink-disabled);
+  --color-border-strong: var(--border-strong);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --color-success-bg: var(--success-bg);
+  --color-warning-bg: var(--warning-bg);
+  --color-danger-bg: var(--danger-bg);
+  --color-info-bg: var(--info-bg);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* ITEI: square corners; controls at most 2px. */
+  --radius-xs: 0px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 2px;
+  --radius-2xl: 2px;
+  --radius-3xl: 2px;
+  --radius-4xl: 2px;
+
+  --shadow-raised: var(--shadow-raised);
+  --shadow-modal: var(--shadow-modal);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html,
+  body {
+    background: var(--surface);
+    color: var(--ink);
+    font-family: var(--font-sans);
+  }
+  :focus-visible {
+    outline: var(--border-rule) solid var(--focus);
+    outline-offset: 2px;
+  }
+}
+
+/* The only gradient allowed by ITEI: the header band. */
+@utility bg-itei-header {
+  background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+}
+
+/* ITEI 45° slash on the right end of a block. */
+@utility clip-slash {
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--slash)) 100%, 0 100%);
+}

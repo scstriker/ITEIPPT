@@ -1,36 +1,25 @@
-﻿import { useMemo } from 'react';
+import { useMemo } from 'react';
+import { IconAlertTriangle } from '@tabler/icons-react';
+import { Notice } from '@/components/itei/Blocks';
+import { AppFooter, AppHeader, StepNav } from '@/components/itei/Shell';
+import { Button } from '@/components/ui/button';
+import { useConfirmCenter } from '../confirm/useConfirmCenter';
 import { ContentAuditor } from '../features/audit/ContentAuditor';
-import { FrameworkPlanner } from '../features/framework/FrameworkPlanner';
 import { GeneratePanel } from '../features/export/GeneratePanel';
+import { FrameworkPlanner } from '../features/framework/FrameworkPlanner';
 import { ImageImporter } from '../features/images/ImageImporter';
 import { UploadPanel } from '../features/upload/UploadPanel';
-import { useConfirmCenter } from '../confirm/useConfirmCenter';
-import { useWorkflow, type WorkflowStep } from '../workflow/useWorkflow';
-import './styles.css';
-
-const STEP_LABELS: Record<WorkflowStep, string> = {
-  upload: '上传文档',
-  framework: '规划框架',
-  images: '配图导入',
-  audit: '审计预览',
-};
+import { useWorkflow } from '../workflow/useWorkflow';
+import { STEP_LABELS, type WorkflowStep } from '../workflow/workflowReducer';
 
 function App() {
   const workflow = useWorkflow();
   const { requestConfirm, confirmModal, confirmBusy } = useConfirmCenter();
-  const { state } = workflow;
+  const { state, nextStep, prevStep } = workflow;
   const currentStepIndex = workflow.stepOrder.indexOf(state.currentStep);
   const isLastStep = state.currentStep === 'audit';
-
-  const prevStep = [...workflow.stepOrder]
-    .slice(0, currentStepIndex)
-    .reverse()
-    .find((step) => workflow.availableSteps[step]) ?? null;
   const canGoPrev = Boolean(prevStep);
-
-  const nextStep = workflow.stepOrder.slice(currentStepIndex + 1).find((step) => workflow.availableSteps[step]) ?? null;
   const canGoNext = Boolean(nextStep);
-
   const currentStepLabel = STEP_LABELS[state.currentStep];
 
   const nextBlockedReason = useMemo(() => {
@@ -60,81 +49,58 @@ function App() {
     }
 
     return null;
-  }, [
-    canGoNext,
-    isLastStep,
-    state.analyzerResult,
-    state.currentStep,
-    state.parsedDocument,
-    workflow.isAnalyzerFresh,
-  ]);
+  }, [canGoNext, isLastStep, state.analyzerResult, state.currentStep, state.parsedDocument, workflow.isAnalyzerFresh]);
+
+  const stepItems = workflow.stepOrder.map((step, index) => ({
+    key: step,
+    label: STEP_LABELS[step],
+    current: index === currentStepIndex,
+    done: index < currentStepIndex,
+    disabled: !workflow.availableSteps[step] || index === currentStepIndex || confirmBusy,
+  }));
 
   return (
-    <main className="app-shell">
-      <header className="header">
-        <div className="header-inner">
-          <div className="header-brand">
-            <img
-              src="/Gemini_Generated_Image_8phlmm8phlmm8phl.jpg"
-              alt="ITEISlides Logo"
-              className="header-logo"
-            />
-            <h1>ITEISlides</h1>
-          </div>
-          <button
+    <div className="flex min-h-screen flex-col bg-surface">
+      <AppHeader
+        title="ITEISlides"
+        actions={
+          <Button
             type="button"
-            className="task-reset-btn"
+            variant="outline"
+            size="sm"
+            className="border-on-gradient bg-transparent text-on-gradient hover:bg-white/10"
             disabled={confirmBusy}
             onClick={() => {
               requestConfirm('task_reset_all', { currentStepLabel }, () => workflow.resetWorkflow());
             }}
           >
-            ⚠ 开始新任务
-          </button>
-        </div>
-      </header>
+            <IconAlertTriangle aria-hidden="true" stroke={2} />
+            开始新任务
+          </Button>
+        }
+      />
 
-      <nav className="stepper">
-        {workflow.stepOrder.map((step, index) => {
-          const isDone = index < currentStepIndex;
-          const isActive = index === currentStepIndex;
-          const isUnavailable = !workflow.availableSteps[step];
-          const className = `step-tab${isDone ? ' done' : ''}${isActive ? ' active' : ''}`;
-
-          return (
-            <button
-              key={step}
-              type="button"
-              className={className}
-              disabled={isUnavailable || isActive || confirmBusy}
-              onClick={() => {
-                if (step === state.currentStep) {
-                  return;
-                }
-                requestConfirm(
-                  'nav_step_switch',
-                  {
-                    fromStepLabel: currentStepLabel,
-                    toStepLabel: STEP_LABELS[step],
-                  },
-                  () => workflow.goToStep(step),
-                );
-              }}
-            >
-              <span className="step-num">{index + 1}</span>
-              <span>{STEP_LABELS[step]}</span>
-            </button>
+      <StepNav
+        items={stepItems}
+        onSelect={(key) => {
+          const step = key as WorkflowStep;
+          if (step === state.currentStep) {
+            return;
+          }
+          requestConfirm(
+            'nav_step_switch',
+            {
+              fromStepLabel: currentStepLabel,
+              toStepLabel: STEP_LABELS[step],
+            },
+            () => workflow.goToStep(step),
           );
-        })}
-      </nav>
+        }}
+      />
 
-      <div className="container">
+      <main className="mx-auto flex w-full max-w-[var(--content-max)] flex-1 flex-col gap-6 px-8 py-6">
         {state.currentStep === 'upload' ? (
-          <UploadPanel
-            key={workflow.taskRevision}
-            parsedDocument={state.parsedDocument}
-            onParsed={workflow.setParsedDocument}
-          />
+          <UploadPanel key={workflow.taskRevision} parsedDocument={state.parsedDocument} onParsed={workflow.setParsedDocument} />
         ) : null}
 
         {state.currentStep === 'framework' ? (
@@ -178,12 +144,12 @@ function App() {
           </>
         ) : null}
 
-        {nextBlockedReason ? <p className="message-warning">{nextBlockedReason}</p> : null}
+        {nextBlockedReason ? <Notice tone="warning">{nextBlockedReason}</Notice> : null}
 
-        <footer className="actions main-actions">
-          <button
+        <div className="flex items-center justify-between border-t border-border pt-4">
+          <Button
             type="button"
-            className="btn btn-secondary"
+            variant="outline"
             disabled={!canGoPrev || confirmBusy}
             onClick={() => {
               if (!prevStep) {
@@ -200,12 +166,11 @@ function App() {
             }}
           >
             ← 上一步
-          </button>
+          </Button>
 
           {!isLastStep ? (
-            <button
+            <Button
               type="button"
-              className="btn btn-primary"
               disabled={!canGoNext || confirmBusy}
               onClick={() => {
                 if (!nextStep) {
@@ -222,13 +187,14 @@ function App() {
               }}
             >
               下一步 →
-            </button>
+            </Button>
           ) : null}
-        </footer>
-      </div>
+        </div>
+      </main>
 
+      <AppFooter />
       {confirmModal}
-    </main>
+    </div>
   );
 }
 
