@@ -174,7 +174,7 @@ async function resolveImageData(image: SlideImageData | undefined, imageFiles: I
     return `${image.mimeType ?? 'image/jpeg'};base64,${arrayBufferToBase64(buffer)}`;
   }
   if (source instanceof Uint8Array) {
-    return `${image.mimeType ?? 'image/jpeg'};base64,${arrayBufferToBase64(source.buffer)}`;
+    return `${image.mimeType ?? 'image/jpeg'};base64,${arrayBufferToBase64(source.buffer as ArrayBuffer)}`;
   }
   return `${image.mimeType ?? 'image/jpeg'};base64,${arrayBufferToBase64(source)}`;
 }
@@ -425,7 +425,8 @@ function getContentTableReferenceStyleStrict(): TableReferenceStyle {
   }
 
   const table = tableShape.table;
-  const headerCell = table.rows[0]?.[0];
+  const rows = tableShape.table.rows;
+  const headerCell = rows[0]?.[0];
   const headerFillColor = normalizeColor(headerCell?.fill_color);
   if (!headerFillColor) {
     throw new Error('template_structure.json.content table header fill color is missing.');
@@ -444,7 +445,7 @@ function getContentTableReferenceStyleStrict(): TableReferenceStyle {
     throw new Error('template_structure.json.content table header font color is missing.');
   }
 
-  const dataRowFillPattern = table.rows
+  const dataRowFillPattern = rows
     .slice(1)
     .map((row) => normalizeColor(row[0]?.fill_color))
     .filter((value): value is string => !!value)
@@ -961,7 +962,7 @@ function renderImagePromptPlaceholder(
       word_wrap: true,
       size_pt: bodyElement?.size_pt ?? 18,
       color: bodyElement?.normal_color ?? bodyElement?.color,
-    },
+    } as TemplateElement,
   });
 }
 

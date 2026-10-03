@@ -1,4 +1,4 @@
-import type { FrameworkPlan } from '../../src/types/framework';
+import type { FrameworkPlan } from '../../src/contracts/framework';
 
 // Synthetic document text (示例). Sentences are 12-180 chars so they become evidence segments.
 export const SAMPLE_TEXT = [
