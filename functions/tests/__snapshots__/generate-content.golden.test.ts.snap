@@ -1,0 +1,832 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`generateContentWithGemini > marks failed batches as degraded and missing 1`] = `
+{
+  "auditSummary": {
+    "aiSupplementCount": 0,
+    "exactSourcePercent": 0,
+    "missingCount": 5,
+    "totalSlides": 9,
+  },
+  "frameworkPlan": {
+    "chapters": [
+      {
+        "chapterIndex": 1,
+        "chapterTitle": "一、项目背景与必要性",
+        "slides": [
+          {
+            "contentHint": "背景与依据",
+            "subtitle": "项目背景",
+            "visualMode": "table",
+          },
+          {
+            "contentHint": "产业链风险",
+            "subtitle": "必要性分析",
+            "visualMode": "images",
+          },
+        ],
+      },
+      {
+        "chapterIndex": 2,
+        "chapterTitle": "二、主要技术内容",
+        "slides": [
+          {
+            "contentHint": "测量范围与准确度",
+            "subtitle": "技术指标",
+            "visualMode": "table",
+          },
+          {
+            "contentHint": "阶段与时间",
+            "subtitle": "制定过程",
+            "visualMode": "images",
+          },
+          {
+            "contentHint": "环境条件",
+            "subtitle": "试验方法",
+            "visualMode": "table",
+          },
+        ],
+      },
+    ],
+    "coverInfo": {
+      "date": "2026-10-03",
+      "presenter": "张三（示例）",
+      "standardName": "医用呼吸机压力传感器技术要求（示例）",
+    },
+    "endingInfo": {
+      "organization": "机械工业仪器仪表综合技术经济研究所",
+    },
+    "presetId": "standard_review",
+  },
+  "generatedAt": "2026-10-03T08:00:00.000Z",
+  "generationMeta": {
+    "mode": "degraded",
+    "reason": "batch_generation_failed",
+  },
+  "imagePromptsTotal": 2,
+  "missingInfo": [
+    {
+      "description": "本页生成阶段遇到上游异常，系统已自动补写正文以保证流程可继续。",
+      "page": 3,
+      "solution": "建议在审校阶段优先复核本页内容，必要时可重新生成以提升细节质量。",
+    },
+    {
+      "description": "本页生成阶段遇到上游异常，系统已自动补写正文以保证流程可继续。",
+      "page": 4,
+      "solution": "建议在审校阶段优先复核本页内容，必要时可重新生成以提升细节质量。",
+    },
+    {
+      "description": "本页生成阶段遇到上游异常，系统已自动补写正文以保证流程可继续。",
+      "page": 6,
+      "solution": "建议在审校阶段优先复核本页内容，必要时可重新生成以提升细节质量。",
+    },
+    {
+      "description": "本页生成阶段遇到上游异常，系统已自动补写正文以保证流程可继续。",
+      "page": 7,
+      "solution": "建议在审校阶段优先复核本页内容，必要时可重新生成以提升细节质量。",
+    },
+    {
+      "description": "本页生成阶段遇到上游异常，系统已自动补写正文以保证流程可继续。",
+      "page": 8,
+      "solution": "建议在审校阶段优先复核本页内容，必要时可重新生成以提升细节质量。",
+    },
+  ],
+  "slidePlan": [
+    {
+      "date": "2026-10-03",
+      "organization": "机械工业仪器仪表综合技术经济研究所",
+      "page": 1,
+      "planNumber": undefined,
+      "presenter": "张三（示例）",
+      "standardName": "医用呼吸机压力传感器技术要求（示例）",
+      "type": "cover",
+    },
+    {
+      "highlightChapter": 1,
+      "page": 2,
+      "pageTitle": "汇报内容",
+      "sectionItems": [
+        {
+          "number": "01",
+          "title": "一、项目背景与必要性",
+        },
+        {
+          "number": "02",
+          "title": "二、主要技术内容",
+        },
+      ],
+      "type": "toc_section",
+    },
+    {
+      "aiSupplements": [],
+      "bodyText": "本页围绕“一、项目背景与必要性”下的“项目背景”整理关键结论与执行要点，确保内容结构可直接进入后续编辑。结合原文可提取信息“第一章 项目背景与必要性”，已形成本页可继续编辑的基础草稿，建议在审校阶段补充更细的数据与论据。",
+      "chapterTitle": "一、项目背景与必要性",
+      "highlightRanges": [
+        [
+          7,
+          35,
+        ],
+      ],
+      "page": 3,
+      "sourceConfidence": "paraphrased",
+      "sourceRef": "第一章 项目背景与必要性",
+      "subtitle": "项目背景",
+      "tableData": {
+        "headers": [
+          "维度",
+          "内容",
+          "来源提示",
+        ],
+        "rows": [
+          [
+            "主题",
+            "项目背景",
+            "章节语义",
+          ],
+          [
+            "关键信息",
+            "第一章 项目背景与必要性",
+            "第一章 项目背景与必要性",
+          ],
+        ],
+      },
+      "type": "content",
+      "visualMode": "table",
+    },
+    {
+      "aiSupplements": [],
+      "bodyText": "本页围绕“一、项目背景与必要性”下的“必要性分析”整理关键结论与执行要点，确保内容结构可直接进入后续编辑。结合原文可提取信息“第一章 项目背景与必要性”，已形成本页可继续编辑的基础草稿，建议在审校阶段补充更细的数据与论据。",
+      "chapterTitle": "一、项目背景与必要性",
+      "highlightRanges": [
+        [
+          77,
+          92,
+        ],
+        [
+          93,
+          110,
+        ],
+      ],
+      "imagePrompts": [
+        {
+          "description": "必要性分析配图",
+          "iteiDrawPrompt": "请生成一张适用于“一、项目背景与必要性 - 必要性分析”的专业汇报配图，16:9，蓝白科技风，突出关键信息表达。",
+        },
+      ],
+      "page": 4,
+      "sourceConfidence": "paraphrased",
+      "sourceRef": "第一章 项目背景与必要性",
+      "subtitle": "必要性分析",
+      "type": "content",
+      "visualMode": "images",
+    },
+    {
+      "highlightChapter": 2,
+      "page": 5,
+      "pageTitle": "汇报内容",
+      "sectionItems": [
+        {
+          "number": "01",
+          "title": "一、项目背景与必要性",
+        },
+        {
+          "number": "02",
+          "title": "二、主要技术内容",
+        },
+      ],
+      "type": "toc_section",
+    },
+    {
+      "aiSupplements": [],
+      "bodyText": "本页围绕“二、主要技术内容”下的“技术指标”整理关键结论与执行要点，确保内容结构可直接进入后续编辑。结合原文可提取信息“当前国产医用呼吸机压力传感器依赖进口，供应链风险较高，需要制定统一的技术要求”，已形成本页可继续编辑的基础草稿，建议在审校阶段补充更细的数据与论据。",
+      "chapterTitle": "二、主要技术内容",
+      "highlightRanges": [
+        [
+          7,
+          33,
+        ],
+        [
+          116,
+          133,
+        ],
+      ],
+      "page": 6,
+      "sourceConfidence": "paraphrased",
+      "sourceRef": "当前国产医用呼吸机压力传感器依赖进口，供应链风险较高，需要制定统一的技术要求",
+      "subtitle": "技术指标",
+      "tableData": {
+        "headers": [
+          "维度",
+          "内容",
+          "来源提示",
+        ],
+        "rows": [
+          [
+            "主题",
+            "技术指标",
+            "章节语义",
+          ],
+          [
+            "关键信息",
+            "当前国产医用呼吸机压力传感器依赖进口，供应链风险较高，需要制定统",
+            "当前国产医用呼吸机压力传感器依赖进口，供应链风险较高，需",
+          ],
+        ],
+      },
+      "type": "content",
+      "visualMode": "table",
+    },
+    {
+      "aiSupplements": [],
+      "bodyText": "本页围绕“二、主要技术内容”下的“制定过程”整理关键结论与执行要点，确保内容结构可直接进入后续编辑。结合原文可提取信息“标准制定过程包括立项、起草、征求意见和送审四个阶段，历时 18 个月”，已形成本页可继续编辑的基础草稿，建议在审校阶段补充更细的数据与论据。",
+      "chapterTitle": "二、主要技术内容",
+      "highlightRanges": [
+        [
+          7,
+          33,
+        ],
+        [
+          112,
+          129,
+        ],
+      ],
+      "imagePrompts": [
+        {
+          "description": "制定过程配图",
+          "iteiDrawPrompt": "请生成一张适用于“二、主要技术内容 - 制定过程”的专业汇报配图，16:9，蓝白科技风，突出关键信息表达。",
+        },
+      ],
+      "page": 7,
+      "sourceConfidence": "paraphrased",
+      "sourceRef": "标准制定过程包括立项、起草、征求意见和送审四个阶段，历时 18 个月",
+      "subtitle": "制定过程",
+      "type": "content",
+      "visualMode": "images",
+    },
+    {
+      "aiSupplements": [],
+      "bodyText": "本页围绕“二、主要技术内容”下的“试验方法”整理关键结论与执行要点，确保内容结构可直接进入后续编辑。结合原文可提取信息“试验方法采用标准压力源比对，环境温度 23 ℃，相对湿度 50%”，已形成本页可继续编辑的基础草稿，建议在审校阶段补充更细的数据与论据。",
+      "chapterTitle": "二、主要技术内容",
+      "highlightRanges": [
+        [
+          7,
+          33,
+        ],
+        [
+          110,
+          127,
+        ],
+      ],
+      "page": 8,
+      "sourceConfidence": "paraphrased",
+      "sourceRef": "试验方法采用标准压力源比对，环境温度 23 ℃，相对湿度 50%",
+      "subtitle": "试验方法",
+      "tableData": {
+        "headers": [
+          "维度",
+          "内容",
+          "来源提示",
+        ],
+        "rows": [
+          [
+            "主题",
+            "试验方法",
+            "章节语义",
+          ],
+          [
+            "关键信息",
+            "试验方法采用标准压力源比对，环境温度 23 ℃，相对湿度 50%",
+            "试验方法采用标准压力源比对，环境温度 23 ℃，相对湿度",
+          ],
+        ],
+      },
+      "type": "content",
+      "visualMode": "table",
+    },
+    {
+      "contactInfo": [],
+      "organization": "机械工业仪器仪表综合技术经济研究所",
+      "page": 9,
+      "thanks": "敬请指正",
+      "type": "ending",
+    },
+  ],
+  "sourceFiles": [
+    {
+      "filename": "uploaded-document",
+      "id": 1,
+      "shortName": "uploaded-document",
+    },
+  ],
+}
+`;
+
+exports[`generateContentWithGemini > produces the documented slide structure 1`] = `
+{
+  "auditSummary": {
+    "aiSupplementCount": 2,
+    "exactSourcePercent": 50,
+    "missingCount": 0,
+    "totalSlides": 8,
+  },
+  "frameworkPlan": {
+    "chapters": [
+      {
+        "chapterIndex": 1,
+        "chapterTitle": "一、项目背景与必要性",
+        "slides": [
+          {
+            "contentHint": "背景与依据",
+            "subtitle": "项目背景",
+            "visualMode": "table",
+          },
+          {
+            "contentHint": "产业链风险",
+            "subtitle": "必要性分析",
+            "visualMode": "images",
+          },
+        ],
+      },
+      {
+        "chapterIndex": 2,
+        "chapterTitle": "二、主要技术内容",
+        "slides": [
+          {
+            "contentHint": "测量范围与准确度",
+            "subtitle": "技术指标",
+            "visualMode": "table",
+          },
+          {
+            "contentHint": "阶段与时间",
+            "subtitle": "制定过程",
+            "visualMode": "images",
+          },
+        ],
+      },
+    ],
+    "coverInfo": {
+      "date": "2026-10-03",
+      "presenter": "张三（示例）",
+      "standardName": "医用呼吸机压力传感器技术要求（示例）",
+    },
+    "endingInfo": {
+      "organization": "机械工业仪器仪表综合技术经济研究所",
+    },
+    "presetId": "standard_review",
+  },
+  "generatedAt": "2026-10-03T08:00:00.000Z",
+  "generationMeta": {
+    "mode": "normal",
+  },
+  "imagePromptsTotal": 4,
+  "missingInfo": [],
+  "slidePlan": [
+    {
+      "date": "2026-10-03",
+      "organization": "机械工业仪器仪表综合技术经济研究所",
+      "page": 1,
+      "planNumber": undefined,
+      "presenter": "张三（示例）",
+      "standardName": "医用呼吸机压力传感器技术要求（示例）",
+      "type": "cover",
+    },
+    {
+      "highlightChapter": 1,
+      "page": 2,
+      "pageTitle": "汇报内容",
+      "sectionItems": [
+        {
+          "number": "01",
+          "title": "一、项目背景与必要性",
+        },
+        {
+          "number": "02",
+          "title": "二、主要技术内容",
+        },
+      ],
+      "type": "toc_section",
+    },
+    {
+      "aiSupplements": [],
+      "bodyText": "项目背景方面，示例文档给出 3 项要求：测量范围覆盖 0～10 kPa，准确度优于 1%，响应时间不超过 20 ms。第 3 页据此给出结论，并列出验证方法。",
+      "chapterTitle": "一、项目背景与必要性",
+      "highlightRanges": [
+        [
+          59,
+          70,
+        ],
+      ],
+      "page": 3,
+      "sourceConfidence": "exact",
+      "sourceRef": "示例原文第 3 段",
+      "subtitle": "项目背景",
+      "tableData": {
+        "headers": [
+          "项目",
+          "要求",
+          "依据",
+        ],
+        "rows": [
+          [
+            "测量范围",
+            "0～10 kPa",
+            "第 5 章",
+          ],
+          [
+            "准确度",
+            "≤1%",
+            "第 6 章",
+          ],
+        ],
+      },
+      "type": "content",
+      "visualMode": "table",
+    },
+    {
+      "aiSupplements": [
+        {
+          "description": "第 4 页补充说明（示例）",
+          "type": "ai_summary",
+        },
+      ],
+      "bodyText": "必要性分析方面，示例文档给出 3 项要求：测量范围覆盖 0～10 kPa，准确度优于 1%，响应时间不超过 20 ms。第 4 页据此给出结论，并列出验证方法。",
+      "chapterTitle": "一、项目背景与必要性",
+      "highlightRanges": [
+        [
+          60,
+          71,
+        ],
+      ],
+      "imagePrompts": [
+        {
+          "description": "第 4 页示意图 1",
+          "iteiDrawPrompt": "pressure sensor diagram page 4 a",
+        },
+        {
+          "description": "第 4 页示意图 2",
+          "iteiDrawPrompt": "pressure sensor diagram page 4 b",
+        },
+      ],
+      "page": 4,
+      "sourceConfidence": "paraphrased",
+      "sourceRef": "示例原文第 4 段",
+      "subtitle": "必要性分析",
+      "type": "content",
+      "visualMode": "images",
+    },
+    {
+      "highlightChapter": 2,
+      "page": 5,
+      "pageTitle": "汇报内容",
+      "sectionItems": [
+        {
+          "number": "01",
+          "title": "一、项目背景与必要性",
+        },
+        {
+          "number": "02",
+          "title": "二、主要技术内容",
+        },
+      ],
+      "type": "toc_section",
+    },
+    {
+      "aiSupplements": [
+        {
+          "description": "第 6 页补充说明（示例）",
+          "type": "ai_summary",
+        },
+      ],
+      "bodyText": "技术指标方面，示例文档给出 3 项要求：测量范围覆盖 0～10 kPa，准确度优于 1%，响应时间不超过 20 ms。第 6 页据此给出结论，并列出验证方法。",
+      "chapterTitle": "二、主要技术内容",
+      "highlightRanges": [
+        [
+          59,
+          70,
+        ],
+      ],
+      "page": 6,
+      "sourceConfidence": "paraphrased",
+      "sourceRef": "示例原文第 6 段",
+      "subtitle": "技术指标",
+      "tableData": {
+        "headers": [
+          "项目",
+          "要求",
+          "依据",
+        ],
+        "rows": [
+          [
+            "测量范围",
+            "0～10 kPa",
+            "第 5 章",
+          ],
+          [
+            "准确度",
+            "≤1%",
+            "第 6 章",
+          ],
+        ],
+      },
+      "type": "content",
+      "visualMode": "table",
+    },
+    {
+      "aiSupplements": [],
+      "bodyText": "制定过程方面，示例文档给出 3 项要求：测量范围覆盖 0～10 kPa，准确度优于 1%，响应时间不超过 20 ms。第 7 页据此给出结论，并列出验证方法。",
+      "chapterTitle": "二、主要技术内容",
+      "highlightRanges": [
+        [
+          59,
+          70,
+        ],
+      ],
+      "imagePrompts": [
+        {
+          "description": "第 7 页示意图 1",
+          "iteiDrawPrompt": "pressure sensor diagram page 7 a",
+        },
+        {
+          "description": "第 7 页示意图 2",
+          "iteiDrawPrompt": "pressure sensor diagram page 7 b",
+        },
+      ],
+      "page": 7,
+      "sourceConfidence": "exact",
+      "sourceRef": "示例原文第 7 段",
+      "subtitle": "制定过程",
+      "type": "content",
+      "visualMode": "images",
+    },
+    {
+      "contactInfo": [],
+      "organization": "机械工业仪器仪表综合技术经济研究所",
+      "page": 8,
+      "thanks": "敬请指正",
+      "type": "ending",
+    },
+  ],
+  "sourceFiles": [
+    {
+      "filename": "送审稿（示例）.docx",
+      "id": 1,
+      "shortName": "送审稿（示例）.docx",
+    },
+  ],
+}
+`;
+
+exports[`generateContentWithGemini > rewrites pages that came back empty 1`] = `
+{
+  "auditSummary": {
+    "aiSupplementCount": 2,
+    "exactSourcePercent": 50,
+    "missingCount": 0,
+    "totalSlides": 8,
+  },
+  "frameworkPlan": {
+    "chapters": [
+      {
+        "chapterIndex": 1,
+        "chapterTitle": "一、项目背景与必要性",
+        "slides": [
+          {
+            "contentHint": "背景与依据",
+            "subtitle": "项目背景",
+            "visualMode": "table",
+          },
+          {
+            "contentHint": "产业链风险",
+            "subtitle": "必要性分析",
+            "visualMode": "images",
+          },
+        ],
+      },
+      {
+        "chapterIndex": 2,
+        "chapterTitle": "二、主要技术内容",
+        "slides": [
+          {
+            "contentHint": "测量范围与准确度",
+            "subtitle": "技术指标",
+            "visualMode": "table",
+          },
+          {
+            "contentHint": "阶段与时间",
+            "subtitle": "制定过程",
+            "visualMode": "images",
+          },
+        ],
+      },
+    ],
+    "coverInfo": {
+      "date": "2026-10-03",
+      "presenter": "张三（示例）",
+      "standardName": "医用呼吸机压力传感器技术要求（示例）",
+    },
+    "endingInfo": {
+      "organization": "机械工业仪器仪表综合技术经济研究所",
+    },
+    "presetId": "standard_review",
+  },
+  "generatedAt": "2026-10-03T08:00:00.000Z",
+  "generationMeta": {
+    "mode": "normal",
+  },
+  "imagePromptsTotal": 4,
+  "missingInfo": [],
+  "slidePlan": [
+    {
+      "date": "2026-10-03",
+      "organization": "机械工业仪器仪表综合技术经济研究所",
+      "page": 1,
+      "planNumber": undefined,
+      "presenter": "张三（示例）",
+      "standardName": "医用呼吸机压力传感器技术要求（示例）",
+      "type": "cover",
+    },
+    {
+      "highlightChapter": 1,
+      "page": 2,
+      "pageTitle": "汇报内容",
+      "sectionItems": [
+        {
+          "number": "01",
+          "title": "一、项目背景与必要性",
+        },
+        {
+          "number": "02",
+          "title": "二、主要技术内容",
+        },
+      ],
+      "type": "toc_section",
+    },
+    {
+      "aiSupplements": [],
+      "bodyText": "项目背景方面，示例文档给出 3 项要求：测量范围覆盖 0～10 kPa，准确度优于 1%，响应时间不超过 20 ms。第 3 页据此给出结论，并列出验证方法。",
+      "chapterTitle": "一、项目背景与必要性",
+      "highlightRanges": [
+        [
+          59,
+          70,
+        ],
+      ],
+      "page": 3,
+      "sourceConfidence": "exact",
+      "sourceRef": "示例原文第 3 段",
+      "subtitle": "项目背景",
+      "tableData": {
+        "headers": [
+          "项目",
+          "要求",
+          "依据",
+        ],
+        "rows": [
+          [
+            "测量范围",
+            "0～10 kPa",
+            "第 5 章",
+          ],
+          [
+            "准确度",
+            "≤1%",
+            "第 6 章",
+          ],
+        ],
+      },
+      "type": "content",
+      "visualMode": "table",
+    },
+    {
+      "aiSupplements": [
+        {
+          "description": "第 4 页补充说明（示例）",
+          "type": "ai_summary",
+        },
+      ],
+      "bodyText": "必要性分析方面，示例文档给出 3 项要求：测量范围覆盖 0～10 kPa，准确度优于 1%，响应时间不超过 20 ms。第 4 页据此给出结论，并列出验证方法。",
+      "chapterTitle": "一、项目背景与必要性",
+      "highlightRanges": [
+        [
+          60,
+          71,
+        ],
+      ],
+      "imagePrompts": [
+        {
+          "description": "第 4 页示意图 1",
+          "iteiDrawPrompt": "pressure sensor diagram page 4 a",
+        },
+        {
+          "description": "第 4 页示意图 2",
+          "iteiDrawPrompt": "pressure sensor diagram page 4 b",
+        },
+      ],
+      "page": 4,
+      "sourceConfidence": "paraphrased",
+      "sourceRef": "示例原文第 4 段",
+      "subtitle": "必要性分析",
+      "type": "content",
+      "visualMode": "images",
+    },
+    {
+      "highlightChapter": 2,
+      "page": 5,
+      "pageTitle": "汇报内容",
+      "sectionItems": [
+        {
+          "number": "01",
+          "title": "一、项目背景与必要性",
+        },
+        {
+          "number": "02",
+          "title": "二、主要技术内容",
+        },
+      ],
+      "type": "toc_section",
+    },
+    {
+      "aiSupplements": [
+        {
+          "description": "第 6 页补充说明（示例）",
+          "type": "ai_summary",
+        },
+      ],
+      "bodyText": "技术指标方面，示例文档给出 3 项要求：测量范围覆盖 0～10 kPa，准确度优于 1%，响应时间不超过 20 ms。第 6 页据此给出结论，并列出验证方法。",
+      "chapterTitle": "二、主要技术内容",
+      "highlightRanges": [
+        [
+          59,
+          70,
+        ],
+      ],
+      "page": 6,
+      "sourceConfidence": "paraphrased",
+      "sourceRef": "示例原文第 6 段",
+      "subtitle": "技术指标",
+      "tableData": {
+        "headers": [
+          "项目",
+          "要求",
+          "依据",
+        ],
+        "rows": [
+          [
+            "测量范围",
+            "0～10 kPa",
+            "第 5 章",
+          ],
+          [
+            "准确度",
+            "≤1%",
+            "第 6 章",
+          ],
+        ],
+      },
+      "type": "content",
+      "visualMode": "table",
+    },
+    {
+      "aiSupplements": [],
+      "bodyText": "制定过程方面，示例文档给出 3 项要求：测量范围覆盖 0～10 kPa，准确度优于 1%，响应时间不超过 20 ms。第 7 页据此给出结论，并列出验证方法。",
+      "chapterTitle": "二、主要技术内容",
+      "highlightRanges": [
+        [
+          59,
+          70,
+        ],
+      ],
+      "imagePrompts": [
+        {
+          "description": "第 7 页示意图 1",
+          "iteiDrawPrompt": "pressure sensor diagram page 7 a",
+        },
+        {
+          "description": "第 7 页示意图 2",
+          "iteiDrawPrompt": "pressure sensor diagram page 7 b",
+        },
+      ],
+      "page": 7,
+      "sourceConfidence": "exact",
+      "sourceRef": "示例原文第 7 段",
+      "subtitle": "制定过程",
+      "type": "content",
+      "visualMode": "images",
+    },
+    {
+      "contactInfo": [],
+      "organization": "机械工业仪器仪表综合技术经济研究所",
+      "page": 8,
+      "thanks": "敬请指正",
+      "type": "ending",
+    },
+  ],
+  "sourceFiles": [
+    {
+      "filename": "uploaded-document",
+      "id": 1,
+      "shortName": "uploaded-document",
+    },
+  ],
+}
+`;

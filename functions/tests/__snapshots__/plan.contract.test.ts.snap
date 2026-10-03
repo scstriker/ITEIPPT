@@ -1,0 +1,465 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`POST /api/plan > applies AI insights to the given chapters 1`] = `
+{
+  "apiPlanMeta": {
+    "chapterInsights": [
+      {
+        "chapterIndex": 1,
+        "coverageLevel": "sufficient",
+        "reason": "第1章与文档内容匹配（示例理由）。",
+        "sourceHint": "示例线索 1",
+      },
+      {
+        "chapterIndex": 2,
+        "coverageLevel": "moderate",
+        "reason": "第2章与文档内容匹配（示例理由）。",
+        "sourceHint": "示例线索 2",
+      },
+    ],
+    "provider": "gemini:plan-model",
+    "recommendedAt": "2026-10-03T08:00:00.000Z",
+    "slideInsights": [
+      {
+        "chapterIndex": 1,
+        "reason": "子页面 1-1 示例理由。",
+        "slideIndex": 1,
+        "sourceHint": "示例线索 1-1",
+        "subtitle": "项目背景",
+        "visualMode": "table",
+      },
+      {
+        "chapterIndex": 1,
+        "reason": "子页面 1-2 示例理由。",
+        "slideIndex": 2,
+        "sourceHint": "示例线索 1-2",
+        "subtitle": "必要性分析",
+        "visualMode": "images",
+      },
+      {
+        "chapterIndex": 2,
+        "reason": "子页面 2-1 示例理由。",
+        "slideIndex": 1,
+        "sourceHint": "示例线索 2-1",
+        "subtitle": "技术指标",
+        "visualMode": "table",
+      },
+      {
+        "chapterIndex": 2,
+        "reason": "子页面 2-2 示例理由。",
+        "slideIndex": 2,
+        "sourceHint": "示例线索 2-2",
+        "subtitle": "制定过程",
+        "visualMode": "images",
+      },
+    ],
+  },
+  "chapters": [
+    {
+      "aiReason": "第1章与文档内容匹配（示例理由）。",
+      "chapterIndex": 1,
+      "chapterTitle": "一、项目背景与必要性",
+      "coverageLevel": "sufficient",
+      "slides": [
+        {
+          "contentHint": "背景与依据",
+          "subtitle": "项目背景",
+          "visualMode": "table",
+        },
+        {
+          "contentHint": "产业链风险",
+          "subtitle": "必要性分析",
+          "visualMode": "images",
+        },
+      ],
+      "sourceHint": "示例线索 1",
+    },
+    {
+      "aiReason": "第2章与文档内容匹配（示例理由）。",
+      "chapterIndex": 2,
+      "chapterTitle": "二、主要技术内容",
+      "coverageLevel": "moderate",
+      "slides": [
+        {
+          "contentHint": "测量范围与准确度",
+          "subtitle": "技术指标",
+          "visualMode": "table",
+        },
+        {
+          "contentHint": "阶段与时间",
+          "subtitle": "制定过程",
+          "visualMode": "images",
+        },
+      ],
+      "sourceHint": "示例线索 2",
+    },
+  ],
+  "coverInfo": {},
+  "endingInfo": {},
+  "presetId": "standard_review",
+}
+`;
+
+exports[`POST /api/plan > falls back to local heuristics when Gemini fails 1`] = `
+{
+  "apiPlanMeta": {
+    "chapterInsights": [
+      {
+        "chapterIndex": 1,
+        "coverageLevel": "moderate",
+        "reason": "已基于章节标题“一、项目背景与必要性”生成默认分析，建议再执行 AI 建议调整以提升匹配度。",
+        "sourceHint": "医用呼吸机压力传感器技术要求（示例）",
+      },
+      {
+        "chapterIndex": 2,
+        "coverageLevel": "moderate",
+        "reason": "已基于章节标题“二、主要技术内容”生成默认分析，建议再执行 AI 建议调整以提升匹配度。",
+        "sourceHint": "医用呼吸机压力传感器技术要求（示例）",
+      },
+    ],
+    "provider": "gemini:plan-model:fallback",
+    "recommendedAt": "2026-10-03T08:00:00.000Z",
+    "slideInsights": [
+      {
+        "chapterIndex": 1,
+        "reason": "该子页面围绕“项目背景”生成，建议采用文字+表格呈现。",
+        "slideIndex": 1,
+        "sourceHint": "医用呼吸机压力传感器技术要求（示例）",
+        "subtitle": "项目背景",
+        "visualMode": "table",
+      },
+      {
+        "chapterIndex": 1,
+        "reason": "该子页面围绕“必要性分析”生成，建议采用文字+图片呈现。",
+        "slideIndex": 2,
+        "sourceHint": "医用呼吸机压力传感器技术要求（示例）",
+        "subtitle": "必要性分析",
+        "visualMode": "images",
+      },
+      {
+        "chapterIndex": 2,
+        "reason": "该子页面围绕“技术指标”生成，建议采用文字+表格呈现。",
+        "slideIndex": 1,
+        "sourceHint": "医用呼吸机压力传感器技术要求（示例）",
+        "subtitle": "技术指标",
+        "visualMode": "table",
+      },
+      {
+        "chapterIndex": 2,
+        "reason": "该子页面围绕“制定过程”生成，建议采用文字+图片呈现。",
+        "slideIndex": 2,
+        "sourceHint": "医用呼吸机压力传感器技术要求（示例）",
+        "subtitle": "制定过程",
+        "visualMode": "images",
+      },
+    ],
+  },
+  "chapters": [
+    {
+      "aiReason": "已基于章节标题“一、项目背景与必要性”生成默认分析，建议再执行 AI 建议调整以提升匹配度。",
+      "chapterIndex": 1,
+      "chapterTitle": "一、项目背景与必要性",
+      "coverageLevel": "moderate",
+      "slides": [
+        {
+          "contentHint": "背景与依据",
+          "subtitle": "项目背景",
+          "visualMode": "table",
+        },
+        {
+          "contentHint": "产业链风险",
+          "subtitle": "必要性分析",
+          "visualMode": "images",
+        },
+      ],
+      "sourceHint": "医用呼吸机压力传感器技术要求（示例）",
+    },
+    {
+      "aiReason": "已基于章节标题“二、主要技术内容”生成默认分析，建议再执行 AI 建议调整以提升匹配度。",
+      "chapterIndex": 2,
+      "chapterTitle": "二、主要技术内容",
+      "coverageLevel": "moderate",
+      "slides": [
+        {
+          "contentHint": "测量范围与准确度",
+          "subtitle": "技术指标",
+          "visualMode": "table",
+        },
+        {
+          "contentHint": "阶段与时间",
+          "subtitle": "制定过程",
+          "visualMode": "images",
+        },
+      ],
+      "sourceHint": "医用呼吸机压力传感器技术要求（示例）",
+    },
+  ],
+  "coverInfo": {},
+  "endingInfo": {},
+  "presetId": "standard_review",
+}
+`;
+
+exports[`POST /api/plan > fills an empty blank plan with the fixed 6 x 2 fallback chapters (no AI draft call) 1`] = `
+{
+  "apiPlanMeta": {
+    "chapterInsights": [
+      {
+        "chapterIndex": 1,
+        "coverageLevel": "sufficient",
+        "reason": "第1章与文档内容匹配（示例理由）。",
+        "sourceHint": "示例线索 1",
+      },
+      {
+        "chapterIndex": 2,
+        "coverageLevel": "moderate",
+        "reason": "第2章与文档内容匹配（示例理由）。",
+        "sourceHint": "示例线索 2",
+      },
+      {
+        "chapterIndex": 3,
+        "coverageLevel": "sparse",
+        "reason": "第3章与文档内容匹配（示例理由）。",
+        "sourceHint": "示例线索 3",
+      },
+      {
+        "chapterIndex": 4,
+        "coverageLevel": "sufficient",
+        "reason": "第4章与文档内容匹配（示例理由）。",
+        "sourceHint": "示例线索 4",
+      },
+      {
+        "chapterIndex": 5,
+        "coverageLevel": "moderate",
+        "reason": "第5章与文档内容匹配（示例理由）。",
+        "sourceHint": "示例线索 5",
+      },
+      {
+        "chapterIndex": 6,
+        "coverageLevel": "sparse",
+        "reason": "第6章与文档内容匹配（示例理由）。",
+        "sourceHint": "示例线索 6",
+      },
+    ],
+    "provider": "gemini:plan-model",
+    "recommendedAt": "2026-10-03T08:00:00.000Z",
+    "slideInsights": [
+      {
+        "chapterIndex": 1,
+        "reason": "子页面 1-1 示例理由。",
+        "slideIndex": 1,
+        "sourceHint": "示例线索 1-1",
+        "subtitle": "现状背景与目标定义",
+        "visualMode": "table",
+      },
+      {
+        "chapterIndex": 1,
+        "reason": "子页面 1-2 示例理由。",
+        "slideIndex": 2,
+        "sourceHint": "示例线索 1-2",
+        "subtitle": "建设范围与边界",
+        "visualMode": "images",
+      },
+      {
+        "chapterIndex": 2,
+        "reason": "子页面 2-1 示例理由。",
+        "slideIndex": 1,
+        "sourceHint": "示例线索 2-1",
+        "subtitle": "核心问题与影响因素",
+        "visualMode": "table",
+      },
+      {
+        "chapterIndex": 2,
+        "reason": "子页面 2-2 示例理由。",
+        "slideIndex": 2,
+        "sourceHint": "示例线索 2-2",
+        "subtitle": "问题根因拆解",
+        "visualMode": "images",
+      },
+      {
+        "chapterIndex": 3,
+        "reason": "子页面 3-1 示例理由。",
+        "slideIndex": 1,
+        "sourceHint": "示例线索 3-1",
+        "subtitle": "方案对比与实施步骤",
+        "visualMode": "table",
+      },
+      {
+        "chapterIndex": 3,
+        "reason": "子页面 3-2 示例理由。",
+        "slideIndex": 2,
+        "sourceHint": "示例线索 3-2",
+        "subtitle": "里程碑与阶段计划",
+        "visualMode": "images",
+      },
+      {
+        "chapterIndex": 4,
+        "reason": "子页面 4-1 示例理由。",
+        "slideIndex": 1,
+        "sourceHint": "示例线索 4-1",
+        "subtitle": "资源配置建议",
+        "visualMode": "table",
+      },
+      {
+        "chapterIndex": 4,
+        "reason": "子页面 4-2 示例理由。",
+        "slideIndex": 2,
+        "sourceHint": "示例线索 4-2",
+        "subtitle": "实施保障机制",
+        "visualMode": "images",
+      },
+      {
+        "chapterIndex": 5,
+        "reason": "子页面 5-1 示例理由。",
+        "slideIndex": 1,
+        "sourceHint": "示例线索 5-1",
+        "subtitle": "预期效益",
+        "visualMode": "table",
+      },
+      {
+        "chapterIndex": 5,
+        "reason": "子页面 5-2 示例理由。",
+        "slideIndex": 2,
+        "sourceHint": "示例线索 5-2",
+        "subtitle": "风险识别与应对",
+        "visualMode": "images",
+      },
+      {
+        "chapterIndex": 6,
+        "reason": "子页面 6-1 示例理由。",
+        "slideIndex": 1,
+        "sourceHint": "示例线索 6-1",
+        "subtitle": "结论摘要",
+        "visualMode": "table",
+      },
+      {
+        "chapterIndex": 6,
+        "reason": "子页面 6-2 示例理由。",
+        "slideIndex": 2,
+        "sourceHint": "示例线索 6-2",
+        "subtitle": "下一步行动建议",
+        "visualMode": "images",
+      },
+    ],
+  },
+  "chapters": [
+    {
+      "aiReason": "第1章与文档内容匹配（示例理由）。",
+      "chapterIndex": 1,
+      "chapterTitle": "一、背景与目标",
+      "coverageLevel": "sufficient",
+      "slides": [
+        {
+          "contentHint": "说明现状问题、目标与约束。",
+          "subtitle": "现状背景与目标定义",
+          "visualMode": "table",
+        },
+        {
+          "contentHint": "明确本次建设的范围、边界和交付目标。",
+          "subtitle": "建设范围与边界",
+          "visualMode": "images",
+        },
+      ],
+      "sourceHint": "示例线索 1",
+    },
+    {
+      "aiReason": "第2章与文档内容匹配（示例理由）。",
+      "chapterIndex": 2,
+      "chapterTitle": "二、关键问题分析",
+      "coverageLevel": "moderate",
+      "slides": [
+        {
+          "contentHint": "梳理主要问题及其影响。",
+          "subtitle": "核心问题与影响因素",
+          "visualMode": "table",
+        },
+        {
+          "contentHint": "从组织、流程、技术层面分析根因。",
+          "subtitle": "问题根因拆解",
+          "visualMode": "images",
+        },
+      ],
+      "sourceHint": "示例线索 2",
+    },
+    {
+      "aiReason": "第3章与文档内容匹配（示例理由）。",
+      "chapterIndex": 3,
+      "chapterTitle": "三、方案与实施路径",
+      "coverageLevel": "sparse",
+      "slides": [
+        {
+          "contentHint": "给出候选方案与执行路径。",
+          "subtitle": "方案对比与实施步骤",
+          "visualMode": "table",
+        },
+        {
+          "contentHint": "列出阶段目标、里程碑和关键节点。",
+          "subtitle": "里程碑与阶段计划",
+          "visualMode": "images",
+        },
+      ],
+      "sourceHint": "示例线索 3",
+    },
+    {
+      "aiReason": "第4章与文档内容匹配（示例理由）。",
+      "chapterIndex": 4,
+      "chapterTitle": "四、资源与保障",
+      "coverageLevel": "sufficient",
+      "slides": [
+        {
+          "contentHint": "说明人力、预算、系统和数据资源配置。",
+          "subtitle": "资源配置建议",
+          "visualMode": "table",
+        },
+        {
+          "contentHint": "给出组织协同与风险保障机制。",
+          "subtitle": "实施保障机制",
+          "visualMode": "images",
+        },
+      ],
+      "sourceHint": "示例线索 4",
+    },
+    {
+      "aiReason": "第5章与文档内容匹配（示例理由）。",
+      "chapterIndex": 5,
+      "chapterTitle": "五、效益与风险",
+      "coverageLevel": "moderate",
+      "slides": [
+        {
+          "contentHint": "量化效率、质量和成本效益。",
+          "subtitle": "预期效益",
+          "visualMode": "table",
+        },
+        {
+          "contentHint": "识别主要风险并给出应对策略。",
+          "subtitle": "风险识别与应对",
+          "visualMode": "images",
+        },
+      ],
+      "sourceHint": "示例线索 5",
+    },
+    {
+      "aiReason": "第6章与文档内容匹配（示例理由）。",
+      "chapterIndex": 6,
+      "chapterTitle": "六、结论与建议",
+      "coverageLevel": "sparse",
+      "slides": [
+        {
+          "contentHint": "归纳关键结论。",
+          "subtitle": "结论摘要",
+          "visualMode": "table",
+        },
+        {
+          "contentHint": "给出可执行的后续计划。",
+          "subtitle": "下一步行动建议",
+          "visualMode": "images",
+        },
+      ],
+      "sourceHint": "示例线索 6",
+    },
+  ],
+  "coverInfo": {},
+  "endingInfo": {},
+  "presetId": "blank",
+}
+`;

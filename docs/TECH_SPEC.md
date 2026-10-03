@@ -169,6 +169,7 @@ Gemini API；Firebase Hosting、Functions Gen2、Firestore、Cloud Storage、Pub
 - 后端提示词有 5 处乱码（PRD Q-5）。
 - 浏览器刷新会丢失已解析文档、框架和已导入图片；进行中的生成任务也无法恢复（PRD Q-7）。
 - 本地任务存在内存里，后端重启后进行中的任务丢失。
+- 重构前，`npm run dev`（StrictMode）下生成任务查询一次后停止（PRD Q-9），E2E 因此跑生产构建（`vite build` + `vite preview`）。
 
 ## 15. 相关决策
 
