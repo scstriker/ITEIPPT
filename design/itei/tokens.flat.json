@@ -1,0 +1,178 @@
+{
+  "color": {
+    "light": {
+      "brand-navy": "#044470",
+      "brand-navy-deep": "#003056",
+      "brand-red": "#b81c27",
+      "brand-sky": "#0080cc",
+      "link": "#006bb0",
+      "gradient-start": "#0070b0",
+      "gradient-end": "#004070",
+      "on-brand": "#ffffff",
+      "on-gradient": "#ffffff",
+      "surface": "#ffffff",
+      "surface-sunken": "#f4f7fa",
+      "surface-raised": "#ffffff",
+      "ink": "#1a1a1a",
+      "ink-muted": "#5b6b7a",
+      "ink-disabled": "#9aa7b3",
+      "border": "#d5dde5",
+      "border-strong": "#8fa1b3",
+      "focus": "#0080cc",
+      "success": "#1a7a3a",
+      "warning": "#8f5400",
+      "danger": "#b81c27",
+      "info": "#006bb0",
+      "success-bg": "#e6f4ea",
+      "warning-bg": "#fff3e0",
+      "danger-bg": "#fbe9ea",
+      "info-bg": "#e6f1f9",
+      "chart-1": "#044470",
+      "chart-2": "#0080cc",
+      "chart-3": "#b81c27",
+      "chart-4": "#8fa1b3",
+      "chart-5": "#8f5400"
+    },
+    "dark": {
+      "brand-navy": "#5cb3ea",
+      "brand-navy-deep": "#7fc6f0",
+      "brand-red": "#ff6b74",
+      "brand-sky": "#4fa3dc",
+      "link": "#5cb3ea",
+      "gradient-start": "#0070b0",
+      "gradient-end": "#004070",
+      "on-brand": "#0b1a2b",
+      "on-gradient": "#ffffff",
+      "surface": "#0b1a2b",
+      "surface-sunken": "#071322",
+      "surface-raised": "#12283f",
+      "ink": "#e8eef4",
+      "ink-muted": "#9fb3c6",
+      "ink-disabled": "#5b6b7a",
+      "border": "#2a4055",
+      "border-strong": "#4b6480",
+      "focus": "#5cb3ea",
+      "success": "#7dd39a",
+      "warning": "#f2b95c",
+      "danger": "#ff6b74",
+      "info": "#5cb3ea",
+      "success-bg": "#0f2a1a",
+      "warning-bg": "#2b1f08",
+      "danger-bg": "#301216",
+      "info-bg": "#0d2338",
+      "chart-1": "#5cb3ea",
+      "chart-2": "#4fa3dc",
+      "chart-3": "#ff6b74",
+      "chart-4": "#9fb3c6",
+      "chart-5": "#f2b95c"
+    }
+  },
+  "spacing": {
+    "space-1": "4px",
+    "space-2": "8px",
+    "space-3": "12px",
+    "space-4": "16px",
+    "space-5": "24px",
+    "space-6": "32px",
+    "space-7": "48px",
+    "space-8": "64px",
+    "header-height": "56px",
+    "content-max": "1200px",
+    "slash": "24px"
+  },
+  "radius": {
+    "radius-none": "0px",
+    "radius-sm": "2px",
+    "radius-md": "4px",
+    "radius-pill": "999px"
+  },
+  "type": {
+    "display-hero": {
+      "fontSize": "48px",
+      "lineHeight": "56px",
+      "fontWeight": 700,
+      "letterSpacing": "0.04em",
+      "family": "display"
+    },
+    "title-page": {
+      "fontSize": "32px",
+      "lineHeight": "40px",
+      "fontWeight": 700,
+      "family": "sans"
+    },
+    "title-section": {
+      "fontSize": "24px",
+      "lineHeight": "32px",
+      "fontWeight": 700,
+      "family": "sans"
+    },
+    "title-sub": {
+      "fontSize": "18px",
+      "lineHeight": "26px",
+      "fontWeight": 700,
+      "family": "sans"
+    },
+    "title-nav": {
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "fontWeight": 700,
+      "letterSpacing": "0.02em",
+      "family": "sans"
+    },
+    "body-lg": {
+      "fontSize": "17px",
+      "lineHeight": "28px",
+      "fontWeight": 400,
+      "family": "sans"
+    },
+    "body": {
+      "fontSize": "15px",
+      "lineHeight": "24px",
+      "fontWeight": 400,
+      "family": "sans"
+    },
+    "body-sm": {
+      "fontSize": "13px",
+      "lineHeight": "20px",
+      "fontWeight": 400,
+      "family": "sans"
+    },
+    "caption": {
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "fontWeight": 400,
+      "family": "sans"
+    },
+    "label": {
+      "fontSize": "13px",
+      "lineHeight": "16px",
+      "fontWeight": 600,
+      "letterSpacing": "0.02em",
+      "family": "sans"
+    },
+    "button": {
+      "fontSize": "15px",
+      "lineHeight": "20px",
+      "fontWeight": 600,
+      "family": "sans"
+    },
+    "numeral": {
+      "fontSize": "28px",
+      "lineHeight": "32px",
+      "fontWeight": 700,
+      "letterSpacing": "-0.01em",
+      "family": "sans"
+    },
+    "code": {
+      "fontSize": "13px",
+      "lineHeight": "20px",
+      "fontWeight": 400,
+      "family": "mono"
+    }
+  },
+  "families": {
+    "sans": "\"Microsoft YaHei\", \"微软雅黑\", \"PingFang SC\", \"Noto Sans CJK SC\", \"Source Han Sans SC\", \"Hiragino Sans GB\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+    "display": "\"HYCuSongJ\", \"汉仪粗宋简\", \"Noto Serif CJK SC\", \"Source Han Serif SC\", \"Songti SC\", \"SimSun\", serif",
+    "mono": "\"JetBrains Mono\", \"Cascadia Code\", \"SF Mono\", Consolas, \"Microsoft YaHei\", monospace"
+  }
+}

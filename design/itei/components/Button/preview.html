@@ -1,0 +1,26 @@
+<!-- @dsCard group="Actions" height=150 subtitle="主 / 次 / 危险 / 文字 四种，两种尺寸" -->
+<div id="root" style="font-family:var(--font-sans);background:var(--surface);padding:24px;display:grid;gap:16px">
+<style>
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 20px;font:600 15px/20px var(--font-sans);border:1px solid transparent;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s ease-out,color .15s ease-out}
+.btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.btn.primary{background:var(--brand-navy);color:var(--on-brand)}.btn.primary:hover{background:var(--brand-navy-deep)}
+.btn.secondary{background:var(--surface);color:var(--brand-navy);border-color:var(--brand-navy)}.btn.secondary:hover{background:var(--info-bg)}
+.btn.danger{background:var(--brand-red);color:var(--on-brand)}
+.btn.ghost{background:transparent;color:var(--link);padding:0 8px}.btn.ghost:hover{text-decoration:underline}
+.btn.sm{height:32px;padding:0 12px;font-size:13px;line-height:16px}
+.btn[disabled]{background:var(--surface-sunken);color:var(--ink-disabled);border-color:var(--border);cursor:not-allowed}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+</style>
+<div class="row">
+  <button class="btn primary">提交申报</button>
+  <button class="btn secondary">保存草稿</button>
+  <button class="btn danger">删除</button>
+  <button class="btn ghost">查看详情 →</button>
+  <button class="btn primary" disabled>已提交</button>
+</div>
+<div class="row">
+  <button class="btn primary sm">导出</button>
+  <button class="btn secondary sm">筛选</button>
+  <button class="btn ghost sm">重置</button>
+</div>
+</div>

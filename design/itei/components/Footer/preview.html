@@ -1,0 +1,14 @@
+<!-- @dsCard group="Layout" height=150 subtitle="深蓝页脚条：日期 · 机构 · 页码，右端斜切装饰" -->
+<div id="root" style="font-family:var(--font-sans);background:var(--surface);padding:16px;display:grid;gap:16px">
+<style>
+.ft{position:relative;display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 24px;background:var(--brand-navy);color:var(--on-brand);font:400 12px/16px var(--font-sans);overflow:hidden}
+.ft .deco{position:absolute;right:0;top:0;bottom:0;width:120px;background:var(--brand-sky);clip-path:polygon(var(--slash) 0,100% 0,100% 100%,0 100%);opacity:.9}
+.ft .deco::after{content:"";position:absolute;right:0;top:0;bottom:0;width:calc(120px - var(--slash) - 8px);background:var(--brand-navy-deep);clip-path:polygon(var(--slash) 0,100% 0,100% 100%,0 100%)}
+.ft span{position:relative;z-index:1}
+.ft .page{padding-right:96px}
+.site{display:grid;grid-template-columns:1fr auto;gap:8px 24px;padding:12px 24px;border-top:2px solid var(--brand-sky);color:var(--ink-muted);font:400 12px/16px var(--font-sans)}
+.site b{color:var(--ink);font-size:13px}
+</style>
+<footer class="ft"><span class="deco" aria-hidden="true"></span><span>2025/7/8</span><span>机械工业仪器仪表综合技术经济研究所</span><span class="page">3</span></footer>
+<div class="site"><div><b>机械工业仪器仪表综合技术经济研究所</b><br>地址：北京市西城区广安门外大街甲397号 · 电话：010-63261819 · 网址：www.itei.cn</div><div>© ITEI</div></div>
+</div>

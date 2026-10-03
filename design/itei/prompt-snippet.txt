@@ -1,0 +1,8 @@
+你现在为机械工业仪器仪表综合技术经济研究所（ITEI）开发界面。请严格遵守我上传的 README.md（品牌手册）、tokens.css（CSS 变量）和 platforms.md（跨端映射）：
+- 只用 tokens.css 里的变量取色，不要自造颜色；主色 --brand-navy #044470，红 --brand-red #B81C27 每屏至多一处，亮蓝 --brand-sky 只做线条。
+- 白底、1px 边线分层、直角（控件最多 2px 圆角）、无投影；唯一渐变是页眉。
+- 品牌形状是 45° 斜切（--slash 24px），用于页眉标志区、编号导航序号块、页脚装饰。
+- 字体用微软雅黑栈，不引入 Inter/Roboto；章节编号「一、」「1.1」「01」保留在标题里。
+- 状态色必须配文字或图标；图标用 Tabler Icons 单色线性；不用 emoji。
+- 深色主题通过 [data-theme="dark"] 切换，深色下品牌色已提亮，其上文字用 --on-brand。
+输出代码前，先用一两句话说明你选了哪些组件（AppHeader / SectionTitle / NumberedNav / Button / Card / Input / Tag / Footer / DataTable / KpiTile）以及为什么。

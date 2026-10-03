@@ -1,0 +1,1 @@
+ITEI 标志：蓝色弧线（brand-navy）环抱红色椭圆（brand-red），右下角 ITEI 字样。从所内 PPT 模板母版背景图裁出，透明底 PNG，178×103px（模板中的最高分辨率）。只放在 `surface` 或 `surface-sunken` 上；深蓝底上改用白色文字「ITEI」。最小高度 24px，四周留 `space-3`。需要矢量版本时请向所办公室索取原始 AI/EPS 文件。

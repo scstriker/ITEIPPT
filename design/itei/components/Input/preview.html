@@ -1,0 +1,19 @@
+<!-- @dsCard group="Forms" height=260 subtitle="文本框、下拉、错误态与禁用态" -->
+<div id="root" style="font-family:var(--font-sans);background:var(--surface);padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;color:var(--ink);max-width:640px">
+<style>
+.f{display:grid;gap:6px}
+.f label{font:600 13px/16px var(--font-sans);letter-spacing:.02em;color:var(--ink)}
+.f label i{color:var(--brand-red);font-style:normal;margin-left:2px}
+.f input,.f select{height:40px;padding:0 12px;font:400 15px/24px var(--font-sans);color:var(--ink);background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm)}
+.f input::placeholder{color:var(--ink-muted)}
+.f input:focus-visible,.f select:focus-visible{outline:2px solid var(--focus);outline-offset:1px;border-color:var(--brand-navy)}
+.f.error input{border-color:var(--brand-red)}
+.f .help{font:400 12px/16px var(--font-sans);color:var(--ink-muted)}
+.f.error .help{color:var(--brand-red)}
+.f input[disabled]{background:var(--surface-sunken);color:var(--ink-disabled);border-color:var(--border)}
+</style>
+<div class="f"><label>项目名称<i>*</i></label><input value="医疗器械产业数据系统"><span class="help">与立项文件一致</span></div>
+<div class="f"><label>项目负责人</label><select><option>梅恪</option><option>陈实</option></select></div>
+<div class="f error"><label>联系电话<i>*</i></label><input value="010-6326"><span class="help">✕ 错误：请输入完整的 11 位或带区号的固定电话</span></div>
+<div class="f"><label>所属中心</label><input value="传感与仪器中心" disabled><span class="help">由账号决定，不可修改</span></div>
+</div>

@@ -1,0 +1,26 @@
+<!-- @dsCard height=288 -->
+<div id="root" style="position:relative;width:960px;height:288px;background:var(--surface);font-family:var(--font-sans);overflow:hidden">
+<style>
+.navy{fill:var(--brand-navy)}.deep{fill:var(--brand-navy-deep)}.sky{fill:var(--brand-sky)}.red{fill:var(--brand-red)}.ground{fill:var(--surface)}
+.name{position:absolute;left:48px;bottom:56px;margin:0;font:700 120px/.9 var(--font-sans);letter-spacing:.06em;color:var(--ink)}
+.tagline{position:absolute;left:52px;bottom:28px;margin:0;font:400 14px/20px var(--font-sans);color:var(--ink-muted);max-width:440px}
+</style>
+<!--
+blocks: brand-navy 480×288 slab (space-8×7.5 ≈ full height) bleeding off the right; brand-sky band 480×48 (space-7 tall) at y=192; brand-red 96×48 (space-8×space-7) on the band; brand-navy-deep 144×96 top-right satellite. radius-none everywhere.
+arrangement: one tall slab with satellites, flush to the top and right edges like the PPT master's header band and footer bar.
+pattern: 45° slashes — the template's only motif (header brand cut, footer deco, 目录 number blocks) — three ground-coloured parallelograms cut from the slab at pitch space-7 (48px), each slash-token (24px) wide, as the header's white diagonal is cut from the blue band.
+scales: widths/heights are space-7 (48) and space-8 (64) multiples; the slash offset is the slash token (24); corners radius-none; nothing crosses x<480.
+-->
+<svg width="960" height="288" viewBox="0 0 960 288" aria-hidden="true" style="position:absolute;inset:0">
+  <rect class="navy" x="480" y="0" width="480" height="288"/>
+  <rect class="deep" x="816" y="0" width="144" height="96"/>
+  <rect class="sky" x="480" y="192" width="480" height="48"/>
+  <rect class="red" x="480" y="192" width="96" height="48"/>
+  <polygon class="ground" points="672,0 696,0 600,96 576,96"/>
+  <polygon class="ground" points="720,0 744,0 648,96 624,96"/>
+  <polygon class="ground" points="768,0 792,0 696,96 672,96"/>
+  <polygon class="ground" points="912,240 936,240 888,288 864,288"/>
+</svg>
+<h1 class="name">ITEI</h1>
+<p class="tagline">机械工业仪器仪表综合技术经济研究所 · 跨端视觉语言</p>
+</div>

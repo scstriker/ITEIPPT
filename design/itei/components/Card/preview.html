@@ -1,0 +1,21 @@
+<!-- @dsCard group="Containers" height=230 subtitle="边线分层的内容卡片，可带标题栏" -->
+<div id="root" style="font-family:var(--font-sans);background:var(--surface-sunken);padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px;color:var(--ink)">
+<style>
+.card{background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-none)}
+.card .hd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);font-size:16px;font-weight:700;color:var(--brand-navy)}
+.card .hd small{font-size:12px;font-weight:400;color:var(--ink-muted)}
+.card .bd{padding:16px;font-size:15px;line-height:24px}
+.card .cft{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:12px;justify-content:flex-end}
+.card.raised{border-color:transparent;box-shadow:var(--shadow-raised)}
+a{color:var(--link)}
+</style>
+<section class="card">
+  <div class="hd">仪器仪表创新产品征集 <small>2025/7/8</small></div>
+  <div class="bd">通过"机械工业数字化转型平台"网上填写申报表格，累计收到相关产品信息 200 余份。</div>
+  <div class="cft"><a href="#">查看明细</a></div>
+</section>
+<section class="card raised">
+  <div class="hd">标准立项进度</div>
+  <div class="bd">6 项行业标准中 4 项已完成报批，2 项处于征求意见阶段。</div>
+</section>
+</div>

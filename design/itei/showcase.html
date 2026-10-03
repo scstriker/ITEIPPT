@@ -1,0 +1,219 @@
+<!doctype html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><title>ITEI 设计系统 — 组件总览</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+body{margin:0;padding:32px;max-width:1040px;margin-inline:auto}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.top h1{font:700 24px/32px var(--font-sans);color:var(--brand-navy);margin:0}
+.top button{height:32px;padding:0 12px;font:600 13px var(--font-sans);background:var(--surface);color:var(--brand-navy);border:1px solid var(--brand-navy);border-radius:2px;cursor:pointer}
+.sc{margin-bottom:32px}.sc h2{font:700 18px/26px var(--font-sans);margin:0 0 8px;display:inline-block;border-bottom:2px solid var(--brand-sky);padding-bottom:4px}
+.sc h2 small{font-weight:400;font-size:13px;color:var(--ink-muted);margin-left:12px}
+.frame{border:1px solid var(--border);overflow:auto}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:32px}
+.sw div{border:1px solid var(--border);padding:8px;font:400 12px/16px var(--font-mono)}.sw i{display:block;height:40px;margin-bottom:6px}
+</style></head><body>
+<div class="top"><h1>ITEI 设计系统 · 组件总览</h1><button onclick="var h=document.documentElement;h.dataset.theme=h.dataset.theme==='dark'?'light':'dark'">切换深色 / 浅色</button></div>
+<div class="sw"><div><i style="background:var(--brand-navy)"></i>--brand-navy</div><div><i style="background:var(--brand-navy-deep)"></i>--brand-navy-deep</div><div><i style="background:var(--brand-red)"></i>--brand-red</div><div><i style="background:var(--brand-sky)"></i>--brand-sky</div><div><i style="background:var(--link)"></i>--link</div><div><i style="background:var(--gradient-start)"></i>--gradient-start</div><div><i style="background:var(--gradient-end)"></i>--gradient-end</div><div><i style="background:var(--surface)"></i>--surface</div><div><i style="background:var(--surface-sunken)"></i>--surface-sunken</div><div><i style="background:var(--surface-raised)"></i>--surface-raised</div><div><i style="background:var(--ink)"></i>--ink</div><div><i style="background:var(--ink-muted)"></i>--ink-muted</div><div><i style="background:var(--border)"></i>--border</div><div><i style="background:var(--border-strong)"></i>--border-strong</div><div><i style="background:var(--success)"></i>--success</div><div><i style="background:var(--warning)"></i>--warning</div><div><i style="background:var(--info-bg)"></i>--info-bg</div></div>
+<section class="sc"><h2>Cover<small></small></h2><div class="frame"><div id="root-Cover" style="position:relative;width:960px;height:288px;background:var(--surface);font-family:var(--font-sans);overflow:hidden">
+<style>
+.navy{fill:var(--brand-navy)}.deep{fill:var(--brand-navy-deep)}.sky{fill:var(--brand-sky)}.red{fill:var(--brand-red)}.ground{fill:var(--surface)}
+.name{position:absolute;left:48px;bottom:56px;margin:0;font:700 120px/.9 var(--font-sans);letter-spacing:.06em;color:var(--ink)}
+.tagline{position:absolute;left:52px;bottom:28px;margin:0;font:400 14px/20px var(--font-sans);color:var(--ink-muted);max-width:440px}
+</style>
+<!--
+blocks: brand-navy 480×288 slab (space-8×7.5 ≈ full height) bleeding off the right; brand-sky band 480×48 (space-7 tall) at y=192; brand-red 96×48 (space-8×space-7) on the band; brand-navy-deep 144×96 top-right satellite. radius-none everywhere.
+arrangement: one tall slab with satellites, flush to the top and right edges like the PPT master's header band and footer bar.
+pattern: 45° slashes — the template's only motif (header brand cut, footer deco, 目录 number blocks) — three ground-coloured parallelograms cut from the slab at pitch space-7 (48px), each slash-token (24px) wide, as the header's white diagonal is cut from the blue band.
+scales: widths/heights are space-7 (48) and space-8 (64) multiples; the slash offset is the slash token (24); corners radius-none; nothing crosses x<480.
+-->
+<svg width="960" height="288" viewBox="0 0 960 288" aria-hidden="true" style="position:absolute;inset:0">
+  <rect class="navy" x="480" y="0" width="480" height="288"/>
+  <rect class="deep" x="816" y="0" width="144" height="96"/>
+  <rect class="sky" x="480" y="192" width="480" height="48"/>
+  <rect class="red" x="480" y="192" width="96" height="48"/>
+  <polygon class="ground" points="672,0 696,0 600,96 576,96"/>
+  <polygon class="ground" points="720,0 744,0 648,96 624,96"/>
+  <polygon class="ground" points="768,0 792,0 696,96 672,96"/>
+  <polygon class="ground" points="912,240 936,240 888,288 864,288"/>
+</svg>
+<h1 class="name">ITEI</h1>
+<p class="tagline">机械工业仪器仪表综合技术经济研究所 · 跨端视觉语言</p>
+</div>
+</div></section><section class="sc"><h2>AppHeader<small>顶部固定页眉：标志区 + 当前页标题</small></h2><div class="frame"><div id="root-AppHeader" style="font-family:var(--font-sans);background:var(--surface);padding:16px">
+<style>
+.hdr{display:flex;align-items:stretch;height:var(--header-height);background:linear-gradient(90deg,var(--gradient-start),var(--gradient-end));color:var(--on-gradient);overflow:hidden}
+.hdr .brand{display:flex;align-items:center;gap:12px;padding:0 24px;background:var(--surface);color:var(--brand-navy);font-weight:700;letter-spacing:.12em;clip-path:polygon(0 0,100% 0,calc(100% - var(--slash)) 100%,0 100%);padding-right:calc(24px + var(--slash))}
+.hdr .brand .mark{width:28px;height:28px;position:relative}
+.hdr .brand .mark::before{content:"";position:absolute;inset:2px;border:4px solid var(--brand-navy);border-right-color:transparent;border-radius:50%;transform:rotate(-30deg)}
+.hdr .brand .mark::after{content:"";position:absolute;left:10px;top:6px;width:14px;height:11px;background:var(--brand-red);border-radius:50%;transform:rotate(-30deg)}
+.hdr .title{flex:1;display:flex;align-items:center;padding:0 24px;font-size:20px;font-weight:700}
+.hdr .actions{display:flex;align-items:center;gap:16px;padding:0 24px;font-size:14px}
+.hdr .actions span{border-bottom:2px solid transparent;padding:4px 0}
+.hdr .actions span[aria-current]{border-bottom-color:var(--on-gradient)}
+.rule{height:2px;background:var(--brand-sky)}
+</style>
+<header class="hdr" role="banner">
+  <div class="brand"><span class="mark" aria-hidden="true"></span>ITEI</div>
+  <div class="title">一、项目运行情况</div>
+  <nav class="actions" aria-label="主导航"><span aria-current="page">工作台</span><span>数据</span><span>标准</span><span>设置</span></nav>
+</header>
+<div class="rule"></div>
+</div>
+</div></section><section class="sc"><h2>SectionTitle<small>章 / 节 / 小节三级标题</small></h2><div class="frame"><div id="root-SectionTitle" style="font-family:var(--font-sans);background:var(--surface);color:var(--ink);padding:24px;display:grid;gap:24px">
+<style>
+.sec{display:inline-flex;align-items:center;background:var(--brand-navy);color:var(--on-brand);font-size:24px;line-height:32px;font-weight:700;padding:8px 48px 8px 24px;clip-path:polygon(0 0,100% 0,calc(100% - var(--slash)) 100%,0 100%)}
+.sub{font-size:18px;line-height:26px;font-weight:700;color:var(--ink);display:inline-block;padding-bottom:4px;border-bottom:2px solid var(--brand-sky)}
+.sub b{color:var(--brand-navy);margin-right:8px}
+.h3{font-size:16px;line-height:24px;font-weight:700;color:var(--brand-navy);padding-left:12px;border-left:4px solid var(--brand-red)}
+</style>
+<h2 class="sec">一、项目运行情况</h2>
+<h3 class="sub"><b>1.1</b>服务成效——政府支撑及行业服务</h3>
+<h4 class="h3">有效支撑"仪器仪表创新产品"征集遴选工作</h4>
+</div>
+</div></section><section class="sc"><h2>NumberedNav<small>目录 / 步骤导航，当前项为红</small></h2><div class="frame"><div id="root-NumberedNav" style="font-family:var(--font-sans);background:var(--surface);padding:24px;max-width:520px">
+<style>
+.nav{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.nav li{display:flex;align-items:stretch;height:44px;background:var(--brand-navy);color:var(--on-brand);font-size:16px;font-weight:700;letter-spacing:.02em}
+.nav li .n{display:flex;align-items:center;justify-content:center;width:72px;font-size:22px;font-weight:700;background:var(--brand-navy-deep);border-radius:22px 0 0 22px;clip-path:polygon(0 0,100% 0,calc(100% - var(--slash)) 100%,0 100%);padding-right:8px}
+.nav li .t{flex:1;display:flex;align-items:center;justify-content:center;padding:0 16px}
+.nav li[aria-current]{background:var(--brand-red)}
+.nav li[aria-current] .n{background:var(--brand-red);filter:brightness(.85)}
+.nav li.done{background:var(--info-bg);color:var(--brand-navy)}
+.nav li.done .n{background:var(--brand-navy);color:var(--on-brand)}
+</style>
+<ol class="nav" aria-label="目录">
+  <li class="done"><span class="n">01</span><span class="t">项目建设背景</span></li>
+  <li aria-current="step"><span class="n">02</span><span class="t">项目执行情况</span></li>
+  <li><span class="n">03</span><span class="t">项目运行情况</span></li>
+  <li><span class="n">04</span><span class="t">项目管理情况</span></li>
+</ol>
+</div>
+</div></section><section class="sc"><h2>Button<small>主 / 次 / 危险 / 文字 四种，两种尺寸</small></h2><div class="frame"><div id="root-Button" style="font-family:var(--font-sans);background:var(--surface);padding:24px;display:grid;gap:16px">
+<style>
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 20px;font:600 15px/20px var(--font-sans);border:1px solid transparent;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s ease-out,color .15s ease-out}
+.btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.btn.primary{background:var(--brand-navy);color:var(--on-brand)}.btn.primary:hover{background:var(--brand-navy-deep)}
+.btn.secondary{background:var(--surface);color:var(--brand-navy);border-color:var(--brand-navy)}.btn.secondary:hover{background:var(--info-bg)}
+.btn.danger{background:var(--brand-red);color:var(--on-brand)}
+.btn.ghost{background:transparent;color:var(--link);padding:0 8px}.btn.ghost:hover{text-decoration:underline}
+.btn.sm{height:32px;padding:0 12px;font-size:13px;line-height:16px}
+.btn[disabled]{background:var(--surface-sunken);color:var(--ink-disabled);border-color:var(--border);cursor:not-allowed}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+</style>
+<div class="row">
+  <button class="btn primary">提交申报</button>
+  <button class="btn secondary">保存草稿</button>
+  <button class="btn danger">删除</button>
+  <button class="btn ghost">查看详情 →</button>
+  <button class="btn primary" disabled>已提交</button>
+</div>
+<div class="row">
+  <button class="btn primary sm">导出</button>
+  <button class="btn secondary sm">筛选</button>
+  <button class="btn ghost sm">重置</button>
+</div>
+</div>
+</div></section><section class="sc"><h2>Card<small>边线分层的内容卡片，可带标题栏</small></h2><div class="frame"><div id="root-Card" style="font-family:var(--font-sans);background:var(--surface-sunken);padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px;color:var(--ink)">
+<style>
+.card{background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-none)}
+.card .hd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);font-size:16px;font-weight:700;color:var(--brand-navy)}
+.card .hd small{font-size:12px;font-weight:400;color:var(--ink-muted)}
+.card .bd{padding:16px;font-size:15px;line-height:24px}
+.card .cft{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:12px;justify-content:flex-end}
+.card.raised{border-color:transparent;box-shadow:var(--shadow-raised)}
+a{color:var(--link)}
+</style>
+<section class="card">
+  <div class="hd">仪器仪表创新产品征集 <small>2025/7/8</small></div>
+  <div class="bd">通过"机械工业数字化转型平台"网上填写申报表格，累计收到相关产品信息 200 余份。</div>
+  <div class="cft"><a href="#">查看明细</a></div>
+</section>
+<section class="card raised">
+  <div class="hd">标准立项进度</div>
+  <div class="bd">6 项行业标准中 4 项已完成报批，2 项处于征求意见阶段。</div>
+</section>
+</div>
+</div></section><section class="sc"><h2>Input<small>文本框、下拉、错误态与禁用态</small></h2><div class="frame"><div id="root-Input" style="font-family:var(--font-sans);background:var(--surface);padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;color:var(--ink);max-width:640px">
+<style>
+.f{display:grid;gap:6px}
+.f label{font:600 13px/16px var(--font-sans);letter-spacing:.02em;color:var(--ink)}
+.f label i{color:var(--brand-red);font-style:normal;margin-left:2px}
+.f input,.f select{height:40px;padding:0 12px;font:400 15px/24px var(--font-sans);color:var(--ink);background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm)}
+.f input::placeholder{color:var(--ink-muted)}
+.f input:focus-visible,.f select:focus-visible{outline:2px solid var(--focus);outline-offset:1px;border-color:var(--brand-navy)}
+.f.error input{border-color:var(--brand-red)}
+.f .help{font:400 12px/16px var(--font-sans);color:var(--ink-muted)}
+.f.error .help{color:var(--brand-red)}
+.f input[disabled]{background:var(--surface-sunken);color:var(--ink-disabled);border-color:var(--border)}
+</style>
+<div class="f"><label>项目名称<i>*</i></label><input value="医疗器械产业数据系统"><span class="help">与立项文件一致</span></div>
+<div class="f"><label>项目负责人</label><select><option>梅恪</option><option>陈实</option></select></div>
+<div class="f error"><label>联系电话<i>*</i></label><input value="010-6326"><span class="help">✕ 错误：请输入完整的 11 位或带区号的固定电话</span></div>
+<div class="f"><label>所属中心</label><input value="传感与仪器中心" disabled><span class="help">由账号决定，不可修改</span></div>
+</div>
+</div></section><section class="sc"><h2>Tag<small>状态标签：色 + 字，从不只靠颜色</small></h2><div class="frame"><div id="root-Tag" style="font-family:var(--font-sans);background:var(--surface);padding:24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+<style>
+.tag{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;font:600 13px/16px var(--font-sans);letter-spacing:.02em;border-radius:var(--radius-sm);border:1px solid transparent}
+.tag::before{content:"";width:6px;height:6px;border-radius:var(--radius-pill);background:currentColor}
+.tag.neutral{background:var(--surface-sunken);color:var(--ink-muted);border-color:var(--border)}
+.tag.info{background:var(--info-bg);color:var(--link)}
+.tag.success{background:var(--success-bg);color:var(--success)}
+.tag.warning{background:var(--warning-bg);color:var(--warning)}
+.tag.danger{background:var(--danger-bg);color:var(--brand-red)}
+.tag.brand{background:var(--brand-navy);color:var(--on-brand)}.tag.brand::before{display:none}
+</style>
+<span class="tag neutral">草稿</span>
+<span class="tag info">审核中</span>
+<span class="tag success">已通过</span>
+<span class="tag warning">待补充</span>
+<span class="tag danger">已驳回</span>
+<span class="tag brand">行业标准</span>
+</div>
+</div></section><section class="sc"><h2>Footer<small>深蓝页脚条：日期 · 机构 · 页码，右端斜切装饰</small></h2><div class="frame"><div id="root-Footer" style="font-family:var(--font-sans);background:var(--surface);padding:16px;display:grid;gap:16px">
+<style>
+.ft{position:relative;display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 24px;background:var(--brand-navy);color:var(--on-brand);font:400 12px/16px var(--font-sans);overflow:hidden}
+.ft .deco{position:absolute;right:0;top:0;bottom:0;width:120px;background:var(--brand-sky);clip-path:polygon(var(--slash) 0,100% 0,100% 100%,0 100%);opacity:.9}
+.ft .deco::after{content:"";position:absolute;right:0;top:0;bottom:0;width:calc(120px - var(--slash) - 8px);background:var(--brand-navy-deep);clip-path:polygon(var(--slash) 0,100% 0,100% 100%,0 100%)}
+.ft span{position:relative;z-index:1}
+.ft .page{padding-right:96px}
+.site{display:grid;grid-template-columns:1fr auto;gap:8px 24px;padding:12px 24px;border-top:2px solid var(--brand-sky);color:var(--ink-muted);font:400 12px/16px var(--font-sans)}
+.site b{color:var(--ink);font-size:13px}
+</style>
+<footer class="ft"><span class="deco" aria-hidden="true"></span><span>2025/7/8</span><span>机械工业仪器仪表综合技术经济研究所</span><span class="page">3</span></footer>
+<div class="site"><div><b>机械工业仪器仪表综合技术经济研究所</b><br>地址：北京市西城区广安门外大街甲397号 · 电话：010-63261819 · 网址：www.itei.cn</div><div>© ITEI</div></div>
+</div>
+</div></section><section class="sc"><h2>DataTable<small>数据表：深蓝表头文字、斑马行、无竖线</small></h2><div class="frame"><div id="root-DataTable" style="font-family:var(--font-sans);background:var(--surface);padding:24px;color:var(--ink)">
+<style>
+table{width:100%;border-collapse:collapse;font:400 15px/24px var(--font-sans)}
+thead th{text-align:left;padding:8px 12px;background:var(--surface-sunken);color:var(--brand-navy);font-weight:700;font-size:13px;letter-spacing:.02em;border-bottom:2px solid var(--brand-sky)}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--border)}
+tbody tr:nth-child(even) td{background:var(--surface-sunken)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+td.code{font:400 13px/20px var(--font-mono)}
+.st{display:inline-block;height:20px;padding:0 6px;font:600 12px/20px var(--font-sans);border-radius:2px}
+.ok{background:var(--success-bg);color:var(--success)}.rv{background:var(--info-bg);color:var(--link)}
+</style>
+<table>
+<thead><tr><th>HS 编码</th><th>商品名称</th><th class="num">2024 进口额（万美元）</th><th class="num">同比</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td class="code">9018.12</td><td>超声扫描装置</td><td class="num">38,214</td><td class="num">+6.2%</td><td><span class="st ok">已核对</span></td></tr>
+<tr><td class="code">9018.13</td><td>核磁共振成像装置</td><td class="num">61,907</td><td class="num">−1.8%</td><td><span class="st ok">已核对</span></td></tr>
+<tr><td class="code">9022.12</td><td>X 射线断层检查仪</td><td class="num">54,330</td><td class="num">+3.9%</td><td><span class="st rv">复核中</span></td></tr>
+</tbody></table>
+</div>
+</div></section><section class="sc"><h2>KpiTile<small>统计数字卡：序号式大数字 + 说明 + 趋势</small></h2><div class="frame"><div id="root-KpiTile" style="font-family:var(--font-sans);background:var(--surface-sunken);padding:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;color:var(--ink)">
+<style>
+.kpi{background:var(--surface-raised);border:1px solid var(--border);padding:16px;display:grid;gap:4px}
+.kpi .l{font:600 13px/16px var(--font-sans);letter-spacing:.02em;color:var(--ink-muted)}
+.kpi .v{font:700 28px/32px var(--font-sans);letter-spacing:-.01em;color:var(--brand-navy);font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:14px;font-weight:400;color:var(--ink-muted);margin-left:4px}
+.kpi .d{font:400 12px/16px var(--font-sans);color:var(--ink-muted)}
+.kpi .d.up{color:var(--success)}.kpi .d.down{color:var(--brand-red)}
+.kpi.hi{border-top:4px solid var(--brand-red)}
+</style>
+<div class="kpi hi"><span class="l">收到申报</span><span class="v">213<small>份</small></span><span class="d up">▲ 较上期 +18</span></div>
+<div class="kpi"><span class="l">通过初审</span><span class="v">156<small>份</small></span><span class="d">通过率 73.2%</span></div>
+<div class="kpi"><span class="l">待补充材料</span><span class="v">27<small>份</small></span><span class="d down">▼ 需本周处理</span></div>
+</div>
+</div></section>
+<p style="font:400 12px/16px var(--font-sans);color:var(--ink-muted)">本页离线可用；组件源码在 components/&lt;Name&gt;/preview.html，规则在同目录 README.md。</p>
+</body></html>

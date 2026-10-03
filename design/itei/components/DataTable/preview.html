@@ -1,0 +1,20 @@
+<!-- @dsCard group="Data" height=230 subtitle="数据表：深蓝表头文字、斑马行、无竖线" -->
+<div id="root" style="font-family:var(--font-sans);background:var(--surface);padding:24px;color:var(--ink)">
+<style>
+table{width:100%;border-collapse:collapse;font:400 15px/24px var(--font-sans)}
+thead th{text-align:left;padding:8px 12px;background:var(--surface-sunken);color:var(--brand-navy);font-weight:700;font-size:13px;letter-spacing:.02em;border-bottom:2px solid var(--brand-sky)}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--border)}
+tbody tr:nth-child(even) td{background:var(--surface-sunken)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+td.code{font:400 13px/20px var(--font-mono)}
+.st{display:inline-block;height:20px;padding:0 6px;font:600 12px/20px var(--font-sans);border-radius:2px}
+.ok{background:var(--success-bg);color:var(--success)}.rv{background:var(--info-bg);color:var(--link)}
+</style>
+<table>
+<thead><tr><th>HS 编码</th><th>商品名称</th><th class="num">2024 进口额（万美元）</th><th class="num">同比</th><th>状态</th></tr></thead>
+<tbody>
+<tr><td class="code">9018.12</td><td>超声扫描装置</td><td class="num">38,214</td><td class="num">+6.2%</td><td><span class="st ok">已核对</span></td></tr>
+<tr><td class="code">9018.13</td><td>核磁共振成像装置</td><td class="num">61,907</td><td class="num">−1.8%</td><td><span class="st ok">已核对</span></td></tr>
+<tr><td class="code">9022.12</td><td>X 射线断层检查仪</td><td class="num">54,330</td><td class="num">+3.9%</td><td><span class="st rv">复核中</span></td></tr>
+</tbody></table>
+</div>

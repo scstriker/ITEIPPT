@@ -1,0 +1,15 @@
+<!-- @dsCard group="Data" height=170 subtitle="统计数字卡：序号式大数字 + 说明 + 趋势" -->
+<div id="root" style="font-family:var(--font-sans);background:var(--surface-sunken);padding:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;color:var(--ink)">
+<style>
+.kpi{background:var(--surface-raised);border:1px solid var(--border);padding:16px;display:grid;gap:4px}
+.kpi .l{font:600 13px/16px var(--font-sans);letter-spacing:.02em;color:var(--ink-muted)}
+.kpi .v{font:700 28px/32px var(--font-sans);letter-spacing:-.01em;color:var(--brand-navy);font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:14px;font-weight:400;color:var(--ink-muted);margin-left:4px}
+.kpi .d{font:400 12px/16px var(--font-sans);color:var(--ink-muted)}
+.kpi .d.up{color:var(--success)}.kpi .d.down{color:var(--brand-red)}
+.kpi.hi{border-top:4px solid var(--brand-red)}
+</style>
+<div class="kpi hi"><span class="l">收到申报</span><span class="v">213<small>份</small></span><span class="d up">▲ 较上期 +18</span></div>
+<div class="kpi"><span class="l">通过初审</span><span class="v">156<small>份</small></span><span class="d">通过率 73.2%</span></div>
+<div class="kpi"><span class="l">待补充材料</span><span class="v">27<small>份</small></span><span class="d down">▼ 需本周处理</span></div>
+</div>

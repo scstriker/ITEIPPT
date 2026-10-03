@@ -1,0 +1,19 @@
+<!-- @dsCard group="Feedback" height=110 subtitle="状态标签：色 + 字，从不只靠颜色" -->
+<div id="root" style="font-family:var(--font-sans);background:var(--surface);padding:24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+<style>
+.tag{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;font:600 13px/16px var(--font-sans);letter-spacing:.02em;border-radius:var(--radius-sm);border:1px solid transparent}
+.tag::before{content:"";width:6px;height:6px;border-radius:var(--radius-pill);background:currentColor}
+.tag.neutral{background:var(--surface-sunken);color:var(--ink-muted);border-color:var(--border)}
+.tag.info{background:var(--info-bg);color:var(--link)}
+.tag.success{background:var(--success-bg);color:var(--success)}
+.tag.warning{background:var(--warning-bg);color:var(--warning)}
+.tag.danger{background:var(--danger-bg);color:var(--brand-red)}
+.tag.brand{background:var(--brand-navy);color:var(--on-brand)}.tag.brand::before{display:none}
+</style>
+<span class="tag neutral">草稿</span>
+<span class="tag info">审核中</span>
+<span class="tag success">已通过</span>
+<span class="tag warning">待补充</span>
+<span class="tag danger">已驳回</span>
+<span class="tag brand">行业标准</span>
+</div>

@@ -1,0 +1,1 @@
+PPT 模板的两张原始背景图，供制作幻灯片、海报、横幅时参考形态，不作为 UI 素材。`ppt-master-content.jpg`：内容页母版，顶部深蓝波带（gradient-start→gradient-end）+ 亮蓝细线，底部深蓝条与右侧斜切。`ppt-layout-cover.jpg`：封面版式，左上标志，中下部亮蓝横线（brand-sky）向右下斜切收尾。两图像素为 4:3，PPT 中被拉伸为 16:9 使用。

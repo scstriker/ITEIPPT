@@ -1,0 +1,21 @@
+<!-- @dsCard group="Layout" height=160 subtitle="顶部固定页眉：标志区 + 当前页标题" -->
+<div id="root" style="font-family:var(--font-sans);background:var(--surface);padding:16px">
+<style>
+.hdr{display:flex;align-items:stretch;height:var(--header-height);background:linear-gradient(90deg,var(--gradient-start),var(--gradient-end));color:var(--on-gradient);overflow:hidden}
+.hdr .brand{display:flex;align-items:center;gap:12px;padding:0 24px;background:var(--surface);color:var(--brand-navy);font-weight:700;letter-spacing:.12em;clip-path:polygon(0 0,100% 0,calc(100% - var(--slash)) 100%,0 100%);padding-right:calc(24px + var(--slash))}
+.hdr .brand .mark{width:28px;height:28px;position:relative}
+.hdr .brand .mark::before{content:"";position:absolute;inset:2px;border:4px solid var(--brand-navy);border-right-color:transparent;border-radius:50%;transform:rotate(-30deg)}
+.hdr .brand .mark::after{content:"";position:absolute;left:10px;top:6px;width:14px;height:11px;background:var(--brand-red);border-radius:50%;transform:rotate(-30deg)}
+.hdr .title{flex:1;display:flex;align-items:center;padding:0 24px;font-size:20px;font-weight:700}
+.hdr .actions{display:flex;align-items:center;gap:16px;padding:0 24px;font-size:14px}
+.hdr .actions span{border-bottom:2px solid transparent;padding:4px 0}
+.hdr .actions span[aria-current]{border-bottom-color:var(--on-gradient)}
+.rule{height:2px;background:var(--brand-sky)}
+</style>
+<header class="hdr" role="banner">
+  <div class="brand"><span class="mark" aria-hidden="true"></span>ITEI</div>
+  <div class="title">一、项目运行情况</div>
+  <nav class="actions" aria-label="主导航"><span aria-current="page">工作台</span><span>数据</span><span>标准</span><span>设置</span></nav>
+</header>
+<div class="rule"></div>
+</div>

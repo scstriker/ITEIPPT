@@ -1,0 +1,19 @@
+<!-- @dsCard group="Navigation" height=300 subtitle="目录 / 步骤导航，当前项为红" -->
+<div id="root" style="font-family:var(--font-sans);background:var(--surface);padding:24px;max-width:520px">
+<style>
+.nav{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.nav li{display:flex;align-items:stretch;height:44px;background:var(--brand-navy);color:var(--on-brand);font-size:16px;font-weight:700;letter-spacing:.02em}
+.nav li .n{display:flex;align-items:center;justify-content:center;width:72px;font-size:22px;font-weight:700;background:var(--brand-navy-deep);border-radius:22px 0 0 22px;clip-path:polygon(0 0,100% 0,calc(100% - var(--slash)) 100%,0 100%);padding-right:8px}
+.nav li .t{flex:1;display:flex;align-items:center;justify-content:center;padding:0 16px}
+.nav li[aria-current]{background:var(--brand-red)}
+.nav li[aria-current] .n{background:var(--brand-red);filter:brightness(.85)}
+.nav li.done{background:var(--info-bg);color:var(--brand-navy)}
+.nav li.done .n{background:var(--brand-navy);color:var(--on-brand)}
+</style>
+<ol class="nav" aria-label="目录">
+  <li class="done"><span class="n">01</span><span class="t">项目建设背景</span></li>
+  <li aria-current="step"><span class="n">02</span><span class="t">项目执行情况</span></li>
+  <li><span class="n">03</span><span class="t">项目运行情况</span></li>
+  <li><span class="n">04</span><span class="t">项目管理情况</span></li>
+</ol>
+</div>
