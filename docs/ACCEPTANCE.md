@@ -8,6 +8,19 @@
 
 E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改。夹具文件均为合成数据，文件名带“（示例）”。
 
+## 验收记录（2026-10-03，分支 `refactor/modular-architecture`）
+
+| 命令 | 结果 |
+|---|---|
+| `functions`: `npm test` | 6 个文件、46 条通过 |
+| `functions`: `npm run typecheck`、`npm run build` | 通过（TypeScript 7） |
+| `src`: `npm run lint`、`npm run build` | 通过（TypeScript 7、Vite 8） |
+| `src`: `npm test` | 8 个文件、38 条通过 |
+| `src`: `npm run e2e` | 34 条通过（含 2 条截图） |
+| `src`: `npm run e2e:local` | 1 条通过；`E2E_DEV=1` 开发服务器下也通过 |
+| `src`: `npm run gate:phase1` | Structure assertions passed |
+| 真实 Gemini（`npm run e2e:real`） | 流程走通并导出 14 页，但 Key 无效，规划与生成均为降级结果（见 AC-029、PRD Q-10） |
+
 ## 追溯表
 
 | 需求 | 验收 | 方式 |
@@ -42,7 +55,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/upload.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-002 — 拒绝不支持的文件
 
@@ -52,7 +65,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/upload.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-003 — 封面与结束页回填
 
@@ -62,7 +75,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/upload.spec.ts`、`src/tests/workflow.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-004 — 文档摘要与日志
 
@@ -72,7 +85,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/upload.spec.ts`、`src/tests/upload.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-005 — 进入条件与阻塞提示
 
@@ -86,7 +99,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/navigation.spec.ts`、`src/tests/workflow.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-006 — 导航确认弹窗
 
@@ -96,7 +109,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/navigation.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-007 — 开始新任务
 
@@ -106,7 +119,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/navigation.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-008 — 预设模板切换与重置
 
@@ -116,7 +129,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/framework.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-009 — 章节增删
 
@@ -126,7 +139,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/framework.spec.ts`、`src/tests/framework.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-010 — 子章节编辑
 
@@ -136,7 +149,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/framework.spec.ts`、`src/tests/framework.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-011 — AI 建议调整的前端合并
 
@@ -146,7 +159,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/framework.spec.ts`、`src/tests/framework.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-012 — /api/plan 后端行为
 
@@ -161,7 +174,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `functions/tests/plan.contract.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-013 — 生成任务成功
 
@@ -171,7 +184,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/generate.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-014 — 生成失败与重试
 
@@ -181,7 +194,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/generate.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-015 — 任务记录的恢复与清除
 
@@ -191,7 +204,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/generate.spec.ts`（摘要相同的情形通过预写 `sessionStorage` 并构造同一框架模拟）
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-016 — 框架改动使结果失效
 
@@ -201,7 +214,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/generate.spec.ts`、`src/tests/workflow.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-017 — 生成结果结构
 
@@ -211,7 +224,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `functions/tests/generate-content.golden.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-018 — 单槽位导入
 
@@ -221,7 +234,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/images.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-019 — 批量导入
 
@@ -231,7 +244,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/images.spec.ts`、`src/tests/images.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-020 — 复制描述、外链与无图片页
 
@@ -241,7 +254,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/images.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-021 — 审计预览浏览
 
@@ -251,7 +264,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/audit.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-022 — 审阅编辑
 
@@ -261,7 +274,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/audit.spec.ts`、`src/e2e/export.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-023 — 导出预检与确认
 
@@ -271,7 +284,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/export.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-024 — 渲染结果符合模板
 
@@ -281,7 +294,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/tests/pptx-render.snapshot.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-025 — 下载
 
@@ -291,7 +304,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/export.spec.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-026 — 接口契约
 
@@ -301,7 +314,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `functions/tests/api.contract.test.ts`、`functions/tests/jobs.contract.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-027 — 关闭 Gemini 透传
 
@@ -311,7 +324,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `functions/tests/api.contract.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-028 — 任务存储与执行
 
@@ -321,7 +334,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `functions/tests/jobs.store.test.ts`、`functions/tests/worker.test.ts`；manual · `docs/cloud-deployment.md` 自检步骤
 
-**Status:** NOT RUN
+**Status:** PASS（自动，内存实现）；线上 Firestore 实现 NOT RUN（需部署后按 `docs/cloud-deployment.md` 第 6 节自检）
 
 ## AC-029 — 本地完整运行
 
@@ -331,7 +344,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/e2e/local-backend.spec.ts`；manual · Goal 7 用真实 Key 跑一次
 
-**Status:** NOT RUN
+**Status:** PASS（`npm run e2e:local`，生产构建与 `E2E_DEV=1` 开发服务器都通过）；真实 Key 人工验证 BLOCKED：`src/.env` 中的 Key 被 Google 判为无效（API_KEY_INVALID），换有效 Key 后运行 `npm run e2e:real`
 
 ## AC-030 — Key 不进前端
 
@@ -341,7 +354,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** inspection · `npm run build` 后 `grep -r "AIza" src/dist`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-031 — 结构门禁
 
@@ -351,7 +364,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-032 — ITEI 界面检查
 
@@ -361,7 +374,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** manual · Playwright 截图 `src/e2e/screenshots.spec.ts` 生成，人工逐项核对
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03 浅色、深色截图逐项核对）
 
 ## AC-033 — 界面文字无乱码
 
@@ -371,7 +384,7 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** automated · `src/tests/encoding.test.ts`
 
-**Status:** NOT RUN
+**Status:** PASS（2026-10-03）
 
 ## AC-034 — Storage 默认拒绝
 
@@ -381,4 +394,4 @@ E2E 只用界面文字和 ARIA 角色定位元素，界面重写后测试不改�
 
 **Verification:** inspection
 
-**Status:** NOT RUN
+**Status:** PASS（代码）；需 `firebase deploy --only storage` 后生效

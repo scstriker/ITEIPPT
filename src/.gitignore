@@ -11,3 +11,4 @@ test-results/
 playwright-report/
 e2e-dist-local/
 screenshots-out/
+e2e-dist-real/

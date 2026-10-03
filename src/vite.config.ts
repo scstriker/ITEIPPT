@@ -11,8 +11,8 @@ export default defineConfig(({mode}) => {
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
-        '@contracts': path.resolve(__dirname, '../functions/src/contracts'),
+        '@': path.resolve(import.meta.dirname, '.'),
+        '@contracts': path.resolve(import.meta.dirname, '../functions/src/contracts'),
       },
     },
     build: {

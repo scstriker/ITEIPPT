@@ -13,7 +13,8 @@
     "gate:phase1": "tsx scripts/phase1Gate.ts",
     "test": "vitest run",
     "e2e": "playwright test",
-    "e2e:local": "playwright test -c playwright.local-backend.config.ts"
+    "e2e:local": "playwright test -c playwright.local-backend.config.ts",
+    "e2e:real": "playwright test -c playwright.real.config.ts"
   },
   "dependencies": {
     "@tabler/icons-react": "^3.48.0",

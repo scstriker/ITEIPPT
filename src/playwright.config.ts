@@ -7,7 +7,7 @@ const channel = process.env.PW_CHANNEL ?? 'chrome';
 
 export default defineConfig({
   testDir: 'e2e',
-  testIgnore: /local-backend\.spec\.ts/,
+  testIgnore: /(local-backend|real-gemini)\.spec\.ts/,
   timeout: 60_000,
   expect: { timeout: 10_000 },
   fullyParallel: true,

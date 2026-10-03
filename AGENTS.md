@@ -17,6 +17,7 @@ UI 规范见 `design/itei/AGENTS.md`。`archive/` 是过程文件，不作为事
 cd functions && npm test          # 后端合同与单元测试
 cd src && npm test                # 前端单元与渲染快照
 cd src && npm run e2e             # Playwright 端到端
+cd src && npm run e2e:local       # 真实本地后端 + Gemini 桩跑通 4 步
 cd src && npm run proxy:dev       # 本地后端 :8787（读 src/.env）
 cd src && npm run dev             # 前端 :3000
 cd src && npm run gate:phase1     # PPTX 结构门禁

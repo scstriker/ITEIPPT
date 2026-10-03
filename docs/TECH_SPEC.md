@@ -19,79 +19,82 @@ Express 应用 createApiApp
   └─ /api/generate-content/jobs → JobStore + JobRunner → worker → Gemini
 ```
 
-## 2. 现有架构（Existing Architecture，重构前，2026-10-03）
+## 2. 现有架构（Existing Architecture，2026-10-03 重构后）
 
 ### 仓库结构
 
-| 路径 | 内容 |
+```text
+ITEIPPT/
+├─ src/                       前端 Vite 工程根（自带 package.json，目录名沿用旧名）
+│  ├─ app/                    App、main、globals.css（Tailwind 4 + ITEI tokens + shadcn 主题映射）
+│  ├─ components/itei/        ITEI 骨架与小组件：AppHeader、StepNav、AppFooter、Card、Notice、KpiTile
+│  ├─ components/ui/          shadcn/ui 组件（radix、Tabler 图标），已按 ITEI 规则改样式
+│  ├─ workflow/               workflowReducer.ts（纯函数）+ useWorkflow.ts
+│  ├─ features/upload|framework|images|audit|export/   步骤组件 + 纯逻辑模块
+│  ├─ confirm/                确认弹窗文案注册表、弹窗（Radix Dialog）
+│  ├─ services/api/           planApi、contentApi
+│  ├─ services/document/      documentParser（pdfjs、mammoth）
+│  ├─ services/pptx/          renderPptx 入口；cover / toc / content / ending 页；textStyle、textLayout、geometry、images、templateRefs
+│  ├─ template/               templateLoader、template_structure.json、背景图、预设
+│  ├─ scripts/phase1Gate.ts   结构门禁（与 docs/reference/ 模板原件比对）
+│  ├─ tests/                  Vitest 单元与渲染快照
+│  └─ e2e/                    Playwright（support/ 假后端与页面辅助函数，fixtures/ 合成示例文件）
+├─ functions/                 后端 Firebase Functions，见 functions/README.md
+│  ├─ src/index.ts            触发器 api / generationJobWorker / generationJobCleanup
+│  ├─ src/http/               createApiApp({ gemini, jobStore, jobRunner })、错误响应
+│  ├─ src/plan/  src/content/  src/gemini/  src/shared/
+│  ├─ src/jobs/               JobStore、JobRunner 接口；firestoreJobStore、MemoryJobStore；runners；worker
+│  ├─ src/contracts/          前后端共享类型（前端经 @contracts/* 只引用类型）
+│  ├─ src/dev/localServer.ts  本地入口（内存任务、进程内执行，不参与部署构建）
+│  └─ tests/                  Vitest；helpers/geminiStub.ts 模拟 Gemini
+├─ design/itei/               ITEI 设计规范（tokens.css 由前端直接 import）
+└─ docs/                      本文档集；reference/ 放模板原件与说明
+```
+
+### 运行时组件
+
+浏览器 SPA、Express 应用（线上为函数 `api`，本地为 `localServer`）、Gemini、线上任务基础设施（Firestore、Cloud Storage、Pub/Sub、Cloud Scheduler）。
+
+### 边界
+
+- 前端只通过 `/api/*` 访问后端，契约见 `API.md`；类型来自 `functions/src/contracts/`。
+- 后端只有一份实现。线上与本地的差别只在装配：`index.ts` 装配 Firestore 存储和 Pub/Sub 执行器，`localServer.ts` 装配内存存储和进程内执行器（ADR-001）。
+- 未定义的 `/api/*` 返回 404，不转发 Gemini。
+
+### 重构记录
+
+重构前（基线提交 `159df77`）的问题与处理：
+
+| 问题 | 处理 |
 |---|---|
-| `src/` | 前端 Vite 工程根（自带 `package.json`）。React 19、TypeScript 5.8、Vite 6；手写 `styles.css` 2446 行；Tailwind 已安装未接入 |
-| `src/components/` | 5 个步骤组件，`FrameworkPlanner.tsx` 1036 行、`ContentAuditor.tsx` 725 行；`ContentGenerator.tsx` 已无引用 |
-| `src/hooks/useWorkflow.ts` | 4 步状态机和跨步骤数据 |
-| `src/services/apiProxyServer.ts` | 本地后端，2598 行单文件。没有任务接口 |
-| `src/services/pptxRenderer.ts` | PPTX 渲染，1113 行 |
-| `src/config/` | 模板读取、预设、背景图（base64）；`slidePlan.ts` 只被冒烟脚本使用 |
-| `src/types/` | 类型定义，与 `functions/src/types/` 逐字相同 |
-| `functions/src/services/apiProxyServer.ts` | 云端后端，3034 行，比本地版多任务接口、自定义模板最少章节、软时限 |
-| `functions/src/services/generationJob*.ts` | Firestore + Storage + Pub/Sub 任务存储和 worker |
-| `docs/template_structure.json` | 模板结构（运行时资产，被前端直接 import） |
-
-### 现有问题
-
-- 两份后端已分叉。前端调用的 `/api/generate-content/jobs` 只在云端版存在，本地版会把请求落进 `/api/*` 透传，所以本地无法生成内容。
-- `/api/*` 透传会把任意路径带上服务器 Key 转发 Gemini，本地和线上都开着。
-- 没有测试，只有 3 个冒烟脚本。
-- 未用依赖：`@google/genai`、`lucide-react`、`motion`、`cors`。
+| 两份后端（本地 2598 行、云端 3034 行）已分叉；本地版没有任务接口，本地无法生成内容 | 合并为 `functions/src/` 一份，按模块拆分，本地用内存任务 |
+| `/api/*` 把任意请求带上服务器 Key 透传 Gemini | 删除，未知路径 404 |
+| `storage.rules` 对 `pptx-versions` 公开读写 | 改为全部拒绝 |
+| 类型文件两处复制；`template_structure.json` 放在 `docs/` | `functions/src/contracts/`；`src/template/` |
+| `FrameworkPlanner` 1036 行、`ContentAuditor` 725 行、渲染器 1113 行；无测试 | 纯逻辑抽出并单测；渲染器按页面类型拆分；补 Vitest 与 Playwright |
+| TypeScript 5.8、Vite 6、手写 CSS 2446 行 | TypeScript 7、Vite 8、Tailwind 4 + shadcn/ui，界面改为 ITEI 规范（ADR-003） |
+| 开发服务器（StrictMode）下生成任务查询一次后停止 | `useGenerationJob` 挂载时复位卸载标记 |
 
 ## 3. 目标架构（Proposed Architecture）
 
-```text
-ITEIPPT/
-├─ src/                       前端（目录名不变）
-│  ├─ app/                    App、AppHeader、Stepper、Footer、全局样式
-│  ├─ workflow/               workflowReducer.ts（纯函数）+ useWorkflow.ts
-│  ├─ features/<step>/        upload、framework、images、audit、export：组件 + 纯逻辑
-│  ├─ components/ui/          shadcn/ui 组件（ITEI 主题）
-│  ├─ confirm/                确认弹窗注册表
-│  ├─ services/api/           planApi、contentApi
-│  ├─ services/document/      documentParser
-│  ├─ services/pptx/          按页面类型拆分的渲染器
-│  ├─ template/               templateLoader、template_structure.json、背景图、预设
-│  ├─ tests/                  Vitest
-│  └─ e2e/                    Playwright
-└─ functions/src/
-   ├─ index.ts                Firebase 触发器（导出名不变）
-   ├─ contracts/              前后端共享类型，前端经 @contracts/* 引用（仅类型）
-   ├─ gemini/                 请求、JSON 提取、重试
-   ├─ plan/                   规划：草案、洞察、降级、自定义模板最少章节
-   ├─ content/                生成：证据切片、提示词、高亮、质量检查、组装、降级
-   ├─ jobs/                   JobStore、JobRunner 接口及 Firestore / 内存实现，worker
-   ├─ http/app.ts             createApiApp({ gemini, jobStore, jobRunner })
-   └─ dev/localServer.ts      本地入口：内存 JobStore + 进程内 JobRunner
-```
-
-要点：
-
-- 后端只有一份，以云端版为准（ADR-001）。
-- 本地 `src` 下 `npm run proxy:dev` 启动 `functions/src/dev/localServer.ts`，读 `src/.env`，监听 8787。
-- 删除 `/api/*` 透传，未知路径返回 404。
-- 前端按步骤拆分，纯逻辑与组件分离，便于单测。
+暂无计划中的架构变更。第 14 节和 PRD 第 11 节的待定问题需要用户决定后再改。
 
 ## 4. 模块职责
 
 | 模块 | 职责 |
 |---|---|
 | `src/workflow/` | 当前步骤、已解析文档、框架、生成结果及其框架摘要、已导入图片、审阅状态、导出 Blob；步骤解锁规则 |
-| `src/features/upload/` | 文件校验、调用解析、摘要和日志 |
-| `src/features/framework/` | 预设切换、章节编辑、AI 建议合并、生成任务提交与轮询、sessionStorage 恢复 |
-| `src/features/images/` | 图片校验、槽位映射、批量填充 |
-| `src/features/audit/` | 指标、筛选分组、预览、正文和表格编辑 |
-| `src/features/export/` | 导出预检、组装渲染输入、调用渲染器、下载 |
-| `src/services/pptx/` | 读模板、布局计算、cover / toc / content / ending 渲染 |
+| `src/features/upload/` | `uploadRules`：文件校验、摘要；`UploadPanel`：解析、日志 |
+| `src/features/framework/` | `frameworkEditing`：章节编辑、预设、AI 建议合并、提示文案；`useGenerationJob`：任务提交、轮询、sessionStorage 记录；`FrameworkPlanner`：界面 |
+| `src/features/images/` | `imageSlots`：槽位、校验、批量填充；`ImageImporter`：界面 |
+| `src/features/audit/` | `auditModel`：指标、问题计数、筛选分组、表格编辑；`ContentAuditor`：界面 |
+| `src/features/export/` | `exportPreflight`：预检、风险摘要、渲染输入；`GeneratePanel`：渲染与下载 |
+| `src/services/pptx/` | 读模板、布局计算、按页面类型渲染 |
 | `src/confirm/` | 确认弹窗文案注册表和弹窗状态 |
+| `src/components/` | ITEI 骨架和 shadcn/ui 基础组件，不含业务逻辑 |
 | `functions/src/plan/` | `/api/plan` 业务逻辑 |
 | `functions/src/content/` | 逐页内容生成、降级补写、结果组装 |
-| `functions/src/jobs/` | 任务创建、入队、进度、结果、清理；worker 执行 |
+| `functions/src/jobs/` | 任务记录规则（`jobRecord`）、存储实现、执行器、worker |
 | `functions/src/http/` | 路由、请求校验、错误码映射 |
 
 ## 5. 数据流
@@ -164,6 +167,7 @@ Gemini API；Firebase Hosting、Functions Gen2、Firestore、Cloud Storage、Pub
 ## 14. 已知限制
 
 - “目标页数”未被使用（PRD Q-1）。
+- Key 无效时 `/api/plan` 静默降级为本地规则，界面看不出是 Key 的问题（PRD Q-10）。
 - 超过 6 个章节导出失败（PRD Q-2）。
 - SVG、WEBP 图片可能导出失败（PRD Q-4）。
 - 后端提示词有 5 处乱码（PRD Q-5）。

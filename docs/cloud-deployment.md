@@ -1,6 +1,15 @@
-﻿# ITEIPPT 云端部署手册（异步 Step2 版本）
+# ITEIPPT 云端部署手册（异步 Step2 版本）
 
-更新时间：2026-04-12
+更新时间：2026-10-03（重构后）。2026-04-12 的线上部署仍是重构前的代码，按第 5 节重新部署后，第 0 节的变化才生效。
+
+## 0. 重构带来的部署变化
+
+- 后端只有一份代码：`functions/src/`。入口 `index.ts`，HTTP 路由 `http/app.ts`，任务 `jobs/`。前端 `src/` 不再包含后端代码。
+- 删除了 `/api/*` 透传 Gemini 的路由。未定义的 `/api/*` 返回 `404 not_found`（见 `docs/SECURITY.md`）。
+- `storage.rules` 改为拒绝所有客户端读写。Storage 产品初始化后执行 `firebase deploy --only storage`。任务桶经 Admin SDK 访问，不受影响。
+- `functions` 的 `npm run build` 先清空 `lib/` 再编译（TypeScript 7），不会再部署过期文件。
+- 部署前先跑测试：`cd functions && npm test`、`cd src && npm test && npm run e2e`。
+- 运行时仍是 `nodejs20`，请在 Google Cloud 文档核实该运行时的支持期限，必要时另行升级。
 
 ## 1. 部署目标
 - 前端部署到 Firebase Hosting（`src/dist`）。
@@ -21,7 +30,7 @@ Functions（`asia-east1`）：
 - `POST /api/generate-content/jobs` 创建任务
 - `GET /api/generate-content/jobs/:jobId` 轮询状态
 - `GET /api/generate-content/jobs/:jobId/result` 拉取结果
-- 页面刷新后通过 `sessionStorage` 自动恢复轮询
+- 任务 ID 记在 `sessionStorage`；“规划框架”重新挂载且框架未变时恢复轮询。刷新页面后框架回到默认，不会恢复（PRD Q-7）
 
 ## 3. 关键配置
 根目录：
@@ -32,7 +41,7 @@ Functions（`asia-east1`）：
 - `GEMINI_BASE_URL`
 - `GEMINI_PLAN_MODEL`
 - `GEMINI_CONTENT_MODEL`
-- `ALLOWED_ORIGINS`
+- `ALLOWED_ORIGINS`（代码未使用；Hosting rewrite 同源，无需 CORS）
 - `GENERATION_JOB_BUCKET`（必填，异步任务对象存储桶）
 
 Secret Manager：
@@ -71,10 +80,16 @@ powershell -ExecutionPolicy Bypass -File scripts/cloud-preflight.ps1
 firebase functions:secrets:set GEMINI_API_KEY --project <projectId>
 ```
 
-构建：
+测试与构建：
 ```powershell
-cd src
+cd functions
 npm install
+npm test
+
+cd ..\src
+npm install
+npm test
+npm run e2e
 npm run build
 
 cd ..\functions
@@ -104,6 +119,16 @@ firebase deploy --only functions,hosting --project <projectId>
 
 4. 兼容性：
 - 旧接口 `POST /api/generate-content` 仍可用
+
+5. 安全自检（重构后新增）：
+```powershell
+curl.exe -s https://<host>/api/health
+curl.exe -s -X POST https://<host>/api/models -H "content-type: application/json" -d "{}"
+```
+- 第一条返回 `{"ok":true,...}`。
+- 第二条必须返回 `404` 和 `{"error":{"code":"not_found",...}}`，不能出现 Gemini 的模型列表或报错。
+
+6. 在页面上用一份示例文档走完 4 步，确认能生成内容并导出 PPTX。
 
 ## 7. 已知限制
 - Pub/Sub 触发器最大超时为 `540s`（平台限制），因此 worker 为 `540s`，软截止设为 `500s`。
