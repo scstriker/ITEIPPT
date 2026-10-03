@@ -201,34 +201,6 @@ export async function requestGenerateContentJobResult(jobId: string, signal?: Ab
   return parsed;
 }
 
-export async function requestGenerateContent(
-  payload: GenerateContentRequest,
-  signal?: AbortSignal,
-): Promise<AnalyzerResult> {
-  const response = await fetch('/api/generate-content', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(payload),
-    signal,
-  });
-
-  const { rawText, parsed } = await parseJsonResponse(response);
-
-  if (!response.ok) {
-    throwApiError(response, rawText, parsed, 'Failed to request /api/generate-content');
-  }
-
-  if (!isAnalyzerResult(parsed)) {
-    throw new ContentApiError(
-      response.status,
-      'invalid_generate_content_response',
-      'Invalid AnalyzerResult response from /api/generate-content',
-    );
-  }
-
-  return parsed;
-}
-
 function mapDetailToReadableMessage(details?: string): string | null {
   if (!details) {
     return null;

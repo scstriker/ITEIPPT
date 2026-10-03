@@ -1,10 +1,21 @@
 ﻿import { type ChangeEvent, useMemo, useState } from 'react';
 import {
+  ALLOWED_EXTENSIONS,
+  DEFAULT_ORGANIZATION,
+  DEFAULT_TARGET_SLIDES,
+  MAX_FILE_SIZE_MB,
+  PARSE_TIMEOUT_MS,
+  buildSummary,
+  clampTargetSlides,
+  formatSizeKb,
+  validateSelection,
+} from './uploadRules';
+import {
   DocumentParseError,
   getUploadErrorInfo,
   parseDocument,
   type ParsedDocument,
-} from '../services/documentParser';
+} from '../../services/document/documentParser';
 
 interface UploadPanelProps {
   parsedDocument: ParsedDocument | null;
@@ -26,70 +37,17 @@ interface UploadLogEntry {
   time: string;
 }
 
-const ALLOWED_EXTENSIONS = ['.pdf', '.docx'];
-const DEFAULT_TARGET_SLIDES = 20;
-const DEFAULT_ORGANIZATION = '机械工业仪器仪表综合技术经济研究所';
-
-function hasAllowedExtension(filename: string): boolean {
-  const lower = filename.toLowerCase();
-  return ALLOWED_EXTENSIONS.some((ext) => lower.endsWith(ext));
-}
-
 function formatNowTime(): string {
   return new Date().toLocaleTimeString('zh-CN', {
     hour12: false,
   });
 }
 
-function formatSizeKb(sizeBytes: number): string {
-  return `${(sizeBytes / 1024).toFixed(1)} KB`;
-}
-
-function buildSummary(parsedDocument: ParsedDocument | null): {
-  title: string;
-  domain: string;
-  keywords: string;
-  abstract: string;
-} {
-  if (!parsedDocument) {
-    return {
-      title: '待上传文档',
-      domain: '-',
-      keywords: '-',
-      abstract: '上传并解析后将显示文档摘要。',
-    };
-  }
-
-  const lines = parsedDocument.textContent
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean);
-
-  const title = lines[0] ?? parsedDocument.filename;
-  const abstract = parsedDocument.textContent.slice(0, 160) || '未提取到摘要内容。';
-  const keywords =
-    lines
-      .slice(1, 20)
-      .join(' ')
-      .replace(/[，。、“”‘’；：,.!?]/g, ' ')
-      .split(/\s+/)
-      .filter((token) => token.length >= 2)
-      .slice(0, 8)
-      .join('、') || '-';
-
-  return {
-    title,
-    domain: parsedDocument.fileType.toUpperCase(),
-    keywords,
-    abstract,
-  };
-}
-
 export function UploadPanel({
   parsedDocument,
   onParsed,
-  maxFileSizeMb = 20,
-  timeoutMs = 45_000,
+  maxFileSizeMb = MAX_FILE_SIZE_MB,
+  timeoutMs = PARSE_TIMEOUT_MS,
 }: UploadPanelProps) {
   const [isParsing, setIsParsing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -132,7 +90,7 @@ export function UploadPanel({
     }
 
     if (files.length > 1) {
-      const message = '一次仅支持上传一个文件，请重新选择。';
+      const message = validateSelection(files, maxFileSizeMb) ?? '';
       setErrorMessage(message);
       pushLog('error', message);
       return;
@@ -145,17 +103,10 @@ export function UploadPanel({
     setErrorMessage(null);
     pushLog('info', `已选择文件：${file.name}`);
 
-    if (!hasAllowedExtension(file.name)) {
-      const message = '文件格式不支持，仅允许 .pdf / .docx。';
-      setErrorMessage(message);
-      pushLog('error', message);
-      return;
-    }
-
-    if (file.size > maxFileSizeBytes) {
-      const message = `文件过大，请上传不超过 ${maxFileSizeMb}MB 的文档。`;
-      setErrorMessage(message);
-      pushLog('error', message);
+    const selectionError = validateSelection([file], maxFileSizeMb);
+    if (selectionError) {
+      setErrorMessage(selectionError);
+      pushLog('error', selectionError);
       return;
     }
 
@@ -214,7 +165,7 @@ export function UploadPanel({
                   type="number"
                   min={4}
                   value={targetSlides}
-                  onChange={(event) => setTargetSlides(Math.max(4, Number(event.target.value) || 4))}
+                  onChange={(event) => setTargetSlides(clampTargetSlides(Number(event.target.value)))}
                 />
               </div>
 

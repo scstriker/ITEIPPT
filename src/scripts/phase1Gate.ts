@@ -3,8 +3,8 @@ import { mkdirSync } from 'node:fs';
 import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { BackgroundAssets } from '../config/assets';
-import { renderPPTX, type SlideContent } from '../services/pptxRenderer';
+import type { BackgroundAssets } from '../template/assets';
+import { renderPPTX, type SlideContent } from '../services/pptx/renderPptx';
 
 interface GatePaths {
   projectRoot: string;
@@ -23,8 +23,8 @@ function toImageDataUrl(base64Body: string): string {
 }
 
 async function readBackgrounds(srcDir: string): Promise<BackgroundAssets> {
-  const cover = await readFile(resolve(srcDir, 'config', 'bg-cover.base64'), 'utf8');
-  const content = await readFile(resolve(srcDir, 'config', 'bg-content.base64'), 'utf8');
+  const cover = await readFile(resolve(srcDir, 'template', 'bg-cover.base64'), 'utf8');
+  const content = await readFile(resolve(srcDir, 'template', 'bg-content.base64'), 'utf8');
   return {
     coverBg: toImageDataUrl(cover),
     contentBg: toImageDataUrl(content),

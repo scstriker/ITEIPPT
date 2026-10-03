@@ -27,7 +27,6 @@ export type ConfirmActionId =
   | 'image_remove'
   | 'generate_build_pptx'
   | 'generate_download_pptx'
-  | 'content_generate_start'
   | 'task_reset_all';
 
 export interface ConfirmPayloadMap {
@@ -90,9 +89,6 @@ export interface ConfirmPayloadMap {
   };
   generate_download_pptx: {
     fileName: string;
-  };
-  content_generate_start: {
-    chapterCount: number;
   };
   task_reset_all: {
     currentStepLabel: string;
@@ -213,13 +209,6 @@ const confirmCopyRegistry: ConfirmCopyRegistry = {
     title: '确认下载文件？',
     message: `将下载文件“${fileName}”到本地设备。`,
     confirmText: '确认下载',
-    cancelText: '取消',
-    variant: 'warning',
-  }),
-  content_generate_start: ({ chapterCount }) => ({
-    title: '确认启动内容生成？',
-    message: `将根据当前 ${chapterCount} 个章节启动 AI 内容生成任务。`,
-    confirmText: '确认启动',
     cancelText: '取消',
     variant: 'warning',
   }),

@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "proxy:dev": "tsx --env-file=.env ../functions/src/dev/localServer.ts",
-    "slideplan:smoke": "tsx scripts/slidePlanSmoke.ts",
     "build": "vite build",
     "preview": "vite preview",
     "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",

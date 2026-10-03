@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, type ReactNode } from 'react';
-import { ConfirmModal } from '../components/ConfirmModal';
+import { ConfirmModal } from './ConfirmModal';
 import { resolveConfirmCopy, type ConfirmActionId, type ConfirmCopyEntry, type ConfirmExecutor, type ConfirmPayloadMap, type ConfirmRequest } from './confirmActions';
 
 interface PendingConfirm {

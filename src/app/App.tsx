@@ -1,11 +1,11 @@
 ﻿import { useMemo } from 'react';
-import { ContentAuditor } from './components/ContentAuditor';
-import { FrameworkPlanner } from './components/FrameworkPlanner';
-import { GeneratePanel } from './components/GeneratePanel';
-import { ImageImporter } from './components/ImageImporter';
-import { UploadPanel } from './components/UploadPanel';
-import { useConfirmCenter } from './confirm/useConfirmCenter';
-import { useWorkflow, type WorkflowStep } from './hooks/useWorkflow';
+import { ContentAuditor } from '../features/audit/ContentAuditor';
+import { FrameworkPlanner } from '../features/framework/FrameworkPlanner';
+import { GeneratePanel } from '../features/export/GeneratePanel';
+import { ImageImporter } from '../features/images/ImageImporter';
+import { UploadPanel } from '../features/upload/UploadPanel';
+import { useConfirmCenter } from '../confirm/useConfirmCenter';
+import { useWorkflow, type WorkflowStep } from '../workflow/useWorkflow';
 import './styles.css';
 
 const STEP_LABELS: Record<WorkflowStep, string> = {

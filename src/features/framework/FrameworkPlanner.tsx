@@ -1,18 +1,33 @@
-﻿import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
-import { createFrameworkPlanFromPreset, getTemplatePresets, reindexChapters } from '../config/templatePresets';
-import type { ParsedDocument } from '../services/documentParser';
-import { mapPlanErrorToMessage, requestFrameworkPlan } from '../services/frameworkPlanApi';
-import {
-  ContentApiError,
-  mapGenerateContentError,
-  requestCreateGenerateContentJob,
-  requestGenerateContentJobResult,
-  requestGenerateContentJobStatus,
-} from '../services/contentGeneratorApi';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import type { AnalyzerResult } from '@contracts/analyzer';
-import type { ChapterPlan, CoverageLevel, FrameworkPlan, SubSlidePlan, TemplatePreset } from '@contracts/framework';
-import type { VisualMode } from '@contracts/template';
-import type { ConfirmRequest } from '../confirm/confirmActions';
+import type { FrameworkPlan, TemplatePreset } from '@contracts/framework';
+import type { ConfirmRequest } from '../../confirm/confirmActions';
+import type { ParsedDocument } from '../../services/document/documentParser';
+import { mapPlanErrorToMessage, requestFrameworkPlan } from '../../services/api/planApi';
+import { getTemplatePresets } from '../../template/presets';
+import {
+  COVERAGE_LABELS,
+  aiSuggestionItems as listAiSuggestions,
+  appendChapter,
+  appendSubSlide,
+  applyPreset,
+  coverageSummaryText as buildCoverageSummary,
+  degradedWarning,
+  estimateTotalPages,
+  getProgressStageText,
+  getVisualModeLabel,
+  mergeInsights,
+  removeChapter as removeChapterFromPlan,
+  removeSubSlide as removeSubSlideFromPlan,
+  resizeSlides,
+  setChapterTitle,
+  setSubSlideTitle,
+  slideInsightKey,
+  slideInsightReasons,
+  updateChapterSlides,
+  validatePlanBeforeGenerate,
+} from './frameworkEditing';
+import { useGenerationJob } from './useGenerationJob';
 
 interface FrameworkPlannerProps {
   parsedDocument: ParsedDocument | null;
@@ -23,238 +38,6 @@ interface FrameworkPlannerProps {
   confirmBusy: boolean;
   onChange: (plan: FrameworkPlan) => void;
   onGenerated?: (result: AnalyzerResult) => void;
-}
-
-const VISUAL_MODE_LABELS: Record<VisualMode, string> = {
-  none: '文字',
-  table: '文字 + 表格',
-  images: '文字 + 图片',
-};
-
-const COVERAGE_LABELS: Record<CoverageLevel, string> = {
-  sufficient: '高覆盖',
-  moderate: '中覆盖',
-  sparse: '低覆盖',
-};
-
-function updateChapterSlides(
-  plan: FrameworkPlan,
-  chapterIndex: number,
-  updater: (slides: SubSlidePlan[]) => SubSlidePlan[],
-): FrameworkPlan {
-  const chapters = [...plan.chapters];
-  const target = chapters[chapterIndex];
-  if (!target) {
-    return plan;
-  }
-
-  chapters[chapterIndex] = {
-    ...target,
-    slides: updater(target.slides),
-  };
-
-  return {
-    ...plan,
-    chapters: reindexChapters(chapters),
-  };
-}
-
-function resizeSlides(slides: SubSlidePlan[], nextCountInput: number): SubSlidePlan[] {
-  const nextCount = Math.max(1, Math.min(20, Number.isFinite(nextCountInput) ? nextCountInput : 1));
-  if (nextCount === slides.length) {
-    return slides;
-  }
-
-  if (nextCount < slides.length) {
-    return slides.slice(0, nextCount);
-  }
-
-  const seed = slides.at(-1) ?? {
-    subtitle: '子章节',
-    visualMode: 'none' as VisualMode,
-    contentHint: '待补充',
-  };
-
-  const next = [...slides];
-  for (let index = slides.length; index < nextCount; index += 1) {
-    next.push({
-      subtitle: `子章节 ${index + 1}`,
-      visualMode: seed.visualMode,
-      contentHint: seed.contentHint ?? '待补充',
-    });
-  }
-  return next;
-}
-
-function mergeInsights(currentPlan: FrameworkPlan, aiPlan: FrameworkPlan): FrameworkPlan {
-  if (currentPlan.chapters.length === 0 && aiPlan.chapters.length > 0) {
-    return {
-      ...currentPlan,
-      chapters: aiPlan.chapters,
-      apiPlanMeta: aiPlan.apiPlanMeta,
-    };
-  }
-
-  const byIndex = new Map<number, ChapterPlan>();
-  for (const chapter of aiPlan.chapters) {
-    byIndex.set(chapter.chapterIndex, chapter);
-  }
-
-  const slideModeByKey = new Map<string, VisualMode>();
-  for (const insight of aiPlan.apiPlanMeta?.slideInsights ?? []) {
-    slideModeByKey.set(`${insight.chapterIndex}:${insight.slideIndex}`, insight.visualMode);
-  }
-
-  const chapters = currentPlan.chapters.map((chapter) => {
-    const aiChapter = byIndex.get(chapter.chapterIndex);
-    return {
-      ...chapter,
-      aiReason: aiChapter?.aiReason ?? chapter.aiReason,
-      coverageLevel: aiChapter?.coverageLevel ?? chapter.coverageLevel,
-      sourceHint: aiChapter?.sourceHint ?? chapter.sourceHint,
-      slides: chapter.slides.map((slide, slideIndex) => {
-        const key = `${chapter.chapterIndex}:${slideIndex + 1}`;
-        const nextMode = slideModeByKey.get(key) ?? aiChapter?.slides?.[slideIndex]?.visualMode;
-        if (!nextMode) {
-          return slide;
-        }
-        return {
-          ...slide,
-          visualMode: nextMode,
-        };
-      }),
-    };
-  });
-
-  return {
-    ...currentPlan,
-    chapters,
-    apiPlanMeta: aiPlan.apiPlanMeta,
-  };
-}
-
-function getVisualModeLabel(mode: VisualMode): string {
-  return VISUAL_MODE_LABELS[mode] ?? '文字';
-}
-
-function getProgressStageText(percent: number): string {
-  if (percent >= 100) {
-    return '已完成，结果已就绪';
-  }
-  if (percent <= 15) {
-    return '正在建立章节语义索引';
-  }
-  if (percent <= 35) {
-    return '正在提炼子章节内容';
-  }
-  if (percent <= 60) {
-    return '正在匹配布局提示';
-  }
-  if (percent <= 85) {
-    return '正在生成逐页内容草稿';
-  }
-  return '正在校验一致性与完整性';
-}
-
-function estimateTotalPages(plan: FrameworkPlan): number {
-  return 2 + plan.chapters.length + plan.chapters.reduce((sum, chapter) => sum + chapter.slides.length, 0);
-}
-
-function slideInsightKey(chapterIndex: number, slideIndex: number): string {
-  return `${chapterIndex}:${slideIndex}`;
-}
-
-const ACTIVE_GENERATION_JOB_KEY = 'itei_step2_active_generation_job';
-const GENERATION_JOB_POLL_INTERVAL_MS = 2000;
-const GENERATION_JOB_POLL_TIMEOUT_MS = 20 * 60 * 1000;
-
-interface StoredGenerationJobState {
-  jobId: string;
-  planDigest: string;
-  savedAt: string;
-}
-
-function buildPlanDigest(plan: FrameworkPlan): string {
-  return JSON.stringify({
-    presetId: plan.presetId,
-    chapters: plan.chapters.map((chapter) => ({
-      chapterIndex: chapter.chapterIndex,
-      chapterTitle: chapter.chapterTitle.trim(),
-      slides: chapter.slides.map((slide) => ({
-        subtitle: slide.subtitle.trim(),
-        visualMode: slide.visualMode,
-        contentHint: (slide.contentHint ?? '').trim(),
-      })),
-    })),
-  });
-}
-
-function readStoredGenerationJob(): StoredGenerationJobState | null {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-  const raw = window.sessionStorage.getItem(ACTIVE_GENERATION_JOB_KEY);
-  if (!raw) {
-    return null;
-  }
-  try {
-    const parsed = JSON.parse(raw) as Partial<StoredGenerationJobState>;
-    if (typeof parsed.jobId !== 'string' || !parsed.jobId.trim()) {
-      return null;
-    }
-    if (typeof parsed.planDigest !== 'string' || !parsed.planDigest.trim()) {
-      return null;
-    }
-    return {
-      jobId: parsed.jobId.trim(),
-      planDigest: parsed.planDigest,
-      savedAt: typeof parsed.savedAt === 'string' ? parsed.savedAt : new Date().toISOString(),
-    };
-  } catch {
-    return null;
-  }
-}
-
-function writeStoredGenerationJob(job: StoredGenerationJobState): void {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  window.sessionStorage.setItem(ACTIVE_GENERATION_JOB_KEY, JSON.stringify(job));
-}
-
-function clearStoredGenerationJob(): void {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  window.sessionStorage.removeItem(ACTIVE_GENERATION_JOB_KEY);
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
-function validatePlanBeforeGenerate(plan: FrameworkPlan): string | null {
-  if (plan.chapters.length === 0) {
-    return '请至少保留 1 个章节。';
-  }
-
-  for (const chapter of plan.chapters) {
-    if (!chapter.chapterTitle.trim()) {
-      return `第 ${chapter.chapterIndex} 章标题不能为空。`;
-    }
-    if (chapter.slides.length === 0) {
-      return `第 ${chapter.chapterIndex} 章至少需要 1 个子章节。`;
-    }
-    for (let slideIndex = 0; slideIndex < chapter.slides.length; slideIndex += 1) {
-      if (!chapter.slides[slideIndex].subtitle.trim()) {
-        return `第 ${chapter.chapterIndex}-${slideIndex + 1} 子章节标题不能为空。`;
-      }
-    }
-  }
-
-  return null;
 }
 
 export function FrameworkPlanner({
@@ -272,25 +55,18 @@ export function FrameworkPlanner({
   const [analyzeError, setAnalyzeError] = useState<string | null>(null);
   const [expandedChapterIndex, setExpandedChapterIndex] = useState<number | null>(null);
 
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [genError, setGenError] = useState<string | null>(null);
-  const [genPercent, setGenPercent] = useState(0);
-  const [genServerStage, setGenServerStage] = useState<string | null>(null);
-  const [genJobId, setGenJobId] = useState<string | null>(null);
-  const [showRetryGenerate, setShowRetryGenerate] = useState(false);
-
-  const resumeCheckedRef = useRef(false);
-  const unmountedRef = useRef(false);
-  const planDigest = useMemo(() => buildPlanDigest(plan), [plan]);
+  const {
+    isGenerating,
+    genError,
+    setGenError,
+    genPercent,
+    genServerStage,
+    genJobId,
+    showRetryGenerate,
+    runGenerate,
+  } = useGenerationJob({ parsedDocument, plan, onGenerated });
 
   const hasStaleAnalyzerResult = Boolean(analyzerResult) && !isAnalyzerFresh;
-
-  useEffect(
-    () => () => {
-      unmountedRef.current = true;
-    },
-    [],
-  );
 
   useEffect(() => {
     if (!isGenerating && !isAnalyzing) {
@@ -309,98 +85,22 @@ export function FrameworkPlanner({
     () => genServerStage?.trim() || getProgressStageText(genPercent),
     [genPercent, genServerStage],
   );
-  const generationWarningMessage = useMemo(() => {
-    if (!analyzerResult || !isAnalyzerFresh) {
-      return null;
-    }
-    if (analyzerResult.generationMeta?.mode !== 'degraded') {
-      return null;
-    }
-    const reason = analyzerResult.generationMeta.reason?.trim();
-    if (!reason) {
-      return '已降级生成，可继续编辑。';
-    }
-    const reasons = reason
-      .split(';')
-      .map((item) => item.trim())
-      .filter(Boolean);
-    const technicalReasonPrefixes = ['batch_generation_failed', 'soft_deadline_reached', 'request_level_fallback'];
-    const technicalReasons = reasons.filter((item) =>
-      technicalReasonPrefixes.some((prefix) => item === prefix || item.startsWith(`${prefix}:`)),
-    );
-    if (technicalReasons.length === 0) {
-      return null;
-    }
-    return `已降级生成，可继续编辑（原因：${technicalReasons.join(';')}）。`;
-  }, [analyzerResult, isAnalyzerFresh]);
-
-  const aiSuggestionItems = useMemo(() => {
-    return plan.chapters
-      .filter((chapter) => chapter.aiReason?.trim())
-      .map((chapter) => ({
-        chapterIndex: chapter.chapterIndex,
-        chapterTitle: chapter.chapterTitle,
-        reason: chapter.aiReason?.trim() ?? '',
-      }));
-  }, [plan.chapters]);
-
-  const coverageCounts = plan.chapters.reduce<Record<CoverageLevel, number>>(
-    (acc, chapter) => {
-      if (chapter.coverageLevel) {
-        acc[chapter.coverageLevel] += 1;
-      }
-      return acc;
-    },
-    { sufficient: 0, moderate: 0, sparse: 0 },
+  const generationWarningMessage = useMemo(
+    () => degradedWarning(analyzerResult, isAnalyzerFresh),
+    [analyzerResult, isAnalyzerFresh],
   );
-
-  const totalCoverageCount = coverageCounts.sufficient + coverageCounts.moderate + coverageCounts.sparse;
-  const coverageSummaryText =
-    totalCoverageCount > 0
-      ? `章节覆盖评估：高覆盖 ${coverageCounts.sufficient} / 中覆盖 ${coverageCounts.moderate} / 低覆盖 ${coverageCounts.sparse}`
-      : '章节覆盖评估：待 AI 建议调整后生成';
-
-  const slideInsightReasonMap = useMemo(() => {
-    const map = new Map<string, string>();
-    for (const insight of plan.apiPlanMeta?.slideInsights ?? []) {
-      if (!insight.reason) {
-        continue;
-      }
-      map.set(slideInsightKey(insight.chapterIndex, insight.slideIndex), insight.reason);
-    }
-    return map;
-  }, [plan.apiPlanMeta?.slideInsights]);
+  const aiSuggestionItems = useMemo(() => listAiSuggestions(plan), [plan]);
+  const coverageSummaryText = buildCoverageSummary(plan);
+  const slideInsightReasonMap = useMemo(() => slideInsightReasons(plan), [plan]);
 
   const handlePresetChange = (presetId: TemplatePreset['id']) => {
     setAnalyzeError(null);
     setExpandedChapterIndex(null);
-    const presetPlan = createFrameworkPlanFromPreset(presetId);
-    onChange({
-      ...presetPlan,
-      coverInfo: {
-        ...presetPlan.coverInfo,
-        ...plan.coverInfo,
-      },
-      endingInfo: {
-        ...presetPlan.endingInfo,
-        ...plan.endingInfo,
-      },
-    });
+    onChange(applyPreset(plan, presetId));
   };
 
   const addChapter = () => {
-    const nextIndex = plan.chapters.length + 1;
-    onChange({
-      ...plan,
-      chapters: reindexChapters([
-        ...plan.chapters,
-        {
-          chapterIndex: nextIndex,
-          chapterTitle: `第${nextIndex}章`,
-          slides: [{ subtitle: '新子章节', visualMode: 'none', contentHint: '待补充' }],
-        },
-      ]),
-    });
+    onChange(appendChapter(plan));
     setExpandedChapterIndex(plan.chapters.length);
   };
 
@@ -409,11 +109,7 @@ export function FrameworkPlanner({
       setAnalyzeError('至少保留 1 个章节，不能继续删除。');
       return;
     }
-    const next = plan.chapters.filter((_, index) => index !== chapterIndex);
-    onChange({
-      ...plan,
-      chapters: reindexChapters(next),
-    });
+    onChange(removeChapterFromPlan(plan, chapterIndex));
 
     setExpandedChapterIndex((prev) => {
       if (prev === null) {
@@ -427,9 +123,7 @@ export function FrameworkPlanner({
   };
 
   const removeSubSlide = (chapterIndex: number, slideIndex: number) => {
-    onChange(
-      updateChapterSlides(plan, chapterIndex, (slides) => slides.filter((_, index) => index !== slideIndex)),
-    );
+    onChange(removeSubSlideFromPlan(plan, chapterIndex, slideIndex));
   };
 
   const runAiPlan = async () => {
@@ -473,142 +167,6 @@ export function FrameworkPlanner({
         await runAiPlan();
       },
     );
-  };
-
-  const pollGenerationJob = async (jobId: string): Promise<void> => {
-    const startedAt = Date.now();
-
-    while (true) {
-      const status = await requestGenerateContentJobStatus(jobId);
-      if (unmountedRef.current) {
-        return;
-      }
-
-      setGenJobId(status.jobId);
-      setGenServerStage(status.progress.stage || '正在处理任务');
-      const progressPercent = Math.max(1, Math.min(99, Math.round(status.progress.percent)));
-      setGenPercent(progressPercent);
-
-      if (status.status === 'succeeded') {
-        const result = await requestGenerateContentJobResult(jobId);
-        if (unmountedRef.current) {
-          return;
-        }
-        setGenPercent(100);
-        setGenServerStage('已完成，结果已就绪');
-        setGenJobId(null);
-        clearStoredGenerationJob();
-        onGenerated?.(result);
-        return;
-      }
-
-      if (status.status === 'failed') {
-        clearStoredGenerationJob();
-        const details = status.error?.details?.trim();
-        const message = status.error?.message?.trim() || '任务执行失败，请点击“重新生成”。';
-        throw new ContentApiError(409, status.error?.code ?? 'generation_job_failed', message, details);
-      }
-
-      if (Date.now() - startedAt > GENERATION_JOB_POLL_TIMEOUT_MS) {
-        clearStoredGenerationJob();
-        throw new ContentApiError(408, 'generation_job_timeout', '异步任务等待超时，请点击“重新生成”。');
-      }
-
-      await sleep(GENERATION_JOB_POLL_INTERVAL_MS);
-    }
-  };
-
-  useEffect(() => {
-    if (resumeCheckedRef.current) {
-      return;
-    }
-    resumeCheckedRef.current = true;
-
-    if (!parsedDocument || !onGenerated) {
-      return;
-    }
-
-    const storedJob = readStoredGenerationJob();
-    if (!storedJob) {
-      return;
-    }
-
-    if (storedJob.planDigest !== planDigest) {
-      clearStoredGenerationJob();
-      return;
-    }
-
-    setIsGenerating(true);
-    setShowRetryGenerate(false);
-    setGenError(null);
-    setGenPercent(2);
-    setGenServerStage('正在恢复任务状态');
-    setGenJobId(storedJob.jobId);
-
-    void (async () => {
-      try {
-        await pollGenerationJob(storedJob.jobId);
-      } catch (error) {
-        if (!unmountedRef.current) {
-          setGenError(mapGenerateContentError(error));
-          setShowRetryGenerate(true);
-          setGenPercent(0);
-          setGenServerStage(null);
-        }
-      } finally {
-        if (!unmountedRef.current) {
-          setIsGenerating(false);
-        }
-      }
-    })();
-  }, [onGenerated, parsedDocument, planDigest]);
-
-  const runGenerate = async () => {
-    if (!parsedDocument) {
-      setGenError('请先在 Step 1 上传并解析文档。');
-      return;
-    }
-    if (!onGenerated) {
-      setGenError('当前页面未接入内容生成回调。');
-      return;
-    }
-    const validationError = validatePlanBeforeGenerate(plan);
-    if (validationError) {
-      setGenError(validationError);
-      return;
-    }
-
-    setGenError(null);
-    setShowRetryGenerate(false);
-    setGenPercent(2);
-    setGenServerStage('正在创建任务');
-    setIsGenerating(true);
-
-    try {
-      const created = await requestCreateGenerateContentJob({
-        frameworkPlan: plan,
-        textContent: parsedDocument.textContent,
-        sourceFilename: parsedDocument.filename,
-      });
-
-      setGenJobId(created.jobId);
-      writeStoredGenerationJob({
-        jobId: created.jobId,
-        planDigest,
-        savedAt: new Date().toISOString(),
-      });
-
-      await pollGenerationJob(created.jobId);
-    } catch (error) {
-      setGenError(mapGenerateContentError(error));
-      setShowRetryGenerate(true);
-      setGenPercent(0);
-      setGenServerStage(null);
-    } finally {
-      if (!unmountedRef.current) {
-        setIsGenerating(false);
-      }
-    }
   };
 
   const handleGenerateClick = () => {
@@ -729,17 +287,7 @@ export function FrameworkPlanner({
                               value={chapter.chapterTitle}
                               title={chapter.chapterTitle}
                               onClick={(event) => event.stopPropagation()}
-                              onChange={(event) => {
-                                const chapters = [...plan.chapters];
-                                chapters[chapterIndex] = {
-                                  ...chapter,
-                                  chapterTitle: event.target.value,
-                                };
-                                onChange({
-                                  ...plan,
-                                  chapters: reindexChapters(chapters),
-                                });
-                              }}
+                              onChange={(event) => onChange(setChapterTitle(plan, chapterIndex, event.target.value))}
                               disabled={isAnalyzing}
                             />
                           </div>
@@ -823,15 +371,9 @@ export function FrameworkPlanner({
                                           type="text"
                                           className="subslide-title-input"
                                           value={slide.subtitle}
-                                          onChange={(event) => {
-                                            onChange(
-                                              updateChapterSlides(plan, chapterIndex, (slides) =>
-                                                slides.map((item, index) =>
-                                                  index === slideIndex ? { ...item, subtitle: event.target.value } : item,
-                                                ),
-                                              ),
-                                            );
-                                          }}
+                                          onChange={(event) =>
+                                            onChange(setSubSlideTitle(plan, chapterIndex, slideIndex, event.target.value))
+                                          }
                                           disabled={isAnalyzing}
                                         />
                                       </td>
@@ -884,17 +426,7 @@ export function FrameworkPlanner({
                                     chapterTitle: chapter.chapterTitle,
                                     nextSubslideIndex: chapter.slides.length + 1,
                                   },
-                                  () =>
-                                    onChange(
-                                      updateChapterSlides(plan, chapterIndex, (slides) => [
-                                        ...slides,
-                                        {
-                                          subtitle: `子章节 ${slides.length + 1}`,
-                                          visualMode: 'none',
-                                          contentHint: '待补充',
-                                        },
-                                      ]),
-                                    ),
+                                  () => onChange(appendSubSlide(plan, chapterIndex)),
                                 );
                               }}
                               disabled={isAnalyzing || confirmBusy}

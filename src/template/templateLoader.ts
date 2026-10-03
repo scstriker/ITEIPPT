@@ -1,4 +1,4 @@
-import templateJson from '../../docs/template_structure.json';
+import templateJson from './template_structure.json';
 import type {
   Position,
   PptxPosition,

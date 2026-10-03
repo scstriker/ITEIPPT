@@ -1,7 +1,15 @@
 ﻿import { useEffect, useMemo, useRef, useState } from 'react';
-import type { ConfirmRequest } from '../confirm/confirmActions';
-import { getImageSlotKey } from '../hooks/useWorkflow';
+import type { ConfirmRequest } from '../../confirm/confirmActions';
 import type { AnalyzerResult } from '@contracts/analyzer';
+import {
+  bulkImportMessage,
+  getImageSlotKey,
+  getSlidePrompts,
+  listImageSlides,
+  listImageSlots,
+  planBulkImport,
+  validateImageFile,
+} from './imageSlots';
 
 interface ImageImporterProps {
   analyzerResult: AnalyzerResult | null;
@@ -10,19 +18,6 @@ interface ImageImporterProps {
   confirmBusy: boolean;
   onImportImage: (slotKey: string, file: File) => void;
   onRemoveImage: (slotKey: string) => void;
-}
-
-const MAX_IMAGE_FILE_MB = 12;
-
-function validateImageFile(file: File): string | null {
-  if (!file.type.startsWith('image/')) {
-    return `文件“${file.name}”不是图片格式，请重新选择。`;
-  }
-  const maxSizeBytes = MAX_IMAGE_FILE_MB * 1024 * 1024;
-  if (file.size > maxSizeBytes) {
-    return `文件“${file.name}”超过 ${MAX_IMAGE_FILE_MB}MB，请压缩后再上传。`;
-  }
-  return null;
 }
 
 function useObjectUrl(file: File | null): string | null {
@@ -51,18 +46,6 @@ function ImagePreview({ file, alt }: { file: File | null; alt: string }) {
   return <img src={previewUrl} alt={alt} className="image-slot-preview-img" />;
 }
 
-function getSlidePrompts(slide: NonNullable<AnalyzerResult['slidePlan']>[number]) {
-  if (slide.imagePrompts?.length) {
-    return slide.imagePrompts;
-  }
-  return [
-    {
-      description: '图片描述待生成',
-      iteiDrawPrompt: '',
-    },
-  ];
-}
-
 export function ImageImporter({
   analyzerResult,
   importedImages,
@@ -71,27 +54,13 @@ export function ImageImporter({
   onImportImage,
   onRemoveImage,
 }: ImageImporterProps) {
-  const imageSlides = useMemo(
-    () =>
-      (analyzerResult?.slidePlan ?? []).filter((slide) => slide.type === 'content' && slide.visualMode === 'images'),
-    [analyzerResult],
-  );
+  const imageSlides = useMemo(() => listImageSlides(analyzerResult), [analyzerResult]);
   const [expandedPage, setExpandedPage] = useState<number | null>(null);
   const bulkInputRef = useRef<HTMLInputElement | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
-  const allSlots = useMemo(
-    () =>
-      imageSlides.flatMap((slide) =>
-        getSlidePrompts(slide).map((_, slotIndex) => ({
-          page: slide.page,
-          slotIndex,
-          key: getImageSlotKey(slide.page, slotIndex),
-        })),
-      ),
-    [imageSlides],
-  );
+  const allSlots = useMemo(() => listImageSlots(imageSlides), [imageSlides]);
 
   const importedSlotCount = useMemo(() => allSlots.filter((slot) => importedImages.has(slot.key)).length, [allSlots, importedImages]);
   const missingSlotCount = allSlots.length - importedSlotCount;
@@ -196,7 +165,6 @@ export function ImageImporter({
                   return;
                 }
 
-                const emptySlots = allSlots.filter((slot) => !importedImages.has(slot.key));
                 const validated: File[] = [];
                 for (const file of files) {
                   const validationError = validateImageFile(file);
@@ -207,8 +175,8 @@ export function ImageImporter({
                   validated.push(file);
                 }
 
-                const appliedCount = Math.min(emptySlots.length, validated.length);
-                if (appliedCount <= 0) {
+                const plan = planBulkImport(allSlots, importedImages, validated.length);
+                if (plan.targetKeys.length <= 0) {
                   setInfoMessage('当前没有可填充的空槽位，未执行批量导入。');
                   return;
                 }
@@ -217,18 +185,14 @@ export function ImageImporter({
                   'image_bulk_import',
                   {
                     fileCount: validated.length,
-                    availableSlots: emptySlots.length,
+                    availableSlots: plan.availableSlots,
                   },
                   () => {
-                    emptySlots.slice(0, appliedCount).forEach((slot, index) => {
-                      onImportImage(slot.key, validated[index]);
+                    plan.targetKeys.forEach((key, index) => {
+                      onImportImage(key, validated[index]);
                     });
                     setErrorMessage(null);
-                    if (validated.length > emptySlots.length) {
-                      setInfoMessage(`已导入 ${appliedCount} 张图片，超出的 ${validated.length - appliedCount} 张未使用。`);
-                    } else {
-                      setInfoMessage(`已批量导入 ${appliedCount} 张图片。`);
-                    }
+                    setInfoMessage(bulkImportMessage(plan));
                   },
                 );
               }}

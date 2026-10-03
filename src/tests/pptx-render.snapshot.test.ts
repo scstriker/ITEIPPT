@@ -1,8 +1,8 @@
 // AC-024: the PPTX renderer output stays identical through the refactor.
 import JSZip from 'jszip';
 import { describe, expect, it } from 'vitest';
-import { loadBackgroundAssets } from '../config/assets';
-import { renderPPTX, type ImageFileMap } from '../services/pptxRenderer';
+import { loadBackgroundAssets } from '../template/assets';
+import { renderPPTX, type ImageFileMap } from '../services/pptx/renderPptx';
 import { pngBytes, renderFixtureSlides } from './fixtures/slides';
 
 async function renderFixture(): Promise<JSZip> {

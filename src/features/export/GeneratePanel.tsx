@@ -1,9 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
-import { loadBackgroundAssets } from '../config/assets';
-import type { ConfirmRequest } from '../confirm/confirmActions';
-import { getImageSlotKey } from '../hooks/useWorkflow';
-import { renderPPTX, type ImageFileMap } from '../services/pptxRenderer';
-import type { AnalyzerResult, SlideContent } from '@contracts/analyzer';
+import type { AnalyzerResult } from '@contracts/analyzer';
+import type { ConfirmRequest } from '../../confirm/confirmActions';
+import { renderPPTX } from '../../services/pptx/renderPptx';
+import { loadBackgroundAssets } from '../../template/assets';
+import {
+  OUTPUT_FILENAME,
+  buildRiskSummary,
+  computeExportStats,
+  computePreflight,
+  prepareRenderInput,
+} from './exportPreflight';
 
 interface GeneratePanelProps {
   analyzerResult: AnalyzerResult | null;
@@ -11,41 +17,6 @@ interface GeneratePanelProps {
   requestConfirm: ConfirmRequest;
   confirmBusy: boolean;
   onGenerated: (blob: Blob) => void;
-}
-
-async function prepareRenderInput(
-  result: AnalyzerResult,
-  importedImages: Map<string, File>,
-): Promise<{ slides: SlideContent[]; imageFiles: ImageFileMap }> {
-  const imageFiles: ImageFileMap = new Map();
-  const slides = result.slidePlan.map((slide) => ({ ...slide }));
-
-  for (const slide of slides) {
-    if (slide.type !== 'content' || slide.visualMode !== 'images') {
-      continue;
-    }
-    const prompts = slide.imagePrompts ?? [];
-    const images: NonNullable<SlideContent['images']> = [];
-    for (let slotIndex = 0; slotIndex < prompts.length; slotIndex += 1) {
-      const key = getImageSlotKey(slide.page, slotIndex);
-      const file = importedImages.get(key);
-      if (!file) {
-        continue;
-      }
-      const buffer = await file.arrayBuffer();
-      imageFiles.set(key, buffer);
-      images.push({
-        key,
-        mimeType: file.type || 'image/png',
-      });
-    }
-    if (images.length) {
-      slide.images = images;
-      slide.imageFiles = images.map((img) => img.key ?? '');
-    }
-  }
-
-  return { slides, imageFiles };
 }
 
 export function GeneratePanel({
@@ -67,57 +38,12 @@ export function GeneratePanel({
     };
   }, [downloadUrl]);
 
-  const stats = useMemo(() => {
-    if (!analyzerResult) {
-      return null;
-    }
-    const imageSlideCount = analyzerResult.slidePlan.filter(
-      (slide) => slide.type === 'content' && slide.visualMode === 'images',
-    ).length;
-    return {
-      totalSlides: analyzerResult.slidePlan.length,
-      imageSlideCount,
-    };
-  }, [analyzerResult]);
+  const stats = useMemo(() => (analyzerResult ? computeExportStats(analyzerResult) : null), [analyzerResult]);
 
-  const preflight = useMemo(() => {
-    if (!analyzerResult) {
-      return null;
-    }
-
-    let imageSlotTotal = 0;
-    let importedImageTotal = 0;
-    const overLimitPages: number[] = [];
-
-    for (const slide of analyzerResult.slidePlan) {
-      if (slide.type !== 'content') {
-        continue;
-      }
-
-      if ((slide.bodyText ?? '').length > 150) {
-        overLimitPages.push(slide.page);
-      }
-
-      if (slide.visualMode !== 'images') {
-        continue;
-      }
-
-      const promptCount = slide.imagePrompts?.length ?? 0;
-      imageSlotTotal += promptCount;
-      for (let slotIndex = 0; slotIndex < promptCount; slotIndex += 1) {
-        if (importedImages.has(getImageSlotKey(slide.page, slotIndex))) {
-          importedImageTotal += 1;
-        }
-      }
-    }
-
-    return {
-      imageSlotTotal,
-      importedImageTotal,
-      missingImageTotal: Math.max(0, imageSlotTotal - importedImageTotal),
-      overLimitPages,
-    };
-  }, [analyzerResult, importedImages]);
+  const preflight = useMemo(
+    () => (analyzerResult ? computePreflight(analyzerResult, importedImages) : null),
+    [analyzerResult, importedImages],
+  );
 
   const runGeneratePpt = async () => {
     if (!analyzerResult) {
@@ -150,14 +76,7 @@ export function GeneratePanel({
       setErrorMessage('请先完成内容生成后再导出 PPT。');
       return;
     }
-    const riskSummaryParts: string[] = [];
-    if (preflight?.missingImageTotal) {
-      riskSummaryParts.push(`缺少 ${preflight.missingImageTotal} 个图片槽位`);
-    }
-    if (preflight?.overLimitPages.length) {
-      riskSummaryParts.push(`页面 ${preflight.overLimitPages.join(', ')} 正文超 150 字`);
-    }
-    const riskSummary = riskSummaryParts.length ? riskSummaryParts.join('；') : '当前未发现高风险项。';
+    const riskSummary = preflight ? buildRiskSummary(preflight) : '当前未发现高风险项。';
 
     requestConfirm(
       'generate_build_pptx',
@@ -171,7 +90,7 @@ export function GeneratePanel({
     );
   };
 
-  const outputFilename = 'ITEIPPT_v2_output.pptx';
+  const outputFilename = OUTPUT_FILENAME;
 
   const triggerDownload = (url: string, filename: string) => {
     const anchor = document.createElement('a');

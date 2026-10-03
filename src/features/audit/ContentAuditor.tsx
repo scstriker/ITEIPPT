@@ -1,121 +1,29 @@
 ﻿import { useEffect, useMemo, useRef, useState } from 'react';
-import { getImageSlotKey } from '../hooks/useWorkflow';
-import type { AISupplementType, AnalyzerResult, SlideContent, SourceConfidence } from '@contracts/analyzer';
-
-type AuditCoverage = 'high' | 'medium' | 'low';
-type AuditFilter = 'content' | 'all' | 'issues';
-type AuditViewSection = 'source' | 'body' | 'supplements' | 'missing';
+import type { AnalyzerResult, SlideContent } from '@contracts/analyzer';
+import { getImageSlotKey } from '../images/imageSlots';
+import {
+  FILTER_LABELS,
+  SLIDE_TYPE_LABEL,
+  SUPPLEMENT_LABEL,
+  TAB_LABELS,
+  VISUAL_MODE_LABEL,
+  buildAuditMetrics,
+  countIssuesByPage,
+  filterSlides,
+  getAuditCoverageLabel,
+  getConfidenceMeta,
+  getGroupMeta,
+  getSlideMainTitle,
+  groupSlides,
+  toAuditCoverage,
+  type AuditFilter,
+  type AuditViewSection,
+} from './auditModel';
 
 interface ContentAuditorProps {
   analyzerResult: AnalyzerResult | null;
   importedImages: Map<string, File>;
   onUpdateSlide: (page: number, updater: (slide: SlideContent) => SlideContent) => void;
-}
-
-interface SlideGroup {
-  key: string;
-  title: string;
-  slides: SlideContent[];
-}
-
-const SOURCE_CONFIDENCE_META: Record<SourceConfidence, { label: string; chip: 'sufficient' | 'moderate' | 'sparse' }> = {
-  exact: { label: '原文精确引用', chip: 'sufficient' },
-  paraphrased: { label: '原文转述', chip: 'moderate' },
-  ai_inferred: { label: 'AI 推断', chip: 'moderate' },
-  ai_constructed: { label: 'AI 补充构建', chip: 'sparse' },
-};
-
-const SUPPLEMENT_LABEL: Record<AISupplementType, string> = {
-  common_knowledge: '常识补充',
-  ai_summary: 'AI 概括',
-  ai_inference: 'AI 推理',
-  ai_construction: 'AI 构建',
-  chart_design: '图表设计',
-};
-
-const SLIDE_TYPE_LABEL: Record<SlideContent['type'], string> = {
-  cover: '封面页',
-  toc_section: '目录页',
-  content: '正文页',
-  ending: '结束页',
-};
-
-const VISUAL_MODE_LABEL: Record<NonNullable<SlideContent['visualMode']>, string> = {
-  none: '文字',
-  table: '文字+表格',
-  images: '文字+图片',
-};
-
-const FILTER_LABELS: Record<AuditFilter, string> = {
-  content: '仅正文',
-  all: '全部页面',
-  issues: '仅问题页',
-};
-
-const TAB_LABELS: Record<AuditViewSection, string> = {
-  source: '溯源',
-  body: '正文编辑',
-  supplements: 'AI补充',
-  missing: '缺失项',
-};
-
-function getConfidenceMeta(sourceConfidence?: SourceConfidence): { label: string; chip: 'sufficient' | 'moderate' | 'sparse' } {
-  return SOURCE_CONFIDENCE_META[sourceConfidence ?? 'paraphrased'];
-}
-
-function toAuditCoverage(sourceConfidence?: SourceConfidence): AuditCoverage {
-  if (sourceConfidence === 'exact') {
-    return 'high';
-  }
-  if (sourceConfidence === 'ai_constructed') {
-    return 'low';
-  }
-  return 'medium';
-}
-
-function getAuditCoverageLabel(coverage: AuditCoverage): string {
-  if (coverage === 'high') {
-    return '高覆盖';
-  }
-  if (coverage === 'low') {
-    return '低覆盖';
-  }
-  return '中覆盖';
-}
-
-function getSlideMainTitle(slide: SlideContent): string {
-  switch (slide.type) {
-    case 'cover':
-      return slide.reportTitle ?? slide.standardName ?? '封面信息';
-    case 'toc_section':
-      return slide.pageTitle ?? '目录章节';
-    case 'content':
-      return slide.subtitle ?? slide.chapterTitle ?? '正文内容';
-    case 'ending':
-      return slide.thanks ?? '结束页';
-    default:
-      return '未命名页面';
-  }
-}
-
-function getGroupMeta(slide: SlideContent): { key: string; title: string } {
-  if (slide.type === 'content') {
-    const chapter = slide.chapterTitle?.trim() || '未分组章节';
-    return { key: `chapter:${chapter}`, title: chapter };
-  }
-  if (slide.type === 'cover') {
-    return { key: 'fixed:cover', title: '封面与开场' };
-  }
-  if (slide.type === 'toc_section') {
-    return { key: 'fixed:toc', title: '目录页' };
-  }
-  return { key: 'fixed:ending', title: '结束与收尾' };
-}
-
-function getIssueCount(slide: SlideContent, missingCount: number): number {
-  const supplementCount = slide.aiSupplements?.length ?? 0;
-  const lowCoverage = toAuditCoverage(slide.sourceConfidence) === 'low' ? 1 : 0;
-  return supplementCount + missingCount + lowCoverage;
 }
 
 function useObjectUrl(file: File | null): string | null {
@@ -266,12 +174,6 @@ function AuditSlideCanvas({ slide, importedImages, issueCount }: AuditSlideCanva
 }
 
 export function ContentAuditor({ analyzerResult, importedImages, onUpdateSlide }: ContentAuditorProps) {
-  const [selectedPage, setSelectedPage] = useState<number | null>(null);
-  const [filter, setFilter] = useState<AuditFilter>('content');
-  const [activeTab, setActiveTab] = useState<AuditViewSection>('source');
-  const [expandedGroupKey, setExpandedGroupKey] = useState<string | null>(null);
-  const cardRefs = useRef<Map<number, HTMLButtonElement | null>>(new Map());
-
   if (!analyzerResult) {
     return (
       <section className="panel">
@@ -280,33 +182,25 @@ export function ContentAuditor({ analyzerResult, importedImages, onUpdateSlide }
       </section>
     );
   }
+  return <AuditWorkbench analyzerResult={analyzerResult} importedImages={importedImages} onUpdateSlide={onUpdateSlide} />;
+}
 
-  const allSlides = analyzerResult.slidePlan;
-  const missingByPage = useMemo(() => {
-    const map = new Map<number, number>();
-    for (const item of analyzerResult.missingInfo) {
-      map.set(item.page, (map.get(item.page) ?? 0) + 1);
-    }
-    return map;
-  }, [analyzerResult.missingInfo]);
+function AuditWorkbench({
+  analyzerResult,
+  importedImages,
+  onUpdateSlide,
+}: ContentAuditorProps & { analyzerResult: AnalyzerResult }) {
+  const [selectedPage, setSelectedPage] = useState<number | null>(null);
+  const [filter, setFilter] = useState<AuditFilter>('content');
+  const [activeTab, setActiveTab] = useState<AuditViewSection>('source');
+  const [expandedGroupKey, setExpandedGroupKey] = useState<string | null>(null);
+  const cardRefs = useRef<Map<number, HTMLButtonElement | null>>(new Map());
 
-  const pageIssueCount = useMemo(() => {
-    const map = new Map<number, number>();
-    for (const slide of allSlides) {
-      map.set(slide.page, getIssueCount(slide, missingByPage.get(slide.page) ?? 0));
-    }
-    return map;
-  }, [allSlides, missingByPage]);
-
-  const visibleSlides = useMemo(() => {
-    if (filter === 'all') {
-      return allSlides;
-    }
-    if (filter === 'issues') {
-      return allSlides.filter((slide) => (pageIssueCount.get(slide.page) ?? 0) > 0);
-    }
-    return allSlides.filter((slide) => slide.type === 'content');
-  }, [allSlides, filter, pageIssueCount]);
+  const pageIssueCount = useMemo(() => countIssuesByPage(analyzerResult), [analyzerResult]);
+  const visibleSlides = useMemo(
+    () => filterSlides(analyzerResult.slidePlan, filter, pageIssueCount),
+    [analyzerResult.slidePlan, filter, pageIssueCount],
+  );
 
   useEffect(() => {
     if (!visibleSlides.length) {
@@ -328,21 +222,7 @@ export function ContentAuditor({ analyzerResult, importedImages, onUpdateSlide }
     return visibleSlides.find((slide) => slide.page === selectedPage) ?? visibleSlides[0];
   }, [selectedPage, visibleSlides]);
 
-  const slideGroups = useMemo(() => {
-    const order: string[] = [];
-    const map = new Map<string, SlideGroup>();
-
-    for (const slide of visibleSlides) {
-      const meta = getGroupMeta(slide);
-      if (!map.has(meta.key)) {
-        map.set(meta.key, { key: meta.key, title: meta.title, slides: [] });
-        order.push(meta.key);
-      }
-      map.get(meta.key)?.slides.push(slide);
-    }
-
-    return order.map((key) => map.get(key)).filter((item): item is SlideGroup => Boolean(item));
-  }, [visibleSlides]);
+  const slideGroups = useMemo(() => groupSlides(visibleSlides), [visibleSlides]);
 
   useEffect(() => {
     if (!slideGroups.length) {
@@ -366,32 +246,7 @@ export function ContentAuditor({ analyzerResult, importedImages, onUpdateSlide }
     node?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }, [selectedSlide]);
 
-  const auditMetrics = useMemo(
-    () => [
-      {
-        label: '总页数',
-        value: analyzerResult.auditSummary.totalSlides,
-      },
-      {
-        label: '原文覆盖率',
-        value: `${analyzerResult.auditSummary.exactSourcePercent}%`,
-      },
-      {
-        label: 'AI 补充项',
-        value: analyzerResult.auditSummary.aiSupplementCount,
-      },
-      {
-        label: '缺失项',
-        value: analyzerResult.auditSummary.missingCount,
-      },
-    ],
-    [
-      analyzerResult.auditSummary.aiSupplementCount,
-      analyzerResult.auditSummary.exactSourcePercent,
-      analyzerResult.auditSummary.missingCount,
-      analyzerResult.auditSummary.totalSlides,
-    ],
-  );
+  const auditMetrics = useMemo(() => buildAuditMetrics(analyzerResult), [analyzerResult]);
 
   const selectedMissingInfo = selectedSlide ? analyzerResult.missingInfo.filter((item) => item.page === selectedSlide.page) : [];
   const selectedConfidence = getConfidenceMeta(selectedSlide?.sourceConfidence);

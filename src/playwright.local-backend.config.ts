@@ -20,7 +20,10 @@ export default defineConfig({
       env: { API_PROXY_PORT: String(API_PORT) },
     },
     {
-      command: `npx vite build --outDir e2e-dist-local --emptyOutDir && npx vite preview --outDir e2e-dist-local --port ${PORT} --strictPort --host 127.0.0.1`,
+      // E2E_DEV=1 runs against the dev server (React StrictMode), as developers use it.
+      command: process.env.E2E_DEV
+        ? `npx vite --port ${PORT} --strictPort --host 127.0.0.1`
+        : `npx vite build --outDir e2e-dist-local --emptyOutDir && npx vite preview --outDir e2e-dist-local --port ${PORT} --strictPort --host 127.0.0.1`,
       url: `http://127.0.0.1:${PORT}`,
       reuseExistingServer: false,
       timeout: 180_000,
