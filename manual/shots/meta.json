@@ -1,0 +1,944 @@
+{
+  "ui-overview": {
+    "raw": "raw/ui-overview.png",
+    "dpr": 2,
+    "crop": [
+      0,
+      0,
+      1024,
+      952
+    ],
+    "marks": [
+      [
+        0,
+        0,
+        1024,
+        56
+      ],
+      [
+        0,
+        58,
+        1024,
+        68
+      ],
+      [
+        32,
+        150,
+        960,
+        507
+      ],
+      [
+        32,
+        681,
+        960,
+        36
+      ],
+      [
+        32,
+        741,
+        960,
+        57
+      ],
+      [
+        0,
+        912,
+        1024,
+        40
+      ]
+    ],
+    "note": ""
+  },
+  "upload-settings": {
+    "raw": "raw/upload-settings.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      128,
+      344,
+      395
+    ],
+    "marks": [
+      [
+        49,
+        228,
+        286,
+        40
+      ],
+      [
+        49,
+        306,
+        286,
+        40
+      ],
+      [
+        49,
+        384,
+        286,
+        40
+      ],
+      [
+        32,
+        465,
+        320,
+        46
+      ]
+    ],
+    "note": ""
+  },
+  "upload-done": {
+    "raw": "raw/upload-done.png",
+    "dpr": 2,
+    "crop": [
+      364,
+      0,
+      640,
+      849
+    ],
+    "marks": [
+      [
+        393,
+        78,
+        582,
+        184
+      ],
+      [
+        393,
+        278,
+        582,
+        38
+      ],
+      [
+        393,
+        376,
+        582,
+        444
+      ]
+    ],
+    "note": ""
+  },
+  "upload-log": {
+    "raw": "raw/upload-log.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      195,
+      344,
+      150
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "upload-error-format": {
+    "raw": "raw/upload-error-format.png",
+    "dpr": 2,
+    "crop": [
+      381,
+      138,
+      606,
+      60
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "upload-error-empty": {
+    "raw": "raw/upload-error-empty.png",
+    "dpr": 2,
+    "crop": [
+      381,
+      138,
+      606,
+      60
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "dlg-next": {
+    "raw": "raw/dlg-next.png",
+    "dpr": 2,
+    "crop": [
+      276,
+      354,
+      472,
+      192
+    ],
+    "marks": [
+      [
+        514,
+        469,
+        72,
+        40
+      ],
+      [
+        594,
+        469,
+        117,
+        40
+      ]
+    ],
+    "note": ""
+  },
+  "fw-blank": {
+    "raw": "raw/fw-blank.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      20,
+      984,
+      456
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "fw-preset": {
+    "raw": "raw/fw-preset.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      0,
+      984,
+      845
+    ],
+    "marks": [
+      [
+        49,
+        106,
+        192,
+        40
+      ],
+      [
+        265,
+        78,
+        266.8,
+        68
+      ],
+      [
+        49,
+        162,
+        926,
+        78
+      ],
+      [
+        49,
+        256,
+        926,
+        430
+      ],
+      [
+        49,
+        702,
+        926,
+        58
+      ],
+      [
+        49,
+        776,
+        926,
+        40
+      ]
+    ],
+    "note": ""
+  },
+  "fw-chapter-expanded": {
+    "raw": "raw/fw-chapter-expanded.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      0,
+      950,
+      303
+    ],
+    "marks": [
+      [
+        116.5,
+        29,
+        32,
+        32
+      ],
+      [
+        156.5,
+        25,
+        306.4,
+        40
+      ],
+      [
+        487.0,
+        25,
+        80,
+        40
+      ],
+      [
+        586.1,
+        12,
+        333.4,
+        65.5
+      ],
+      [
+        931.4,
+        29,
+        32,
+        32
+      ],
+      [
+        77,
+        94,
+        874,
+        153
+      ],
+      [
+        77,
+        259,
+        104.8,
+        32
+      ]
+    ],
+    "note": ""
+  },
+  "fw-ai-button": {
+    "raw": "raw/fw-ai-button.png",
+    "dpr": 2,
+    "crop": [
+      833.2,
+      410,
+      186.8,
+      80
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "dlg-ai": {
+    "raw": "raw/dlg-ai.png",
+    "dpr": 2,
+    "crop": [
+      276,
+      354,
+      472,
+      192
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "fw-ai-box": {
+    "raw": "raw/fw-ai-box.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      0,
+      950,
+      222
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "fw-coverage": {
+    "raw": "raw/fw-coverage.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      0,
+      950,
+      804
+    ],
+    "marks": [
+      [
+        586.1,
+        52,
+        333.4,
+        85.5
+      ],
+      [
+        479.0,
+        250.5,
+        139.8,
+        56.5
+      ]
+    ],
+    "note": ""
+  },
+  "fw-total": {
+    "raw": "raw/fw-total.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      321,
+      950,
+      138
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "dlg-delete-chapter": {
+    "raw": "raw/dlg-delete-chapter.png",
+    "dpr": 2,
+    "crop": [
+      276,
+      342,
+      472,
+      216
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "fw-validate": {
+    "raw": "raw/fw-validate.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      424,
+      984,
+      235
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "fw-ai-missing-key": {
+    "raw": "raw/fw-ai-missing-key.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      0,
+      950,
+      60
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "gen-card": {
+    "raw": "raw/gen-card.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      476,
+      984,
+      183
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "gen-progress": {
+    "raw": "raw/gen-progress.png",
+    "dpr": 2,
+    "crop": [
+      0,
+      42,
+      1024,
+      900
+    ],
+    "marks": [
+      [
+        288,
+        375,
+        448,
+        192
+      ],
+      [
+        62,
+        625,
+        900,
+        20
+      ]
+    ],
+    "note": ""
+  },
+  "gen-done": {
+    "raw": "raw/gen-done.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      500,
+      984,
+      300
+    ],
+    "marks": [
+      [
+        49,
+        670,
+        93.2,
+        20
+      ],
+      [
+        885.5,
+        748,
+        106.5,
+        40
+      ]
+    ],
+    "note": ""
+  },
+  "gen-stale": {
+    "raw": "raw/gen-stale.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      0,
+      950,
+      60
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "nav-blocked": {
+    "raw": "raw/nav-blocked.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      659,
+      984,
+      141
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "gen-degraded": {
+    "raw": "raw/gen-degraded.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      448,
+      984,
+      271
+    ],
+    "marks": [
+      [
+        49,
+        618,
+        926,
+        36
+      ]
+    ],
+    "note": ""
+  },
+  "gen-failed": {
+    "raw": "raw/gen-failed.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      424,
+      984,
+      235
+    ],
+    "marks": [
+      [
+        49,
+        538,
+        156,
+        40
+      ],
+      [
+        217,
+        538,
+        102,
+        40
+      ],
+      [
+        49,
+        594,
+        926,
+        36
+      ]
+    ],
+    "note": ""
+  },
+  "img-top": {
+    "raw": "raw/img-top.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      0,
+      950,
+      114
+    ],
+    "marks": [
+      [
+        62,
+        25,
+        730,
+        64
+      ],
+      [
+        808,
+        37,
+        154,
+        40
+      ]
+    ],
+    "note": ""
+  },
+  "img-page": {
+    "raw": "raw/img-page.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      0,
+      950,
+      575
+    ],
+    "marks": [
+      [
+        50,
+        13,
+        924,
+        48
+      ],
+      [
+        66,
+        100,
+        438,
+        160
+      ],
+      [
+        520,
+        78,
+        438,
+        182
+      ],
+      [
+        66,
+        272,
+        126,
+        32
+      ],
+      [
+        200,
+        272,
+        98,
+        32
+      ],
+      [
+        306,
+        272,
+        74,
+        32
+      ]
+    ],
+    "note": ""
+  },
+  "dlg-image-upload": {
+    "raw": "raw/dlg-image-upload.png",
+    "dpr": 2,
+    "crop": [
+      276,
+      342,
+      472,
+      216
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "img-uploaded": {
+    "raw": "raw/img-uploaded.png",
+    "dpr": 2,
+    "crop": [
+      54,
+      0,
+      916,
+      316
+    ],
+    "marks": [
+      [
+        521,
+        35,
+        436,
+        224
+      ]
+    ],
+    "note": ""
+  },
+  "dlg-bulk": {
+    "raw": "raw/dlg-bulk.png",
+    "dpr": 2,
+    "crop": [
+      276,
+      354,
+      472,
+      192
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "img-bulk-done": {
+    "raw": "raw/img-bulk-done.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      0,
+      950,
+      114
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "img-draw": {
+    "raw": "raw/img-draw.png",
+    "dpr": 2,
+    "crop": [
+      812.3,
+      410,
+      207.7,
+      80
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "audit-metrics": {
+    "raw": "raw/audit-metrics.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      0,
+      950,
+      263
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "audit-workbench": {
+    "raw": "raw/audit-workbench.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      0,
+      950,
+      700.5
+    ],
+    "marks": [
+      [
+        746,
+        12,
+        229,
+        32
+      ],
+      [
+        50,
+        57,
+        258,
+        40
+      ],
+      [
+        58,
+        106,
+        242,
+        58
+      ],
+      [
+        325,
+        56,
+        650,
+        440.5
+      ],
+      [
+        325,
+        512.5,
+        650,
+        176
+      ]
+    ],
+    "note": ""
+  },
+  "audit-tab-source": {
+    "raw": "raw/audit-tab-source.png",
+    "dpr": 2,
+    "crop": [
+      313,
+      172.5,
+      674,
+      200.0
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "audit-tab-body": {
+    "raw": "raw/audit-tab-body.png",
+    "dpr": 2,
+    "crop": [
+      313,
+      -0.5,
+      674,
+      542.0
+    ],
+    "marks": [
+      [
+        342,
+        128.5,
+        616,
+        128
+      ],
+      [
+        342,
+        268.5,
+        616,
+        20
+      ],
+      [
+        342,
+        300.5,
+        616,
+        212
+      ]
+    ],
+    "note": ""
+  },
+  "audit-body-over": {
+    "raw": "raw/audit-body-over.png",
+    "dpr": 2,
+    "crop": [
+      330,
+      3.5,
+      640,
+      194.0
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "audit-tab-supplements": {
+    "raw": "raw/audit-tab-supplements.png",
+    "dpr": 2,
+    "crop": [
+      313,
+      172.5,
+      674,
+      148.0
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "audit-tab-body-images": {
+    "raw": "raw/audit-tab-body-images.png",
+    "dpr": 2,
+    "crop": [
+      313,
+      -0.5,
+      674,
+      374.0
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "export-card": {
+    "raw": "raw/export-card.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      337.5,
+      984,
+      381.0
+    ],
+    "marks": [
+      [
+        49,
+        451.5,
+        926,
+        78
+      ],
+      [
+        49,
+        545.5,
+        926,
+        36
+      ],
+      [
+        49,
+        597.5,
+        926,
+        36
+      ],
+      [
+        49,
+        649.5,
+        140.0,
+        40
+      ]
+    ],
+    "note": ""
+  },
+  "dlg-export": {
+    "raw": "raw/dlg-export.png",
+    "dpr": 2,
+    "crop": [
+      276,
+      342,
+      472,
+      216
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "export-done": {
+    "raw": "raw/export-done.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      337.5,
+      984,
+      381.0
+    ],
+    "marks": [
+      [
+        201.0,
+        649.5,
+        156,
+        40
+      ]
+    ],
+    "note": ""
+  },
+  "dlg-download": {
+    "raw": "raw/dlg-download.png",
+    "dpr": 2,
+    "crop": [
+      276,
+      342,
+      472,
+      216
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "dlg-reset": {
+    "raw": "raw/dlg-reset.png",
+    "dpr": 2,
+    "crop": [
+      276,
+      330,
+      472,
+      240
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "audit-tab-missing": {
+    "raw": "raw/audit-tab-missing.png",
+    "dpr": 2,
+    "crop": [
+      313,
+      87.5,
+      674,
+      233.0
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "audit-filter-issues": {
+    "raw": "raw/audit-filter-issues.png",
+    "dpr": 2,
+    "crop": [
+      37,
+      0,
+      950,
+      733.5
+    ],
+    "marks": [],
+    "note": ""
+  },
+  "img-none": {
+    "raw": "raw/img-none.png",
+    "dpr": 2,
+    "crop": [
+      20,
+      138,
+      984,
+      127
+    ],
+    "marks": [],
+    "note": ""
+  }
+}

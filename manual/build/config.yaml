@@ -1,0 +1,56 @@
+# Metadata for the ITEISlides reference manual (GB/T 7713.3—2014 front matter).
+book: um
+output: ITEISlides_使用手册_V1.0.pdf
+deliver_to: ../../docs/ITEISlides_使用手册_V1.0.pdf
+
+report_number: ''
+classification: 公开
+report_type: 技术报告（软件使用手册）
+version: V1.0
+completed: 2026 年 10 月
+period: 2026 年 10 月 3 日
+author: 机械工业仪器仪表综合技术经济研究所
+organization: 机械工业仪器仪表综合技术经济研究所（ITEI）
+funding: 无
+project: ITEISlides 智能汇报 PPT 生成系统
+project_number: ''
+
+title: ITEISlides 智能汇报 PPT 生成系统
+subtitle: 使用手册
+title_en: ITEISlides Intelligent Presentation Generator
+subtitle_en: User Manual
+header_title: ITEISlides 使用手册 V1.0
+environment: Chrome 或 Edge 最新版浏览器；ITEISlides 2026 年 10 月版本
+
+statement: >-
+  本手册中的文档、图片、人名和数据均为虚构的示例，文件名带“示例”字样，不代表任何真实标准项目。
+  截图来自 2026 年 10 月 3 日的 ITEISlides 代码（分支 refactor/modular-architecture），AI 返回的内容由本机模拟服务按脚本生成，
+  与真实模型的输出措辞不同。Gemini 是 Google LLC 的商标，PowerPoint、Word、Edge 是 Microsoft Corporation 的商标，
+  Chrome 是 Google LLC 的商标。界面和行为以软件实际版本为准。
+
+abstract_zh: >-
+  ITEISlides 是机械工业仪器仪表综合技术经济研究所开发的智能汇报 PPT 生成系统，用于把一份 PDF 或 DOCX 文档整理成符合所内模板的 PowerPoint 演示文稿。
+  本手册是参考型使用手册，面向撰写标准审查汇报、研究汇报的业务人员和科研人员，也供维护系统的管理员查阅。
+  手册先概述系统的用途、四步工作流程和界面组成，再按“上传文档、规划框架、生成内容、配图导入、审计预览、导出 PPTX”的顺序，
+  逐项说明每个界面元素的作用、操作规则、输入限制和系统反馈，并用表格列出常见情形下软件的表现和处理办法。
+  [@ch-um-ai]说明 AI 生成内容的溯源标记、降级规则和数据外发范围，帮助读者判断哪些内容需要人工复核。
+  附录收录全部界面元素、提示信息、管理员配置项和术语。读者按[@ch-um-quick]操作一遍，即可用示例文档得到一份 21 页的汇报初稿；
+  正式使用前，应阅读[@ch-um-ai]和[@ch-um-faq]，了解 AI 内容的局限和导出前的检查项。
+abstract_en: >-
+  ITEISlides is a presentation generator developed by the Instrumentation Technology and Economy Institute (ITEI).
+  It turns one PDF or DOCX document into a PowerPoint deck that follows the ITEI slide template.
+  This reference manual is written for staff who prepare standard review reports and research presentations,
+  and for administrators who maintain the system. It first describes the purpose of the system, its four-step workflow
+  and the screen layout. It then documents each step in order: uploading a document, planning the chapter framework,
+  generating slide content, importing images, auditing pages and exporting the PPTX file. For every step the manual lists
+  the controls, the input limits, the rules the software applies and the messages it shows, and closes with a table of
+  common situations and how to handle them. A separate chapter explains how AI-generated content is traced to the source,
+  when the system falls back to rule-based output, and which data leaves the organization. The appendices list all
+  screen elements, all messages, the administrator settings and the glossary. Following the quick start chapter
+  with the sample document produces a 21-page draft; before real use, readers should read the chapters on AI content and common problems.
+keywords_zh: [汇报 PPT, 演示文稿生成, 用户手册, 人工智能, 内容审计, 所内模板]
+keywords_en: [presentation generation, user manual, artificial intelligence, content audit, slide template, PowerPoint]
+
+attachments:
+  - path: ../fixtures/out/压力传感器标准编制说明（示例）.docx
+    description: 第 2 章快速上手使用的示例文档

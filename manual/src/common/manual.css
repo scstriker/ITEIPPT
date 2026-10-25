@@ -1,0 +1,471 @@
+/* ITEISlides manual — print stylesheet (GB/T 7713.3 layout, manual-writing-prompt section 5). */
+@page {
+  size: A4;
+  margin: 25mm 20mm 20mm 25mm;
+}
+
+:root {
+  --navy: #0f3f70;
+  --red: #c8102e;
+  --ink: #1f2a37;
+  --muted: #5b6675;
+  --th: #e8eef6;
+  --box: #f3f5f8;
+  --song: 'Times New Roman', 'SimSun', serif;
+  --hei: 'Arial', 'SimHei', sans-serif;
+  --kai: 'Times New Roman', 'KaiTi', serif;
+  --mono: 'Consolas', 'SimSun', monospace;
+}
+
+html {
+  font-family: var(--song);
+  font-size: 10.5pt;
+  color: var(--ink);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  margin: 0;
+  line-height: 1.68;
+}
+
+p {
+  margin: 0 0 0.35em;
+  text-indent: 2em;
+  text-align: justify;
+}
+
+/* Never bold SimSun (faux bold becomes Type3): emphasis in SimHei regular, stress in KaiTi. */
+strong, b {
+  font-family: var(--hei);
+  font-weight: normal;
+}
+em {
+  font-family: var(--kai);
+  font-style: normal;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--hei);
+  font-weight: normal;
+  color: var(--navy);
+  break-after: avoid;
+  text-align: left;
+}
+
+/* ---------- chapters ---------- */
+section.chapter, section.front, section.appendix, section.refs, section.standalone, section.index-section, section.lists {
+  break-before: page;
+}
+
+h1 {
+  font-size: 16pt;
+  line-height: 1.4;
+  margin: 0 0 14pt;
+  padding-bottom: 5pt;
+  border-bottom: 1.2pt solid var(--navy);
+}
+h1 .num {
+  color: var(--red);
+  margin-right: 0.6em;
+}
+section.appendix > h1 {
+  text-align: center;
+  border-bottom: 1.2pt solid var(--navy);
+}
+section.appendix > h1 .num {
+  display: block;
+  margin: 0 0 4pt;
+}
+section.front > h1, section.lists > h1, section.refs > h1, section.index-section > h1 {
+  text-align: center;
+}
+
+h2 {
+  font-size: 14pt;
+  line-height: 1.45;
+  margin: 16pt 0 8pt;
+}
+h3 {
+  font-size: 12pt;
+  line-height: 1.5;
+  margin: 12pt 0 6pt;
+}
+h2 .num, h3 .num {
+  margin-right: 0.6em;
+}
+h4 {
+  font-size: 10.5pt;
+  margin: 10pt 0 4pt;
+}
+
+/* ---------- lists ---------- */
+ol, ul {
+  margin: 0.2em 0 0.5em;
+  padding-left: 2.6em;
+}
+li {
+  margin: 0.15em 0;
+  text-align: justify;
+}
+li > p {
+  text-indent: 0;
+  margin: 0;
+}
+ol > li::marker {
+  font-family: var(--hei);
+}
+
+/* ---------- inline ---------- */
+.ui {
+  font-family: var(--hei);
+  font-weight: normal;
+  color: var(--navy);
+}
+kbd {
+  display: inline;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 8.5pt;
+  padding: 0 3pt;
+  border: 0.6pt solid #8b95a3;
+  border-bottom-width: 1.6pt;
+  border-radius: 2pt;
+  background: #fff;
+}
+code {
+  font-family: var(--mono);
+  font-size: 9pt;
+  padding: 0 1.5pt;
+  background: var(--box);
+  word-break: break-all;
+}
+pre {
+  font-family: var(--mono);
+  font-size: 9pt;
+  line-height: 1.5;
+  background: #1f2a37;
+  color: #e8eef4;
+  padding: 7pt 9pt;
+  margin: 6pt 0 8pt;
+  white-space: pre-wrap;
+  break-inside: avoid;
+}
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+sup.cite {
+  font-size: 7pt;
+  vertical-align: super;
+  line-height: 0;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a.xref {
+  color: var(--navy);
+}
+
+/* ---------- figures ---------- */
+figure {
+  margin: 8pt 0 10pt;
+  text-align: center;
+  break-inside: avoid;
+}
+figure img, figure svg {
+  max-width: 100%;
+  height: auto;
+}
+figure img.shot {
+  border: 0.6pt solid #a9b2bd;
+}
+figure.w25 img, figure.w25 svg { width: 25%; }
+figure.w34 img, figure.w34 svg { width: 34%; }
+figure.w40 img, figure.w40 svg { width: 40%; }
+figure.w50 img, figure.w50 svg { width: 50%; }
+figure.w55 img, figure.w55 svg { width: 55%; }
+figure.w60 img, figure.w60 svg { width: 60%; }
+figure.w70 img, figure.w70 svg { width: 70%; }
+figure.w80 img, figure.w80 svg { width: 80%; }
+figure.w90 img, figure.w90 svg { width: 90%; }
+figure.w95 img, figure.w95 svg { width: 95%; }
+figure.w100 img, figure.w100 svg { width: 100%; }
+figure.fr {
+  float: right;
+  margin: 2pt 0 6pt 10pt;
+  width: 34%;
+}
+figure.fr img {
+  width: 100%;
+}
+figure.pair .subs {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 4%;
+}
+figure.pair .sub {
+  flex: 1 1 0;
+}
+figure.pair .sub img {
+  width: 100%;
+}
+figure.pair.w60 .subs { width: 60%; margin: 0 auto; }
+figure.pair.w70 .subs { width: 70%; margin: 0 auto; }
+figure.pair.w80 .subs { width: 80%; margin: 0 auto; }
+figure.pair.w90 .subs { width: 90%; margin: 0 auto; }
+figure.pair .subcap {
+  font-family: var(--hei);
+  font-size: 9pt;
+  margin-top: 2pt;
+}
+figcaption {
+  font-family: var(--hei);
+  font-size: 10.5pt;
+  margin-top: 4pt;
+  text-align: center;
+}
+figcaption .num {
+  margin-right: 0.8em;
+}
+
+/* ---------- tables (three-line) ---------- */
+.tbl {
+  margin: 8pt 0 10pt;
+  break-inside: avoid;
+}
+.tblcap {
+  font-family: var(--hei);
+  font-size: 10.5pt;
+  text-align: center;
+  text-indent: 0;
+  margin: 0 0 3pt;
+}
+.tblcap .num {
+  margin-right: 0.8em;
+}
+table {
+  width: 100%;
+  break-inside: avoid;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 9pt;
+  line-height: 1.5;
+  border-top: 1.4pt solid var(--navy);
+  border-bottom: 1.4pt solid var(--navy);
+}
+thead th {
+  font-family: var(--hei);
+  font-weight: normal;
+  background: var(--th);
+  color: var(--navy);
+  border-bottom: 0.8pt solid var(--navy);
+  padding: 3pt 5pt;
+  text-align: left;
+}
+tbody td {
+  padding: 3pt 5pt;
+  vertical-align: top;
+  border-bottom: 0.4pt solid #d5dde5;
+  text-align: left;
+  word-break: break-word;
+}
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ---------- callouts ---------- */
+.admonition {
+  margin: 8pt 0 10pt;
+  padding: 5pt 9pt 5pt 10pt;
+  background: var(--box);
+  border-left: 3pt solid var(--navy);
+  break-inside: avoid;
+  font-size: 10pt;
+}
+.admonition p {
+  text-indent: 0;
+  margin: 0 0 2pt;
+}
+.admonition .admonition-title {
+  font-family: var(--hei);
+  color: var(--navy);
+  margin-bottom: 2pt;
+}
+.admonition.tip { border-left-color: #1a7a3a; }
+.admonition.tip .admonition-title { color: #1a7a3a; }
+.admonition.warning { border-left-color: #b26b00; background: #fff6e8; }
+.admonition.warning .admonition-title { color: #8f5400; }
+.admonition.skill { border-left-color: var(--red); }
+.admonition.skill .admonition-title { color: var(--red); }
+.admonition.summary { border-left-color: #8b95a3; }
+.admonition.summary .admonition-title { color: var(--muted); }
+.admonition ul, .admonition ol { margin: 1pt 0 1pt; }
+
+/* ---------- front matter ---------- */
+.title-page {
+  height: 236mm;
+  display: flex;
+  flex-direction: column;
+}
+.title-page .meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--hei);
+  font-size: 10.5pt;
+}
+.title-page .titles {
+  margin-top: 40mm;
+  text-align: center;
+}
+.title-page .titles .zh {
+  font-family: var(--hei);
+  font-size: 22pt;
+  color: var(--navy);
+  line-height: 1.4;
+}
+.title-page .titles .zh-sub {
+  font-family: var(--song);
+  font-size: 18pt;
+  color: var(--navy);
+  margin-top: 4mm;
+}
+.title-page .titles .en {
+  font-family: 'Times New Roman', serif;
+  font-size: 14pt;
+  color: var(--navy);
+  margin-top: 8mm;
+}
+.title-page .facts {
+  width: auto;
+  margin: 22mm auto 0;
+  font-size: 11pt;
+  line-height: 2;
+  border: none;
+  table-layout: auto;
+}
+.title-page .facts td {
+  border: none;
+  padding: 0 4pt;
+  font-size: 11pt;
+}
+.title-page .statement {
+  margin-top: auto;
+  border: 0.8pt solid var(--navy);
+  padding: 6pt 9pt;
+  font-size: 9pt;
+  line-height: 1.6;
+  break-inside: avoid;
+}
+.title-page .statement .label {
+  font-family: var(--hei);
+  color: var(--navy);
+}
+.title-page .statement p {
+  text-indent: 0;
+}
+
+table.abstract-sheet {
+  font-size: 9.5pt;
+  border-top: 1.4pt solid var(--navy);
+  border-bottom: 1.4pt solid var(--navy);
+}
+table.abstract-sheet td {
+  border-bottom: 0.4pt solid #d5dde5;
+  padding: 4pt 6pt;
+}
+table.abstract-sheet td.k {
+  font-family: var(--hei);
+  color: var(--navy);
+  background: var(--th);
+  width: 26%;
+}
+.keywords {
+  text-indent: 0;
+  margin-top: 6pt;
+}
+.keywords .label {
+  font-family: var(--hei);
+}
+.abstract-en p {
+  font-family: 'Times New Roman', serif;
+  text-indent: 2em;
+}
+.abstract-en h1 {
+  font-family: 'Times New Roman', 'SimHei', serif;
+}
+
+/* TOC and lists of figures / tables */
+.toc-line {
+  display: flex;
+  align-items: baseline;
+  text-indent: 0;
+  margin: 0;
+  line-height: 1.75;
+}
+.toc-line .t {
+  flex: 0 1 auto;
+}
+.toc-line .dots {
+  flex: 1 1 auto;
+  border-bottom: 0.8pt dotted #6b7684;
+  margin: 0 3pt;
+  transform: translateY(-3pt);
+}
+.toc-line .p {
+  flex: 0 0 auto;
+  font-family: 'Times New Roman', serif;
+}
+.toc-line.l1 {
+  font-family: var(--hei);
+  margin-top: 3pt;
+}
+.toc-line.l2 { padding-left: 2em; }
+.toc-line.l3 { padding-left: 4em; }
+
+/* index */
+.index-cols {
+  column-count: 2;
+  column-gap: 10mm;
+  font-size: 9.5pt;
+}
+.index-group h2 {
+  font-size: 11pt;
+  margin: 6pt 0 2pt;
+  break-after: avoid;
+}
+.index-entry {
+  text-indent: -2em;
+  padding-left: 2em;
+  margin: 0;
+  text-align: left;
+}
+.index-entry.sub {
+  padding-left: 3.5em;
+}
+
+/* page marker for page-number lookup: invisible, tiny */
+.mk {
+  font-size: 1px;
+  line-height: 0;
+  color: #ffffff;
+  font-family: 'Arial', sans-serif;
+  white-space: nowrap;
+}
+.blank-page {
+  break-before: page;
+  break-after: page;
+  height: 1px;
+}
+.clear { clear: both; }
+
+/* references (GB/T 7714 sequential numbering), hanging indent */
+section.refs p.ref {
+  text-indent: -2.4em;
+  padding-left: 2.4em;
+  margin-bottom: 0.5em;
+}

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 560" font-family="Arial, SimHei, sans-serif">
+  <defs>
+    <marker id="wf-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0f3f70"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1600" height="560" fill="#ffffff"/>
+  <!-- step boxes -->
+  <g>
+    <rect x="20" y="40" width="340" height="96" fill="#0f3f70"/>
+    <text x="190" y="100" font-size="34" fill="#ffffff" text-anchor="middle">上传文档</text>
+    <rect x="420" y="40" width="340" height="96" fill="#0f3f70"/>
+    <text x="590" y="100" font-size="34" fill="#ffffff" text-anchor="middle">规划框架</text>
+    <rect x="820" y="40" width="340" height="96" fill="#0f3f70"/>
+    <text x="990" y="100" font-size="34" fill="#ffffff" text-anchor="middle">配图导入</text>
+    <rect x="1220" y="40" width="360" height="96" fill="#0f3f70"/>
+    <text x="1400" y="100" font-size="34" fill="#ffffff" text-anchor="middle">审计预览</text>
+    <line x1="362" y1="88" x2="416" y2="88" stroke="#0f3f70" stroke-width="5" marker-end="url(#wf-arrow)"/>
+    <line x1="762" y1="88" x2="816" y2="88" stroke="#0f3f70" stroke-width="5" marker-end="url(#wf-arrow)"/>
+    <line x1="1162" y1="88" x2="1216" y2="88" stroke="#0f3f70" stroke-width="5" marker-end="url(#wf-arrow)"/>
+  </g>
+  <!-- red step numbers -->
+  <g font-size="24" fill="#ffffff" text-anchor="middle">
+    <circle cx="40" cy="40" r="22" fill="#c8102e"/><text x="40" y="49">1</text>
+    <circle cx="440" cy="40" r="22" fill="#c8102e"/><text x="440" y="49">2</text>
+    <circle cx="840" cy="40" r="22" fill="#c8102e"/><text x="840" y="49">3</text>
+    <circle cx="1240" cy="40" r="22" fill="#c8102e"/><text x="1240" y="49">4</text>
+  </g>
+  <!-- who does what -->
+  <g font-size="26" fill="#1f2a37">
+    <rect x="20" y="160" width="340" height="250" fill="#f3f5f8" stroke="#c4ccd6" stroke-width="2"/>
+    <text x="40" y="205">· 填写汇报人、所属机构</text>
+    <text x="40" y="250">· 选择 PDF 或 DOCX</text>
+    <text x="40" y="295">· 浏览器内提取文本</text>
+    <text x="40" y="340">· 核对文档摘要</text>
+    <rect x="420" y="160" width="340" height="250" fill="#f3f5f8" stroke="#c4ccd6" stroke-width="2"/>
+    <text x="440" y="205">· 选预设模板</text>
+    <text x="440" y="250">· 编辑章节与子章节</text>
+    <text x="440" y="295">· AI 建议调整</text>
+    <text x="440" y="340">· AI 生成逐页内容</text>
+    <rect x="820" y="160" width="340" height="250" fill="#f3f5f8" stroke="#c4ccd6" stroke-width="2"/>
+    <text x="840" y="205">· 复制图片描述</text>
+    <text x="840" y="250">· 在 ITEI DRAW 生成</text>
+    <text x="840" y="295">· 上传或批量导入图片</text>
+    <rect x="1220" y="160" width="360" height="250" fill="#f3f5f8" stroke="#c4ccd6" stroke-width="2"/>
+    <text x="1240" y="205">· 逐页核对溯源</text>
+    <text x="1240" y="250">· 修改正文与表格</text>
+    <text x="1240" y="295">· 生成 PPTX</text>
+    <text x="1240" y="340">· 下载文件</text>
+  </g>
+  <!-- AI vs human band -->
+  <g font-size="26" text-anchor="middle">
+    <rect x="420" y="440" width="340" height="56" fill="#0f3f70"/>
+    <text x="590" y="477" fill="#ffffff">AI 起草（Gemini）</text>
+    <rect x="20" y="440" width="340" height="56" fill="#ffffff" stroke="#0f3f70" stroke-width="2"/>
+    <text x="190" y="477" fill="#0f3f70">人工准备</text>
+    <rect x="820" y="440" width="760" height="56" fill="#ffffff" stroke="#0f3f70" stroke-width="2"/>
+    <text x="1200" y="477" fill="#0f3f70">人工精修与把关</text>
+  </g>
+  <text x="800" y="540" font-size="22" fill="#5b6675" text-anchor="middle">只有“规划框架”一步调用 AI；文档全文在这一步发送到后端和 Gemini</text>
+</svg>

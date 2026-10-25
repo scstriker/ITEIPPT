@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" font-family="Arial, SimHei, sans-serif">
+  <rect width="1600" height="400" fill="#ffffff"/>
+  <g font-size="26" text-anchor="middle">
+    <rect x="20" y="70" width="170" height="128" fill="#0f3f70"/>
+    <text x="105" y="142" fill="#ffffff">封面</text>
+    <!-- chapter group -->
+    <rect x="230" y="40" width="1120" height="190" fill="none" stroke="#5b6675" stroke-width="3" stroke-dasharray="12 8"/>
+    <text x="790" y="30" font-size="24" fill="#5b6675">每个章节重复一次</text>
+    <rect x="260" y="70" width="210" height="128" fill="#ffffff" stroke="#0f3f70" stroke-width="3"/>
+    <text x="365" y="128" fill="#0f3f70">目录过渡页</text>
+    <text x="365" y="165" font-size="20" fill="#5b6675">高亮当前章</text>
+    <rect x="510" y="70" width="190" height="128" fill="#f3f5f8" stroke="#0f3f70" stroke-width="3"/>
+    <text x="605" y="128" fill="#0f3f70">正文页</text>
+    <text x="605" y="165" font-size="20" fill="#5b6675">子章节 1</text>
+    <rect x="740" y="70" width="190" height="128" fill="#f3f5f8" stroke="#0f3f70" stroke-width="3"/>
+    <text x="835" y="128" fill="#0f3f70">正文页</text>
+    <text x="835" y="165" font-size="20" fill="#5b6675">子章节 2</text>
+    <text x="1000" y="142" font-size="40" fill="#0f3f70">…</text>
+    <rect x="1070" y="70" width="250" height="128" fill="#f3f5f8" stroke="#0f3f70" stroke-width="3"/>
+    <text x="1195" y="128" fill="#0f3f70">正文页</text>
+    <text x="1195" y="165" font-size="20" fill="#5b6675">本章最后一个子章节</text>
+    <rect x="1390" y="70" width="190" height="128" fill="#0f3f70"/>
+    <text x="1485" y="142" fill="#ffffff">结束页</text>
+  </g>
+  <g font-size="24" fill="#1f2a37">
+    <text x="20" y="290">正文页的下半部分按布局提示放置：文字 + 表格 → 模板表格；文字 + 图片 → 已导入的图片，</text>
+    <text x="20" y="330">没有导入时写入“复制以下内容并在 ITEI Draw 生成PPT配图：”和图片描述；文字 → 只有正文。</text>
+    <text x="20" y="380" fill="#0f3f70">总页数 = 2 + 章节数 + 子章节总数</text>
+  </g>
+</svg>

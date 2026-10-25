@@ -1,6 +1,6 @@
 # ITEISlides
 
-把一份 `.pdf` 或 `.docx` 文档整理成 ITEI 模板的汇报 PPT。4 步：上传文档 → 规划框架（Gemini 规划章节、生成逐页内容）→ 配图导入 → 审计预览并导出 `.pptx`。使用说明见 `docs/ITEISlide使用手册.pdf`。
+把一份 `.pdf` 或 `.docx` 文档整理成 ITEI 模板的汇报 PPT。4 步：上传文档 → 规划框架（Gemini 规划章节、生成逐页内容）→ 配图导入 → 审计预览并导出 `.pptx`。使用说明见 `docs/ITEISlides_使用手册_V1.0.pdf`，手册的源文件和生成脚本在 `manual/`。
 
 | 目录 | 内容 |
 |---|---|
