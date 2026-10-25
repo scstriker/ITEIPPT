@@ -5,7 +5,7 @@
 | 目录 | 内容 |
 |---|---|
 | `src/` | 前端：React 19、TypeScript 7、Vite 8、Tailwind CSS 4、shadcn/ui，界面遵循 `design/itei/` |
-| `functions/` | 后端：Firebase Functions（本地可独立运行） |
+| `worker/` | 后端：Cloudflare Worker（同时提供前端页面；本地可用 Node 运行） |
 | `docs/` | 需求、技术规格、验收、接口、安全、决策记录、部署文档、模板参考 |
 | `design/itei/` | ITEI 设计规范 |
 | `archive/` | 过程文件，不作为事实源 |
@@ -15,7 +15,7 @@
 需要 Node.js 22 和 npm。首次安装依赖：
 
 ```bash
-cd functions && npm install
+cd worker && npm install
 ```
 
 ```bash
@@ -38,7 +38,8 @@ npm run dev
 
 | 命令（在对应目录执行） | 覆盖 |
 |---|---|
-| `functions`: `npm test` | 后端接口合同、规划、任务、worker、生成结果快照（Gemini 用本地桩） |
+| `worker`: `npm test` | 后端接口合同、Access 校验、规划、生成结果快照（Gemini 用本地桩） |
+| `worker`: `npm run smoke:workerd` | 在本机 Cloudflare 运行时中检查 Access 校验和接口 |
 | `src`: `npm test` | 流程状态机、各步骤规则、PPTX 渲染快照、乱码扫描 |
 | `src`: `npm run e2e` | 手册中的全部操作（生产构建 + 浏览器内假后端） |
 | `src`: `npm run e2e:local` | 真实本地后端 + Gemini 桩跑通 4 步 |
@@ -49,4 +50,4 @@ npm run dev
 
 ## 部署
 
-见 `docs/cloud-deployment.md`。
+部署在 Cloudflare（Worker + Access），不使用 Firebase。步骤见 `docs/cloudflare-deployment.md`，安全要求见 `docs/SECURITY.md`。Gemini Key 只通过 `npx wrangler secret put GEMINI_API_KEY` 写入 Cloudflare，不要提交到仓库。

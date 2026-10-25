@@ -1,6 +1,6 @@
 # ITEISlides 开发说明
 
-把长文档（PDF / DOCX）整理成 ITEI 模板 PPT 的 Web 应用。前端 `src/`，后端 `functions/`（Firebase Functions，本地用 `functions/src/dev/localServer.ts`）。
+把长文档（PDF / DOCX）整理成 ITEI 模板 PPT 的 Web 应用。前端 `src/`，后端 `worker/`（Cloudflare Worker，本地用 `worker/src/dev/localServer.ts`）。部署见 `docs/cloudflare-deployment.md`。
 
 ## 先读
 
@@ -14,7 +14,7 @@ UI 规范见 `design/itei/AGENTS.md`。`archive/` 是过程文件，不作为事
 ## 常用命令
 
 ```bash
-cd functions && npm test          # 后端合同与单元测试
+cd worker && npm test             # 后端合同与单元测试
 cd src && npm test                # 前端单元与渲染快照
 cd src && npm run e2e             # Playwright 端到端
 cd src && npm run e2e:local       # 真实本地后端 + Gemini 桩跑通 4 步
