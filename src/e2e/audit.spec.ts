@@ -40,7 +40,7 @@ test('AC-021 metrics, source files, filters and tabs', async ({ page }) => {
   await page.getByRole('button', { name: 'AI补充', exact: true }).click();
   await expect(page.getByText('[AI 概括] 第 4 页补充（示例）')).toBeVisible();
   await page.getByRole('button', { name: '缺失项', exact: true }).click();
-  await expect(page.getByRole('cell', { name: '示例缺失项。' })).toBeVisible();
+  await expect(page.getByRole('cell', { name: '本页正文由低证据或自动归纳补全生成，建议人工复核关键结论与数据。' })).toBeVisible();
   await page.getByRole('button', { name: '溯源', exact: true }).click();
   await expect(page.getByText('示例原文第 4 段')).toBeVisible();
   await expect(page.getByText('AI 补充构建').first()).toBeVisible();

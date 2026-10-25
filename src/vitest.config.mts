@@ -4,7 +4,8 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   resolve: {
     alias: {
-      '@contracts': fileURLToPath(new URL('../functions/src/contracts', import.meta.url)),
+      '@contracts': fileURLToPath(new URL('../worker/src/contracts', import.meta.url)),
+      '@worker': fileURLToPath(new URL('../worker/src', import.meta.url)),
     },
   },
   test: {

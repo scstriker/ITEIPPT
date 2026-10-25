@@ -36,7 +36,7 @@ import {
   updateChapterSlides,
   validatePlanBeforeGenerate,
 } from './frameworkEditing';
-import { useGenerationJob } from './useGenerationJob';
+import { useContentGeneration } from './useContentGeneration';
 
 const COVERAGE_TONE: Record<CoverageLevel, 'success' | 'warning' | 'danger'> = {
   sufficient: 'success',
@@ -76,10 +76,9 @@ export function FrameworkPlanner({
     setGenError,
     genPercent,
     genServerStage,
-    genJobId,
     showRetryGenerate,
     runGenerate,
-  } = useGenerationJob({ parsedDocument, plan, onGenerated });
+  } = useContentGeneration({ parsedDocument, plan, onGenerated });
 
   const hasStaleAnalyzerResult = Boolean(analyzerResult) && !isAnalyzerFresh;
 
@@ -508,10 +507,7 @@ export function FrameworkPlanner({
               重新生成
             </Button>
           ) : null}
-          {isGenerating ? <span className="text-[13px] leading-5 text-ink-muted">任务已提交，正在后台生成，请稍候...</span> : null}
-          {isGenerating && genJobId ? (
-            <span className="font-mono text-[13px] leading-5 text-ink-muted">任务 ID：{genJobId}</span>
-          ) : null}
+          {isGenerating ? <span className="text-[13px] leading-5 text-ink-muted">正在逐批生成内容，请稍候...</span> : null}
         </div>
 
         {isGenerating ? (

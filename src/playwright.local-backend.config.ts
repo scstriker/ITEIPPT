@@ -13,7 +13,7 @@ export default defineConfig({
   use: { ...base.use, baseURL: `http://127.0.0.1:${PORT}` },
   webServer: [
     {
-      command: 'npx tsx ../functions/tests/helpers/startStubbedBackend.ts',
+      command: 'npx tsx ../worker/tests/helpers/startStubbedBackend.ts',
       url: `http://127.0.0.1:${API_PORT}/api/health`,
       reuseExistingServer: false,
       timeout: 60_000,

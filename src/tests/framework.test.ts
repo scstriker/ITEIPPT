@@ -1,5 +1,5 @@
-// AC-008 ~ AC-011, AC-013 ~ AC-015: framework editing rules and the stored job record.
-import { describe, expect, it } from 'vitest';
+// AC-008 ~ AC-011, AC-013 ~ AC-015: framework editing rules and generation progress.
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { AnalyzerResult } from '@contracts/analyzer';
 import type { FrameworkPlan } from '@contracts/framework';
 import {
@@ -15,38 +15,12 @@ import {
   resizeSlides,
   validatePlanBeforeGenerate,
 } from '../features/framework/frameworkEditing';
-import {
-  ACTIVE_GENERATION_JOB_KEY,
-  clearStoredGenerationJob,
-  readStoredGenerationJob,
-  writeStoredGenerationJob,
-} from '../features/framework/useGenerationJob';
+import { describeGenerationProgress } from '../features/framework/useContentGeneration';
+import { ContentApiError, mapGenerateContentError, requestContentBatch } from '../services/api/contentApi';
 import { createFrameworkPlanFromPreset } from '../template/presets';
 
 function academic(): FrameworkPlan {
   return { ...createFrameworkPlanFromPreset('academic_research'), coverInfo: { standardName: '标题' }, endingInfo: { organization: '机构' } };
-}
-
-class MemoryStorage implements Storage {
-  private data = new Map<string, string>();
-  get length() {
-    return this.data.size;
-  }
-  clear() {
-    this.data.clear();
-  }
-  getItem(key: string) {
-    return this.data.get(key) ?? null;
-  }
-  key(index: number) {
-    return [...this.data.keys()][index] ?? null;
-  }
-  removeItem(key: string) {
-    this.data.delete(key);
-  }
-  setItem(key: string, value: string) {
-    this.data.set(key, value);
-  }
 }
 
 describe('presets and page estimate', () => {
@@ -139,16 +113,49 @@ describe('generation feedback', () => {
   });
 });
 
-describe('stored job record', () => {
-  it('round-trips and rejects broken records', () => {
-    const store = new MemoryStorage();
-    writeStoredGenerationJob({ jobId: 'job-1', planDigest: 'd', savedAt: 't' }, store);
-    expect(readStoredGenerationJob(store)).toEqual({ jobId: 'job-1', planDigest: 'd', savedAt: 't' });
-    store.setItem(ACTIVE_GENERATION_JOB_KEY, '{"jobId":" ","planDigest":"d"}');
-    expect(readStoredGenerationJob(store)).toBeNull();
-    store.setItem(ACTIVE_GENERATION_JOB_KEY, 'not json');
-    expect(readStoredGenerationJob(store)).toBeNull();
-    clearStoredGenerationJob(store);
-    expect(store.getItem(ACTIVE_GENERATION_JOB_KEY)).toBeNull();
+describe('browser-driven generation', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('names the batch being generated', () => {
+    const update = (stage: 'preparing' | 'generating' | 'finalizing', processedBatches: number, percent = 50) => ({
+      stage,
+      percent,
+      processedBatches,
+      totalBatches: 4,
+    });
+    expect(describeGenerationProgress(update('preparing', 0, 2))).toEqual({ stage: '正在生成内容（批次 1/4）', percent: 2 });
+    expect(describeGenerationProgress(update('generating', 1, 28)).stage).toBe('正在生成内容（批次 2/4）');
+    expect(describeGenerationProgress(update('generating', 4, 95)).stage).toBe('正在整理结果');
+    expect(describeGenerationProgress(update('finalizing', 4, 100))).toEqual({ stage: '正在整理结果', percent: 99 });
+  });
+
+  it('posts one batch to the Worker and returns its result', async () => {
+    const result = { ok: true, slides: [{ page: 3, bodyText: '正文' }], weakPages: [], fallbackPages: [], diagnostics: {} };
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify(result), { status: 200, headers: { 'content-type': 'application/json' } }));
+    vi.stubGlobal('fetch', fetchMock);
+    const request = { presetId: 'standard_review', contexts: [], excerpts: { full: { text: 'a', truncated: false }, compact: { text: 'a', truncated: false } } };
+    await expect(requestContentBatch(request)).resolves.toEqual(result);
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe('/api/generate-content/batch');
+    expect(JSON.parse(String(init.body))).toEqual(request);
+  });
+
+  it('turns Worker errors into readable messages', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () =>
+        new Response(JSON.stringify({ error: { code: 'missing_api_key', message: 'no key' } }), {
+          status: 503,
+          headers: { 'content-type': 'application/json' },
+        }),
+      ),
+    );
+    const request = { presetId: 'standard_review', contexts: [], excerpts: { full: { text: 'a', truncated: false }, compact: { text: 'a', truncated: false } } };
+    const error = await requestContentBatch(request).catch((caught: unknown) => caught);
+    expect(error).toBeInstanceOf(ContentApiError);
+    expect(mapGenerateContentError(error)).toBe('服务端未配置 GEMINI_API_KEY，无法调用内容生成。');
+    expect(mapGenerateContentError(new ContentApiError(401, 'access_denied', 'denied'))).toBe('访问验证已失效，请刷新页面重新登录后再生成。');
   });
 });

@@ -1,7 +1,7 @@
 # Dependencies and build output
 node_modules/
 src/dist/
-functions/lib/
+worker/lib/
 
 # Local env and secrets (keep *.example)
 .env
@@ -15,7 +15,13 @@ functions/lib/
 logs/
 src/.runlogs/
 
-# Firebase local state
+# Cloudflare local state and local secrets for `wrangler dev`
+.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# Local state of the retired Firebase deployment
 .firebase/
 .firebaserc
 
@@ -28,3 +34,4 @@ coverage/
 # Contains a plaintext API key; never commit
 docs/notes_utf8.md
 archive/dev-history/notes_utf8.md
+worker/dist-check/

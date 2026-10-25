@@ -24,7 +24,10 @@
         "./*"
       ],
       "@contracts/*": [
-        "../functions/src/contracts/*"
+        "../worker/src/contracts/*"
+      ],
+      "@worker/*": [
+        "../worker/src/*"
       ]
     },
     "allowImportingTsExtensions": true,

@@ -1,5 +1,7 @@
 // AC-001 ~ AC-004: upload, validation, summary, cover back-fill.
+import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
+import JSZip from 'jszip';
 import { installFakeApi } from './support/fakeApi';
 import {
   BLANK_PDF,
@@ -7,6 +9,7 @@ import {
   DOCX,
   PDF,
   TXT,
+  confirmDialog,
   documentInput,
   generateContent,
   goNext,
@@ -67,9 +70,7 @@ test('AC-004 shows the summary and the processing log', async ({ page }) => {
   await expect(page.getByText('开始提取并分析文档内容…')).toBeVisible();
 });
 
-test('AC-003 back-fills cover and ending info into the generation request', async ({ page }) => {
-  const api = await installFakeApi(page);
-  await page.goto('/');
+test('AC-003 back-fills cover and ending info into the generated deck', async ({ page }) => {
   await expect(page.getByLabel('所属机构')).toHaveValue('机械工业仪器仪表综合技术经济研究所');
   await expect(page.getByLabel('目标页数')).toHaveValue('20');
   await page.getByLabel('汇报人').fill('张三（示例）');
@@ -77,9 +78,24 @@ test('AC-003 back-fills cover and ending info into the generation request', asyn
   await goNext(page);
   await runAiSuggest(page);
   await generateContent(page);
-  const plan = api.jobRequests[0].frameworkPlan;
-  expect(plan.coverInfo.standardName).toBe(DOC_TITLE);
-  expect(plan.coverInfo.presenter).toBe('张三（示例）');
-  expect(plan.endingInfo.organization).toBe('机械工业仪器仪表综合技术经济研究所');
-  expect(api.jobRequests[0].sourceFilename).toBe('技术要求（示例）.docx');
+  await goNext(page);
+  await goNext(page);
+
+  await page.getByRole('button', { name: '全部页面', exact: true }).click();
+  await page.getByRole('button', { name: /封面与开场/ }).click();
+  await page.getByRole('button', { name: /^P1 / }).click();
+  // The cover preview shows the document title (cover standard name) under the cover heading.
+  await expect(page.locator('article p').filter({ hasText: DOC_TITLE }).last()).toBeVisible();
+  await page.getByRole('button', { name: /结束与收尾/ }).click();
+  await page.getByRole('button', { name: /^P20 / }).click();
+  await expect(page.getByText('机械工业仪器仪表综合技术经济研究所').last()).toBeVisible();
+  await expect(page.getByRole('cell', { name: '技术要求（示例）.docx' }).first()).toBeVisible();
+
+  await page.getByRole('button', { name: '生成 PPTX' }).click();
+  await confirmDialog(page, '确认生成 PPTX？', '确认生成');
+  await page.getByRole('button', { name: '下载生成文件' }).click();
+  const downloadPromise = page.waitForEvent('download');
+  await confirmDialog(page, '确认下载文件？', '确认下载');
+  const zip = await JSZip.loadAsync(await readFile(await (await downloadPromise).path()));
+  expect(await zip.file('ppt/slides/slide1.xml')!.async('string')).toContain('张三（示例）');
 });

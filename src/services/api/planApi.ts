@@ -49,11 +49,14 @@ function isFrameworkPlan(value: unknown): value is FrameworkPlan {
   return typeof candidate.presetId === 'string' && Array.isArray(candidate.chapters);
 }
 
+/** The Worker only reads the first 120,000 characters; a little more is sent because it cleans whitespace first. */
+export const PLAN_TEXT_SEND_LIMIT = 150_000;
+
 export async function requestFrameworkPlan(payload: PlanApiRequest, signal?: AbortSignal): Promise<FrameworkPlan> {
   const response = await fetch('/api/plan', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({ ...payload, textContent: payload.textContent.slice(0, PLAN_TEXT_SEND_LIMIT) }),
     signal,
   });
 
@@ -90,6 +93,12 @@ export function mapPlanErrorToMessage(error: unknown): string {
   }
   if (error.code === 'invalid_preset') {
     return '模板参数无效，请重新选择模板后重试。';
+  }
+  if (error.code === 'access_denied') {
+    return '访问验证已失效，请刷新页面重新登录后重试。';
+  }
+  if (error.code === 'access_not_configured' || error.code === 'access_unavailable') {
+    return '服务端访问控制不可用，请联系系统管理员。';
   }
   return `AI 规划失败：${error.message}`;
 }

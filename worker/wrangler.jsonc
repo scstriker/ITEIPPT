@@ -1,0 +1,33 @@
+// Cloudflare Worker for ITEISlides: serves the Vite build and the /api/* routes.
+// Secrets are never written here. Set the Gemini key with `npx wrangler secret put GEMINI_API_KEY`.
+// See docs/cloudflare-deployment.md.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "iteislides",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-20",
+
+  // Only the custom domain serves the app, and Cloudflare Access protects that hostname.
+  // workers.dev and preview URLs stay off so nobody can reach the API around Access.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "slides.sensor-cloud.org", "custom_domain": true }],
+
+  "assets": {
+    "directory": "../src/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+
+  "vars": {
+    // Filled in after the Access application exists (Zero Trust > Access > Applications).
+    // The AUD tag and team domain are identifiers, not secrets.
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUD": "",
+    "GEMINI_PLAN_MODEL": "gemini-2.5-flash",
+    "GEMINI_CONTENT_MODEL": "gemini-2.5-flash"
+  },
+
+  "observability": { "enabled": true }
+}
